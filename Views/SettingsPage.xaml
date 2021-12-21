@@ -1,0 +1,126 @@
+﻿<Page
+    x:Class="YoutubeCutter.Views.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:YoutubeCutter.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:YoutubeCutter"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="clr-namespace:YoutubeCutter.Models"
+    xmlns:properties="clr-namespace:YoutubeCutter.Properties"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    Style="{DynamicResource MahApps.Styles.Page}"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" EnumType="models:AppTheme" />
+    </Page.Resources>
+    <ScrollViewer>
+        <Grid Margin="{StaticResource SmallTopBottomMargin}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="48" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBlock Style="{StaticResource PageTitleStyle}" Text="{x:Static properties:Resources.SettingsPageTitle}" />
+            <StackPanel
+                x:Name="ContentArea"
+                Grid.Row="2"
+                Margin="{StaticResource MediumLeftRightMargin}">
+
+                <TextBlock
+                    Margin="{StaticResource SmallTopMargin}"
+                    Style="{StaticResource SubtitleTextStyle}"
+                    Text="{x:Static properties:Resources.SettingsPagePersonalizationTitle}" />
+                <StackPanel Margin="{StaticResource SmallTopBottomMargin}">
+                    <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.SettingsPageChooseThemeText}" />
+                    <StackPanel Margin="{StaticResource XSmallTopMargin}">
+                        <RadioButton
+                            Content="{x:Static properties:Resources.SettingsPageRadioButtonLightTheme}"
+                            FontSize="{StaticResource MediumFontSize}"
+                            GroupName="AppTheme"
+                            IsChecked="{Binding Theme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Light, Mode=OneWay}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Checked">
+                                    <i:InvokeCommandAction Command="{Binding SetThemeCommand}" CommandParameter="Light" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </RadioButton>
+                        <RadioButton
+                            Margin="{StaticResource XSmallTopMargin}"
+                            Content="{x:Static properties:Resources.SettingsPageRadioButtonDarkTheme}"
+                            FontSize="{StaticResource MediumFontSize}"
+                            GroupName="AppTheme"
+                            IsChecked="{Binding Theme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Dark, Mode=OneWay}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Checked">
+                                    <i:InvokeCommandAction Command="{Binding SetThemeCommand}" CommandParameter="Dark" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </RadioButton>
+                        <RadioButton
+                            Margin="{StaticResource XSmallTopMargin}"
+                            Content="{x:Static properties:Resources.SettingsPageRadioButtonWindowsDefaultTheme}"
+                            FontSize="{StaticResource MediumFontSize}"
+                            GroupName="AppTheme"
+                            IsChecked="{Binding Theme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Default, Mode=OneWay}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Checked">
+                                    <i:InvokeCommandAction Command="{Binding SetThemeCommand}" CommandParameter="Default" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </RadioButton>
+                    </StackPanel>
+                </StackPanel>
+
+                <TextBlock
+                    Margin="{StaticResource SmallTopMargin}"
+                    Style="{StaticResource SubtitleTextStyle}"
+                    Text="{x:Static properties:Resources.SettingsPageLanguage}" />
+                <ComboBox
+                    Width="160"
+                    Height="30"
+                    Margin="{StaticResource SmallTopBottomMargin}"
+                    HorizontalAlignment="Left"
+                    SelectedIndex="0"
+                    SelectionChanged="ComboBox_SelectionChanged">
+                    <ComboBoxItem Content="English" />
+                    <ComboBoxItem Content="中文" />
+                </ComboBox>
+
+            </StackPanel>
+            <StackPanel Grid.Row="1" Margin="{StaticResource MediumLeftRightMargin}">
+                <TextBlock Style="{StaticResource SubtitleTextStyle}" Text="{x:Static properties:Resources.SettingsPageYoutube}" />
+                <StackPanel Orientation="Horizontal">
+                    <Image
+                        x:Name="youtubeProfilePicture"
+                        Width="56"
+                        Height="56"
+                        Source="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png" />
+
+                    <TextBlock
+                        x:Name="youtubeUserName"
+                        Width="218"
+                        Height="23"
+                        Margin="{StaticResource SmallLeftRightMargin}"
+                        Text="test" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button
+                        x:Name="logInButton"
+                        Click="logInButton_Click"
+                        Content="Log In" />
+
+                    <Button
+                        x:Name="logOutButton"
+                        Click="logOutButton_Click"
+                        Content="Log Out" />
+                </StackPanel>
+            </StackPanel>
+
+
+        </Grid>
+    </ScrollViewer>
+</Page>
