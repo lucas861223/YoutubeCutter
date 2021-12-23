@@ -10,23 +10,7 @@ namespace YoutubeCutter.Services
     {
         public AppSettingService()
         {
-        }
-
-        void IAppSettingService.InitializeSettings()
-        {
-            if (!App.Current.Properties.Contains("FontSize"))
-            {
-                App.Current.Properties.Add("FontSize", 12);
-            }
-            if (!App.Current.Properties.Contains("Language"))
-            {
-                App.Current.Properties.Add("Language", Languages.English);
-            }
-            if (!App.Current.Properties.Contains("ID"))
-            {
-                App.Current.Properties.Add("ID", null);
-            }
-        }
+        }         
 
         int IAppSettingService.GetCurrentFontSize()
         {

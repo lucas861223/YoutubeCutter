@@ -9,12 +9,15 @@ using YoutubeCutter.Contracts.Services;
 using YoutubeCutter.Contracts.ViewModels;
 using YoutubeCutter.Models;
 
+using System.IO;
+using System.Text.Json;
+
+
 namespace YoutubeCutter.ViewModels
 {
     // TODO WTS: Change the URL for your privacy policy in the appsettings.json file, currently set to https://YourPrivacyUrlGoesHere
     public class SettingsViewModel : ObservableObject, INavigationAware
     {
-        private readonly AppConfig _appConfig;
         private readonly IThemeSelectorService _themeSelectorService;
         private readonly ISystemService _systemService;
         private readonly IApplicationInfoService _applicationInfoService;
@@ -22,6 +25,8 @@ namespace YoutubeCutter.ViewModels
         private string _versionDescription;
         private ICommand _setThemeCommand;
         private ICommand _privacyStatementCommand;
+        public Languages Language { get; set; }
+        public string Test { get; set; }
 
         public AppTheme Theme
         {
@@ -39,9 +44,8 @@ namespace YoutubeCutter.ViewModels
 
         public ICommand PrivacyStatementCommand => _privacyStatementCommand ?? (_privacyStatementCommand = new RelayCommand(OnPrivacyStatement));
 
-        public SettingsViewModel(IOptions<AppConfig> appConfig, IThemeSelectorService themeSelectorService, ISystemService systemService, IApplicationInfoService applicationInfoService)
+        public SettingsViewModel(IThemeSelectorService themeSelectorService, ISystemService systemService, IApplicationInfoService applicationInfoService)
         {
-            _appConfig = appConfig.Value;
             _themeSelectorService = themeSelectorService;
             _systemService = systemService;
             _applicationInfoService = applicationInfoService;
@@ -51,6 +55,8 @@ namespace YoutubeCutter.ViewModels
         {
             VersionDescription = $"{Properties.Resources.AppDisplayName} - {_applicationInfoService.GetVersion()}";
             Theme = _themeSelectorService.GetCurrentTheme();
+            Language = (Languages)App.Current.Properties["Language"];
+            Test = AppConfig.DEFAULT_SETTING_PATH;
         }
 
         public void OnNavigatedFrom()
@@ -64,6 +70,30 @@ namespace YoutubeCutter.ViewModels
         }
 
         private void OnPrivacyStatement()
-            => _systemService.OpenInWebBrowser(_appConfig.PrivacyStatement);
+            => _systemService.OpenInWebBrowser((string)App.Current.Properties["PrivacyStatement"]);
+
+        public static void InitializeSettings()
+        {
+            string settingFilePath = AppConfig.DEFAULT_SETTING_PATH;
+            AppConfig appConfig;
+            if (!File.Exists(settingFilePath))
+            {
+                appConfig = AppConfig.getDefaultSetting();
+            }
+            else
+            {
+                appConfig = LoadSettingFromFile();
+            }
+            appConfig.ApplyAppConfig();
+        }
+        public static void SaveSettings()
+        {
+            File.WriteAllText(AppConfig.DEFAULT_SETTING_PATH, JsonSerializer.Serialize(AppConfig.getAppConfigFromApp()));
+        }
+
+        private static AppConfig LoadSettingFromFile()
+        {
+            return JsonSerializer.Deserialize<AppConfig>(File.ReadAllText(AppConfig.DEFAULT_SETTING_PATH));
+        }
     }
 }

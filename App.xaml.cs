@@ -26,7 +26,6 @@ namespace YoutubeCutter
     public partial class App : Application
     {
         private IHost _host;
-
         public T GetService<T>()
             where T : class
             => _host.Services.GetService(typeof(T)) as T;
@@ -92,6 +91,7 @@ namespace YoutubeCutter
 
         private async void OnExit(object sender, ExitEventArgs e)
         {
+            SettingsViewModel.SaveSettings();
             await _host.StopAsync();
             _host.Dispose();
             _host = null;

@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 
 using YoutubeCutter.ViewModels;
+using YoutubeCutter.Models;
 
 namespace YoutubeCutter.Views
 {
@@ -15,7 +16,7 @@ namespace YoutubeCutter.Views
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+           
         }
 
         private void logInButton_Click(object sender, System.Windows.RoutedEventArgs e)

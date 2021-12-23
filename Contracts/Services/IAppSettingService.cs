@@ -15,7 +15,5 @@ namespace YoutubeCutter.Contracts.Services
         string GetLoggedInYoutubeID();
 
         void SetLoggedInYoutubeID(string ID);
-
-        void InitializeSettings();
     }
 }
