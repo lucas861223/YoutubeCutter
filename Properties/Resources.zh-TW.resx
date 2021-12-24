@@ -139,7 +139,7 @@
     <value>Choose Theme</value>
   </data>
   <data name="SettingsPageLanguage" xml:space="preserve">
-    <value>Language</value>
+    <value>語言</value>
   </data>
   <data name="SettingsPagePersonalizationTitle" xml:space="preserve">
     <value>Personalization</value>

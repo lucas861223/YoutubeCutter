@@ -25,7 +25,7 @@ namespace YoutubeCutter.ViewModels
         private string _versionDescription;
         private ICommand _setThemeCommand;
         private ICommand _privacyStatementCommand;
-        public Languages Language { get; set; }
+        public int Language { get; set; }
         public string Test { get; set; }
 
         public AppTheme Theme
@@ -55,8 +55,8 @@ namespace YoutubeCutter.ViewModels
         {
             VersionDescription = $"{Properties.Resources.AppDisplayName} - {_applicationInfoService.GetVersion()}";
             Theme = _themeSelectorService.GetCurrentTheme();
-            Language = (Languages)App.Current.Properties["Language"];
-            Test = AppConfig.DEFAULT_SETTING_PATH;
+            Language = (int)(Languages)App.Current.Properties["Language"];
+            //Test = AppConfig.DEFAULT_SETTING_PATH;
         }
 
         public void OnNavigatedFrom()

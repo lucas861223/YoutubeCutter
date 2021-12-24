@@ -16,6 +16,8 @@ using YoutubeCutter.Services;
 using YoutubeCutter.ViewModels;
 using YoutubeCutter.Views;
 
+using System.Globalization;
+
 namespace YoutubeCutter
 {
     // For more inforation about application lifecyle events see https://docs.microsoft.com/dotnet/framework/wpf/app-development/application-management-overview

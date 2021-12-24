@@ -3,6 +3,10 @@ using System.Windows.Controls;
 
 using YoutubeCutter.ViewModels;
 using YoutubeCutter.Models;
+using YoutubeCutter.Helpers;
+using System.Globalization;
+using System.Windows.Data;
+
 
 namespace YoutubeCutter.Views
 {
@@ -10,13 +14,25 @@ namespace YoutubeCutter.Views
     {
         public SettingsPage(SettingsViewModel viewModel)
         {
-            InitializeComponent();
             DataContext = viewModel;
+            InitializeComponent();
         }
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-           
+            switch ((Languages) LanguageCombobox.SelectedIndex)
+            {
+                case Languages.English:
+                    CultureResources.ChangeCulture(new CultureInfo("en-US"));
+                    break;
+                case Languages.SimplifiedChinese:
+                    CultureResources.ChangeCulture(new CultureInfo("zh-CN"));
+                    break;
+                case Languages.TraditionalChinese:
+                    CultureResources.ChangeCulture(new CultureInfo("zh-TW"));
+                    break;
+            }
+            ((ObjectDataProvider)FindResource("LanguageResources")).Refresh();
         }
 
         private void logInButton_Click(object sender, System.Windows.RoutedEventArgs e)

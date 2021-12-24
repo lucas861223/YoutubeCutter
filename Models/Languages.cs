@@ -2,8 +2,8 @@
 {
     public enum Languages
     {
-        English,
-        SimplifiedChinese,
-        TraditionalChinese
+        English = 0,
+        TraditionalChinese = 1,
+        SimplifiedChinese = 2
     }
 }

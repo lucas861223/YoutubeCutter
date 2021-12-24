@@ -124,7 +124,7 @@ namespace YoutubeCutter.Properties {
         }
         
         /// <summary>
-        ///   查詢類似 Language 的當地語系化字串。
+        ///   查詢類似 吃大便 的當地語系化字串。
         /// </summary>
         public static string SettingsPageLanguage {
             get {

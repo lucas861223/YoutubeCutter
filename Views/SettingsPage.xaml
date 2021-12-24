@@ -80,13 +80,14 @@
                 <TextBlock
                     Margin="{StaticResource SmallTopMargin}"
                     Style="{StaticResource SubtitleTextStyle}"
-                    Text="{Binding Test}" />
+                    Text="{Binding Path=SettingsPageLanguage, Source={StaticResource LanguageResources}}" />
                 <ComboBox
+                    x:Name="LanguageCombobox"
                     Width="160"
                     Height="30"
                     Margin="{StaticResource SmallTopBottomMargin}"
                     HorizontalAlignment="Left"
-                    SelectedIndex="0"
+                    SelectedIndex="{Binding Language}"
                     SelectionChanged="ComboBox_SelectionChanged">
                     <ComboBoxItem Content="English" />
                     <ComboBoxItem Content="中文" />
