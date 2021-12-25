@@ -16,6 +16,7 @@
     mc:Ignorable="d">
     <Page.Resources>
         <converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" EnumType="models:AppTheme" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     </Page.Resources>
 
     <ScrollViewer>
@@ -25,13 +26,77 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <TextBlock Style="{StaticResource PageTitleStyle}" Text="{x:Static properties:Resources.SettingsPageTitle}" />
             <StackPanel
                 x:Name="ContentArea"
                 Grid.Row="2"
                 Margin="{StaticResource MediumLeftRightMargin}">
-
+                <TextBlock
+                    Margin="{StaticResource SmallTopMargin}"
+                    Style="{StaticResource SubtitleTextStyle}"
+                    Text="youtube dl path" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="90*" />
+                        <ColumnDefinition Width="10*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox
+                        x:Name="YoutubeDLPathTextBox"
+                        Grid.Column="0"
+                        Margin="{StaticResource SmallTopMargin}"
+                        IsEnabled="false"
+                        Text="{Binding Path=YoutubeDLPath, UpdateSourceTrigger=PropertyChanged}" />
+                    <Button
+                        x:Name="ChooseYoutubeDLPathButton"
+                        Grid.Column="1"
+                        VerticalAlignment="Bottom"
+                        Click="openFileDialogForYoutubeDL">
+                        Browse
+                    </Button>
+                </Grid>
+                <TextBlock
+                    Margin="{StaticResource SmallTopMargin}"
+                    Foreground="Red"
+                    Style="{StaticResource BodyTextStyle}"
+                    Visibility="{Binding Path=IsInvalidYoutubeDL, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+                    <Run Text="{Binding Path=YoutubeDLPathWarning, Mode=OneWay, Source={StaticResource LanguageResources}}" />
+                    <Hyperlink NavigateUri="https://stackoverflow.com/questions/30551372/binding-run-inside-textblock-results-in-exception-in-wpf">
+                        <TextBlock Text="{Binding Path=Instruction, Source={StaticResource LanguageResources}}" />
+                    </Hyperlink>
+                    <Run Text="{Binding Path=Period, Mode=OneWay, Source={StaticResource LanguageResources}}" />
+                </TextBlock>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="90*" />
+                        <ColumnDefinition Width="10*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox
+                        x:Name="FFmpegPathTextBox"
+                        Grid.Column="0"
+                        Margin="{StaticResource SmallTopMargin}"
+                        IsEnabled="false"
+                        Text="{Binding Path=FFmpegPath, UpdateSourceTrigger=PropertyChanged}" />
+                    <Button
+                        x:Name="ChooseFfmpegPathButton"
+                        Grid.Column="1"
+                        VerticalAlignment="Bottom"
+                        Click="openFileDialogForFfmpeg">
+                        Browse
+                    </Button>
+                </Grid>
+                <TextBlock
+                    Margin="{StaticResource SmallTopMargin}"
+                    Foreground="Red"
+                    Style="{StaticResource BodyTextStyle}"
+                    Visibility="{Binding Path=IsInvalidFfmpeg, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+                    <Run Text="{Binding Path=FFmpegPathWarning, Mode=OneWay, Source={StaticResource LanguageResources}}" />
+                    <Hyperlink NavigateUri="https://stackoverflow.com/questions/30551372/binding-run-inside-textblock-results-in-exception-in-wpf">
+                        <TextBlock Text="{Binding Path=Instruction, Source={StaticResource LanguageResources}}" />
+                    </Hyperlink>
+                    <Run Text="{Binding Path=Period, Mode=OneWay, Source={StaticResource LanguageResources}}" />
+                </TextBlock>
                 <TextBlock
                     Margin="{StaticResource SmallTopMargin}"
                     Style="{StaticResource SubtitleTextStyle}"

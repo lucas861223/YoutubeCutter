@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using System.ComponentModel;
 
 using Microsoft.Extensions.Options;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
@@ -25,8 +26,39 @@ namespace YoutubeCutter.ViewModels
         private string _versionDescription;
         private ICommand _setThemeCommand;
         private ICommand _privacyStatementCommand;
+        public bool IsInvalidYoutubeDL { get; set; }
+        public bool IsInvalidFfmpeg { get; set; }
         public int Language { get; set; }
         public string Test { get; set; }
+        private string _youtubeDLPath;
+        public string YoutubeDLPath
+        {
+            get { return _youtubeDLPath; }
+            set
+            {
+                _youtubeDLPath = value;
+                IsInvalidYoutubeDL = !_youtubeDLPath.EndsWith("\\youtube-dl.exe");
+                OnPropertyChanged("YoutubeDLPath");
+                OnPropertyChanged("IsInvalidYoutubeDL");
+            }
+        }
+        private string _ffmpegPath;
+        public string FFmpegPath
+        {
+            get { return _ffmpegPath; }
+            set
+            {
+                if (value == null)
+                {
+                    value = "";
+                }
+                _ffmpegPath = value;
+                IsInvalidFfmpeg = !_ffmpegPath.EndsWith("\\ffmpeg.exe");
+                OnPropertyChanged("FFmpegPath");
+                OnPropertyChanged("IsInvalidFfmpeg");
+            }
+        }
+        public int FontSize { get; set; }
 
         public AppTheme Theme
         {
@@ -56,7 +88,10 @@ namespace YoutubeCutter.ViewModels
             VersionDescription = $"{Properties.Resources.AppDisplayName} - {_applicationInfoService.GetVersion()}";
             Theme = _themeSelectorService.GetCurrentTheme();
             Language = (int)(Languages)App.Current.Properties["Language"];
-            //Test = AppConfig.DEFAULT_SETTING_PATH;
+            YoutubeDLPath = (string)App.Current.Properties["YoutubedlPath"];
+            System.Collections.IDictionary x = App.Current.Properties;
+            FFmpegPath = (string)App.Current.Properties["FfmpegPath"];
+            FontSize = (int)App.Current.Properties["FontSize"];
         }
 
         public void OnNavigatedFrom()

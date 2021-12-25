@@ -14,7 +14,7 @@
 
         public string YoutubedlPath { get; set; }
 
-        public string FfmepgPath { get; set; }
+        public string FfmpegPath { get; set; }
 
         public Languages Language { get; set; }
 
@@ -22,9 +22,9 @@
         {
             AppConfig newConfig = new AppConfig();
             newConfig.FontSize = 12;
-            newConfig.YoutubedlPath = "";
+            newConfig.YoutubedlPath = "Location of youtube-dl.exe";
             newConfig.Language = Languages.English;
-            newConfig.FfmepgPath = "";
+            newConfig.FfmpegPath = "Location of ffmpeg.exe";
             return newConfig;
         }
 
@@ -34,7 +34,7 @@
             appConfig.FontSize = (int)App.Current.Properties["FontSize"];
             appConfig.YoutubedlPath = (string)App.Current.Properties["YoutubedlPath"];
             appConfig.Language = (Languages)App.Current.Properties["Language"];
-            appConfig.FfmepgPath = (string)App.Current.Properties["FfmepgPath"];
+            appConfig.FfmpegPath = (string)App.Current.Properties["FfmpegPath"];
             return appConfig;
         }
         public void ApplyAppConfig()
@@ -63,13 +63,13 @@
             {
                 App.Current.Properties["Language"] = this.Language;
             }
-            if (!App.Current.Properties.Contains("FfmepgPath"))
+            if (!App.Current.Properties.Contains("FfmpegPath"))
             {
-                App.Current.Properties.Add("FfmepgPath", this.FfmepgPath);
+                App.Current.Properties.Add("FfmpegPath", this.FfmpegPath);
             }
             else
             {
-                App.Current.Properties["FfmepgPath"] = this.FfmepgPath;
+                App.Current.Properties["FfmpegPath"] = this.FfmpegPath;
             }
 
         }

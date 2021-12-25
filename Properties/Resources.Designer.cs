@@ -88,11 +88,38 @@ namespace YoutubeCutter.Properties {
         }
         
         /// <summary>
+        ///   查詢類似 *You must have ffmpeg.exe for this program to work. 的當地語系化字串。
+        /// </summary>
+        public static string FFmpegPathWarning {
+            get {
+                return ResourceManager.GetString("FFmpegPathWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 instructions 的當地語系化字串。
+        /// </summary>
+        public static string Instruction {
+            get {
+                return ResourceManager.GetString("Instruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Main Page 的當地語系化字串。
         /// </summary>
         public static string MainPageTitle {
             get {
                 return ResourceManager.GetString("MainPageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 . 的當地語系化字串。
+        /// </summary>
+        public static string Period {
+            get {
+                return ResourceManager.GetString("Period", resourceCulture);
             }
         }
         
@@ -124,7 +151,7 @@ namespace YoutubeCutter.Properties {
         }
         
         /// <summary>
-        ///   查詢類似 吃大便 的當地語系化字串。
+        ///   查詢類似 Language 的當地語系化字串。
         /// </summary>
         public static string SettingsPageLanguage {
             get {
@@ -228,6 +255,15 @@ namespace YoutubeCutter.Properties {
         public static string ShellSettingsPage {
             get {
                 return ResourceManager.GetString("ShellSettingsPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 *You must have youtube-dl.exe for this program to work.  的當地語系化字串。
+        /// </summary>
+        public static string YoutubeDLPathWarning {
+            get {
+                return ResourceManager.GetString("YoutubeDLPathWarning", resourceCulture);
             }
         }
     }

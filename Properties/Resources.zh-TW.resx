@@ -126,8 +126,17 @@
   <data name="DownloadsPageTitle" xml:space="preserve">
     <value>Downloads</value>
   </data>
+  <data name="FFmpegPathWarning" xml:space="preserve">
+    <value>*這個程式需要ffmpeg.exe才能運行，</value>
+  </data>
+  <data name="Instruction" xml:space="preserve">
+    <value>教學</value>
+  </data>
   <data name="MainPageTitle" xml:space="preserve">
     <value>Main Page</value>
+  </data>
+  <data name="Period" xml:space="preserve">
+    <value>。</value>
   </data>
   <data name="SettingPageFontSize" xml:space="preserve">
     <value>Font Size</value>
@@ -173,5 +182,8 @@
   </data>
   <data name="ShellSettingsPage" xml:space="preserve">
     <value>Settings</value>
+  </data>
+  <data name="YoutubeDLPathWarning" xml:space="preserve">
+    <value>*這個程式需要youtube-dl.exe才能運行，</value>
   </data>
 </root>
