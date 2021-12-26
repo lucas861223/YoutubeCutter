@@ -168,6 +168,9 @@
   <data name="SettingsPageYoutube" xml:space="preserve">
     <value>Youtube Login (Skips ads on YouTube Premium)</value>
   </data>
+  <data name="ShellAddNewDownload" xml:space="preserve">
+    <value>Add a download</value>
+  </data>
   <data name="ShellDownloadsPage" xml:space="preserve">
     <value>Downloads</value>
   </data>

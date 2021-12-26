@@ -26,6 +26,7 @@ namespace YoutubeCutter.ViewModels
         private string _versionDescription;
         private ICommand _setThemeCommand;
         private ICommand _privacyStatementCommand;
+        private AppConfig _newConfig;
         public bool IsInvalidYoutubeDL { get; set; }
         public bool IsInvalidFfmpeg { get; set; }
         public int Language { get; set; }
@@ -38,6 +39,7 @@ namespace YoutubeCutter.ViewModels
             {
                 _youtubeDLPath = value;
                 IsInvalidYoutubeDL = !_youtubeDLPath.EndsWith("\\youtube-dl.exe");
+                _newConfig.YoutubedlPath = _youtubeDLPath;
                 OnPropertyChanged("YoutubeDLPath");
                 OnPropertyChanged("IsInvalidYoutubeDL");
             }
@@ -81,6 +83,7 @@ namespace YoutubeCutter.ViewModels
             _themeSelectorService = themeSelectorService;
             _systemService = systemService;
             _applicationInfoService = applicationInfoService;
+            _newConfig = AppConfig.getAppConfigFromApp();
         }
 
         public void OnNavigatedTo(object parameter)
@@ -96,6 +99,8 @@ namespace YoutubeCutter.ViewModels
 
         public void OnNavigatedFrom()
         {
+            _newConfig.ApplyAppConfig();
+            SaveSettingsWithAppConfig(_newConfig);
         }
 
         private void OnSetTheme(string themeName)
@@ -123,9 +128,13 @@ namespace YoutubeCutter.ViewModels
         }
         public static void SaveSettings()
         {
-            File.WriteAllText(AppConfig.DEFAULT_SETTING_PATH, JsonSerializer.Serialize(AppConfig.getAppConfigFromApp()));
+            SaveSettingsWithAppConfig(AppConfig.getAppConfigFromApp());
         }
 
+        private static void SaveSettingsWithAppConfig(AppConfig appConfig)
+        {
+            File.WriteAllText(AppConfig.DEFAULT_SETTING_PATH, JsonSerializer.Serialize(appConfig));
+        }
         private static AppConfig LoadSettingFromFile()
         {
             return JsonSerializer.Deserialize<AppConfig>(File.ReadAllText(AppConfig.DEFAULT_SETTING_PATH));

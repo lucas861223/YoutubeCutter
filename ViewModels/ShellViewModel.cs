@@ -41,6 +41,7 @@ namespace YoutubeCutter.ViewModels
         {
             new HamburgerMenuGlyphItem() { Label = Resources.ShellMainPage, Glyph = "\uE8A5", TargetPageType = typeof(MainViewModel) },
             new HamburgerMenuGlyphItem() { Label = Resources.ShellDownloadsPage, Glyph = "\uE8A5", TargetPageType = typeof(DownloadsViewModel) },
+            new HamburgerMenuGlyphItem() { Label = Resources.ShellAddNewDownload, Glyph = "\uE8A5", TargetPageType = typeof(VideoViewModel) },
         };
 
         public ObservableCollection<HamburgerMenuItem> OptionMenuItems { get; } = new ObservableCollection<HamburgerMenuItem>()

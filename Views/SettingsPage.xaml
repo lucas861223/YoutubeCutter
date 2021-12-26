@@ -36,7 +36,7 @@
                 <TextBlock
                     Margin="{StaticResource SmallTopMargin}"
                     Style="{StaticResource SubtitleTextStyle}"
-                    Text="youtube dl path" />
+                    Text="{Binding Path=YoutubeDLPath, UpdateSourceTrigger=PropertyChanged}" />
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="90*" />

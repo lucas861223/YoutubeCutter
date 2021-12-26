@@ -22,6 +22,7 @@ namespace YoutubeCutter.Services
             Configure<MainViewModel, MainPage>();
             Configure<DownloadsViewModel, DownloadsPage>();
             Configure<SettingsViewModel, SettingsPage>();
+            Configure<VideoViewModel, VideoPage>();
         }
 
         public Type GetPageType(string key)

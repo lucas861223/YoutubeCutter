@@ -6,20 +6,36 @@
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <CefSharpAnyCpuSupport>true</CefSharpAnyCpuSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile></DocumentationFile>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="ViewModels\Window1.xaml.cs" />
+  </ItemGroup>
   <ItemGroup>
     <None Remove="YoutubeCutter.xml" />
   </ItemGroup>
   <ItemGroup>
+    <Page Remove="ViewModels\Window1.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CefSharp.WinForms" Version="96.0.180" />
+    <PackageReference Include="CefSharp.Wpf" Version="96.0.180" />
+    <PackageReference Include="CefSharp.Wpf.NETCore" Version="96.0.180" />
     <PackageReference Include="MahApps.Metro" Version="2.4.6" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.16" />
     <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.0.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\YoutubeCutter.Core\YoutubeCutter.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="CefSharp.Wpf">
+      <HintPath>..\..\..\..\.nuget\packages\cefsharp.wpf\96.0.180\lib\net462\CefSharp.Wpf.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">

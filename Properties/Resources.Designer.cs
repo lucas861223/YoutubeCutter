@@ -214,6 +214,15 @@ namespace YoutubeCutter.Properties {
         }
         
         /// <summary>
+        ///   查詢類似 Add a download 的當地語系化字串。
+        /// </summary>
+        public static string ShellAddNewDownload {
+            get {
+                return ResourceManager.GetString("ShellAddNewDownload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Downloads 的當地語系化字串。
         /// </summary>
         public static string ShellDownloadsPage {

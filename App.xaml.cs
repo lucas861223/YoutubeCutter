@@ -87,6 +87,9 @@ namespace YoutubeCutter
             services.AddTransient<SettingsViewModel>();
             services.AddTransient<SettingsPage>();
 
+            services.AddTransient<VideoViewModel>();
+            services.AddTransient<VideoPage>();
+
             // Configuration
             services.Configure<AppConfig>(context.Configuration.GetSection(nameof(AppConfig)));
         }
