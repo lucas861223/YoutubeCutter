@@ -7,6 +7,8 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using YoutubeCutter.Contracts.ViewModels;
 using YoutubeCutter.Helpers;
+using YoutubeCutter.Models;
+using System.Windows.Navigation;
 
 namespace YoutubeCutter.ViewModels
 {
@@ -20,6 +22,9 @@ namespace YoutubeCutter.ViewModels
         public bool IsAvaliableVideo { get; set; }
         //thumbnail https://img.youtube.com/vi/<ID>/0.jpg
         public string YoutubeEmbedVideoURL { get; set; }
+
+        private int _identifier;
+        private VideoPageInfo.NotifyChangesFunction _notifyChanges;
         public string YoutubeVideoURL
         {
             get
@@ -32,7 +37,7 @@ namespace YoutubeCutter.ViewModels
                 Match match = _youtubeRegex.Match(value);
                 IsAvaliableVideo = false;
                 if (match.Success)
-                {
+                {   
                     _videoInformation = _webClient.GetVideoInfo(match.Groups[1].ToString());
                     if (_videoInformation[0] != "")
                     {
@@ -40,6 +45,7 @@ namespace YoutubeCutter.ViewModels
                         _youtubeID = match.Groups[1].ToString();
                         _youtubeURL = "https://www.youtube.com/watch?v=" + _youtubeID;
                         YoutubeEmbedVideoURL = "https://www.youtube.com/embed/" + _youtubeID;
+                        _notifyChanges(_identifier, _videoInformation[0],_videoInformation[1], _videoInformation[2]);
                     }
                 }
                 OnPropertyChanged("YoutubeEmbedVideoURL");
@@ -57,6 +63,13 @@ namespace YoutubeCutter.ViewModels
             //tood to think
             IsAvaliableVideo = false;
             _youtubeURL = "Youtube URL";
+            if (parameter != null)
+            {
+                VideoPageInfo pageInfo = parameter as VideoPageInfo;
+                _identifier = pageInfo.Identifier;
+                _notifyChanges = pageInfo.function;
+            }
+            
         }
     }
 }

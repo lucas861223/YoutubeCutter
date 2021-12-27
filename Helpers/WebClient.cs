@@ -34,7 +34,11 @@ namespace YoutubeCutter.Helpers
             Dictionary<string, object> videoInformation = RequestAndGetJson(_noembed + videoID);
             if (videoInformation.ContainsKey("title"))
             {
-                return new string[] { videoInformation["title"] as string, videoInformation["author_name"] as string, videoInformation["thumbnail_url"] as string };
+                string[] information = new string[3];
+                information[0] = videoInformation["title"].ToString();
+                information[1] = videoInformation["author_name"].ToString();
+                information[2] = videoInformation["thumbnail_url"].ToString();
+                return information;
             }
             //bad video
             return new string[] { "", "", "" };
