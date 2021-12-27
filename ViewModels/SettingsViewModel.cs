@@ -9,6 +9,7 @@ using Microsoft.Toolkit.Mvvm.Input;
 using YoutubeCutter.Contracts.Services;
 using YoutubeCutter.Contracts.ViewModels;
 using YoutubeCutter.Models;
+using YoutubeCutter.Helpers;
 
 using System.IO;
 using System.Text.Json;
@@ -83,7 +84,7 @@ namespace YoutubeCutter.ViewModels
             _themeSelectorService = themeSelectorService;
             _systemService = systemService;
             _applicationInfoService = applicationInfoService;
-            _newConfig = AppConfig.getAppConfigFromApp();
+            _newConfig = ConfigManager.getAppConfigFromApp();
         }
 
         public void OnNavigatedTo(object parameter)
@@ -99,8 +100,8 @@ namespace YoutubeCutter.ViewModels
 
         public void OnNavigatedFrom()
         {
-            _newConfig.ApplyAppConfig();
-            SaveSettingsWithAppConfig(_newConfig);
+            ConfigManager.ApplyAppConfig(_newConfig);
+            ConfigManager.SaveSettingsWithAppConfig(_newConfig);
         }
 
         private void OnSetTheme(string themeName)
@@ -112,32 +113,8 @@ namespace YoutubeCutter.ViewModels
         private void OnPrivacyStatement()
             => _systemService.OpenInWebBrowser((string)App.Current.Properties["PrivacyStatement"]);
 
-        public static void InitializeSettings()
-        {
-            string settingFilePath = AppConfig.DEFAULT_SETTING_PATH;
-            AppConfig appConfig;
-            if (!File.Exists(settingFilePath))
-            {
-                appConfig = AppConfig.getDefaultSetting();
-            }
-            else
-            {
-                appConfig = LoadSettingFromFile();
-            }
-            appConfig.ApplyAppConfig();
-        }
-        public static void SaveSettings()
-        {
-            SaveSettingsWithAppConfig(AppConfig.getAppConfigFromApp());
-        }
 
-        private static void SaveSettingsWithAppConfig(AppConfig appConfig)
-        {
-            File.WriteAllText(AppConfig.DEFAULT_SETTING_PATH, JsonSerializer.Serialize(appConfig));
-        }
-        private static AppConfig LoadSettingFromFile()
-        {
-            return JsonSerializer.Deserialize<AppConfig>(File.ReadAllText(AppConfig.DEFAULT_SETTING_PATH));
-        }
+
+
     }
 }

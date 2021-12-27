@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using YoutubeCutter.Contracts.ViewModels;
+using YoutubeCutter.Helpers;
 
 namespace YoutubeCutter.ViewModels
 {
@@ -14,6 +15,9 @@ namespace YoutubeCutter.ViewModels
         private Regex _youtubeRegex = new Regex(@"^(?:https?\:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v\=))([^\?\&\#]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private string _youtubeID;
         private string _youtubeURL;
+        private WebClient _webClient = WebClient.Instance;
+        private string[] _videoInformation;
+        public bool IsAvaliableVideo { get; set; }
         //thumbnail https://img.youtube.com/vi/<ID>/0.jpg
         public string YoutubeEmbedVideoURL { get; set; }
         public string YoutubeVideoURL
@@ -26,34 +30,23 @@ namespace YoutubeCutter.ViewModels
             {
                 _youtubeURL = value.Trim();
                 Match match = _youtubeRegex.Match(value);
+                IsAvaliableVideo = false;
                 if (match.Success)
                 {
-                    //todo add get videoname via youtube api
-                    _youtubeURL = "https://www.youtube.com/watch?v=" + match.Groups[1];
-                    GetYoutubeVideoInformation(_youtubeURL);
-                    _youtubeID = match.Groups[1].ToString();
-                    YoutubeEmbedVideoURL = "https://www.youtube.com/embed/" + match.Groups[1];
+                    _videoInformation = _webClient.GetVideoInfo(match.Groups[1].ToString());
+                    if (_videoInformation[0] != "")
+                    {
+                        IsAvaliableVideo = true;
+                        _youtubeID = match.Groups[1].ToString();
+                        _youtubeURL = "https://www.youtube.com/watch?v=" + _youtubeID;
+                        YoutubeEmbedVideoURL = "https://www.youtube.com/embed/" + _youtubeID;
+                    }
                 }
                 OnPropertyChanged("YoutubeEmbedVideoURL");
+                OnPropertyChanged("IsAvaliableVideo");
             }
         }
 
-        public string GetYoutubeVideoInformation(string ID)
-        {
-            Process cmd = new Process();
-            cmd.StartInfo.FileName = App.Current.Properties["YoutubedlPath"] as string;
-            cmd.StartInfo.Arguments = _youtubeURL + " -e";
-            cmd.StartInfo.RedirectStandardInput = true;
-            cmd.StartInfo.RedirectStandardOutput = true;
-            cmd.StartInfo.CreateNoWindow = true;
-            cmd.StartInfo.UseShellExecute = false;
-            cmd.Start();
-            cmd.StandardInput.Flush();
-            cmd.StandardInput.Close();
-            cmd.WaitForExit();
-            _youtubeURL = cmd.StandardOutput.ReadToEnd();
-            return "";
-        }
         public void OnNavigatedFrom()
         {
             //add download to manager
@@ -62,6 +55,8 @@ namespace YoutubeCutter.ViewModels
         public void OnNavigatedTo(object parameter)
         {
             //tood to think
+            IsAvaliableVideo = false;
+            _youtubeURL = "Youtube URL";
         }
     }
 }

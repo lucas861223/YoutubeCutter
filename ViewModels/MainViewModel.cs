@@ -1,6 +1,6 @@
 ﻿using System;
 using YoutubeCutter.Services;
-using YoutubeCutter.Models;
+using YoutubeCutter.Helpers;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 
@@ -10,7 +10,7 @@ namespace YoutubeCutter.ViewModels
     {
         public MainViewModel()
         {
-            SettingsViewModel.InitializeSettings();
+            ConfigManager.InitializeConfig();
         }
     }
 }

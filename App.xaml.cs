@@ -15,6 +15,7 @@ using YoutubeCutter.Models;
 using YoutubeCutter.Services;
 using YoutubeCutter.ViewModels;
 using YoutubeCutter.Views;
+using YoutubeCutter.Helpers;
 
 using System.Globalization;
 
@@ -96,7 +97,7 @@ namespace YoutubeCutter
 
         private async void OnExit(object sender, ExitEventArgs e)
         {
-            SettingsViewModel.SaveSettings();
+            ConfigManager.SaveSettings();
             await _host.StopAsync();
             _host.Dispose();
             _host = null;
