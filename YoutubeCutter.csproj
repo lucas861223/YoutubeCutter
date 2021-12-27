@@ -13,6 +13,7 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Converters\StringToBooleanConverter.cs" />
     <Compile Remove="ViewModels\Window1.xaml.cs" />
   </ItemGroup>
   <ItemGroup>

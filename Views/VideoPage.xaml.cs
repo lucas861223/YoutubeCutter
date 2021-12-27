@@ -26,16 +26,28 @@ namespace YoutubeCutter.Views
             InitializeComponent();
             DataContext = videoViewModel;
         }
-
+        private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            TextBox textbox = sender as TextBox;
+            if (textbox.Text == "Youtube URL")
+            {
+                textbox.Text = "";
+            }
+        }
         private void YoutubeDLPathOnKeyDownHandler(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return)
             {
                 TextBox textbox = sender as TextBox;
                 textbox.Text = textbox.Text.Trim();
+                if (textbox.Text == "")
+                {
+                    textbox.Text = "Youtube URL";
+                }
                 ((TextBox)sender).GetBindingExpression(TextBox.TextProperty).UpdateSource();
                 Keyboard.ClearFocus();
             }
         }
+
     }
 }

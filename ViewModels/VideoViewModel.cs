@@ -9,6 +9,8 @@ using YoutubeCutter.Contracts.ViewModels;
 using YoutubeCutter.Helpers;
 using YoutubeCutter.Models;
 using System.Windows.Navigation;
+using System.Windows.Input;
+using System.Windows.Controls;
 
 namespace YoutubeCutter.ViewModels
 {
@@ -34,21 +36,25 @@ namespace YoutubeCutter.ViewModels
             set
             {
                 _youtubeURL = value.Trim();
-                Match match = _youtubeRegex.Match(value);
                 IsAvaliableVideo = false;
-                if (match.Success)
-                {   
-                    _videoInformation = _webClient.GetVideoInfo(match.Groups[1].ToString());
-                    if (_videoInformation[0] != "")
+                if (_youtubeURL == "" || _youtubeURL == "Youtube URL")
+                {
+                    _youtubeURL = "Youtube URL";
+                    _notifyChanges(_identifier, "", "", "");
+                }
+                else
+                {
+                    Match match = _youtubeRegex.Match(_youtubeURL);
+                    if (match.Success)
                     {
                         IsAvaliableVideo = true;
                         _youtubeID = match.Groups[1].ToString();
                         _youtubeURL = "https://www.youtube.com/watch?v=" + _youtubeID;
                         YoutubeEmbedVideoURL = "https://www.youtube.com/embed/" + _youtubeID;
-                        _notifyChanges(_identifier, _videoInformation[0],_videoInformation[1], _videoInformation[2]);
+                        GetVideoInformation();
                     }
+                    OnPropertyChanged("YoutubeEmbedVideoURL");
                 }
-                OnPropertyChanged("YoutubeEmbedVideoURL");
                 OnPropertyChanged("IsAvaliableVideo");
             }
         }
@@ -69,7 +75,15 @@ namespace YoutubeCutter.ViewModels
                 _identifier = pageInfo.Identifier;
                 _notifyChanges = pageInfo.function;
             }
-            
+
+        }
+        public async void GetVideoInformation()
+        {
+            await Task.Run(() =>
+            {
+                _videoInformation = _webClient.GetVideoInfo(_youtubeID);
+            });
+            _notifyChanges(_identifier, _videoInformation[0], _videoInformation[1], _videoInformation[2]);
         }
     }
 }

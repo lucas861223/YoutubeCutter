@@ -13,6 +13,7 @@ using YoutubeCutter.Contracts.Services;
 using YoutubeCutter.Properties;
 
 using YoutubeCutter.Models;
+using YoutubeCutter.Helpers;
 
 namespace YoutubeCutter.ViewModels
 {
@@ -29,6 +30,7 @@ namespace YoutubeCutter.ViewModels
         private List<int> _identifiersArray = new List<int>();
         private int _alreadyAvaliableIdentifier = 0;
         private int _identifierCount = 0;
+        private WebClient _webClient = WebClient.Instance;
 
         public HamburgerMenuItem SelectedMenuItem
         {
@@ -102,7 +104,8 @@ namespace YoutubeCutter.ViewModels
                 pageInfo.Identifier = _identifiersArray[MenuItems.IndexOf(SelectedMenuItem) - 3];
                 pageInfo.function = NotifyChanges;
                 _navigationService.NavigateTo(targetViewModel.FullName, pageInfo);
-            } else if (targetViewModel == null)
+            }
+            else if (targetViewModel == null)
             {
                 VideoPageInfo pageInfo = new VideoPageInfo();
                 if (_alreadyAvaliableIdentifier != 0)
@@ -114,11 +117,13 @@ namespace YoutubeCutter.ViewModels
                     pageInfo.Identifier = ++_identifierCount;
                     _identifiersArray.Add(_identifierCount);
                     //shellemptydownloadpage
-                    MenuItems.Add(new HamburgerMenuGlyphItem() { Label = Resources.ShellDownloadsPage, Glyph = "\uE8A5", TargetPageType = typeof(VideoViewModel) });
+                    MenuItems.Add(new HamburgerMenuGlyphItem() { Label = Resources.ShellDownloadsPage, ToolTip = "", Glyph = "\uE8A5", TargetPageType = typeof(VideoViewModel) });
+                    SelectedMenuItem = MenuItems[MenuItems.Count - 1];
                 }
                 pageInfo.function = NotifyChanges;
                 _navigationService.NavigateTo(typeof(VideoViewModel).FullName, pageInfo);
-            } else
+            }
+            else
             {
                 _navigationService.NavigateTo(targetViewModel.FullName);
             }
@@ -146,7 +151,14 @@ namespace YoutubeCutter.ViewModels
         {
             int index = _identifiersArray.IndexOf(identifier);
             MenuItems[index + 3].Label = videoName + "\n" + channelName;
-            
+            if (videoName == "")
+            {
+                MenuItems[index + 3].Label = Resources.ShellDownloadsPage;
+            }
+            else
+            {
+                MenuItems[index + 3].Label = videoName + "\n" + channelName;
+            }
         }
 
     }

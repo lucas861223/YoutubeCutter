@@ -18,6 +18,7 @@ using YoutubeCutter.Views;
 using YoutubeCutter.Helpers;
 
 using System.Globalization;
+using System.Windows.Input;
 
 namespace YoutubeCutter
 {

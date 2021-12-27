@@ -24,6 +24,7 @@
             Grid.Row="0"
             VerticalAlignment="Center"
             KeyDown="YoutubeDLPathOnKeyDownHandler"
+            PreviewMouseDown="OnPreviewMouseDown"
             Text="{Binding Path=YoutubeVideoURL, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
             TextAlignment="Center"
             TextWrapping="Wrap" />

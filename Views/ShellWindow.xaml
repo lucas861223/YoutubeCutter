@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:converters="clr-namespace:YoutubeCutter.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -13,6 +14,7 @@
     MinHeight="350"
     Style="{StaticResource CustomMetroWindow}"
     mc:Ignorable="d">
+
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
@@ -37,6 +39,8 @@
         </controls:WindowCommands>
     </controls:MetroWindow.LeftWindowCommands>
     <controls:MetroWindow.Resources>
+        <converters:NullableStringToVisibilityConverter x:Key="NullableStringToVisibilityConverter" />
+        <converters:NullableStringToVisibilityConverterInverse x:Key="NullableStringToVisibilityConverterInverse" />
         <templateSelectors:MenuItemTemplateSelector x:Key="MenuItemTemplateSelector">
             <templateSelectors:MenuItemTemplateSelector.GlyphDataTemplate>
                 <DataTemplate DataType="{x:Type controls:HamburgerMenuGlyphItem}">
@@ -51,13 +55,29 @@
                             VerticalAlignment="Center"
                             FontFamily="Segoe MDL2 Assets"
                             FontSize="16"
-                            Text="{Binding Glyph}"
-                            ToolTip="{Binding Label}" />
+                            Text="{Binding Glyph}" />
+                        <Grid Grid.Column="1" Visibility="{Binding Path=ToolTip, Converter={StaticResource NullableStringToVisibilityConverterInverse}}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="6*" />
+                                <RowDefinition Height="4*" />
+                            </Grid.RowDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                FontSize="16"
+                                Text="{Binding Label}" />
+                            <TextBlock
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                FontSize="16"
+                                Text="{Binding ToolTip}" />
+                        </Grid>
                         <TextBlock
                             Grid.Column="1"
                             VerticalAlignment="Center"
                             FontSize="16"
-                            Text="{Binding Label}" />
+                            Text="{Binding Label}"
+                            Visibility="{Binding Path=ToolTip, Converter={StaticResource NullableStringToVisibilityConverter}}" />
                     </Grid>
                 </DataTemplate>
             </templateSelectors:MenuItemTemplateSelector.GlyphDataTemplate>
