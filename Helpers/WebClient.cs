@@ -7,6 +7,9 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Net;
 using System.IO;
+using System.Collections.Generic;
+
+using YoutubeCutter.Models;
 
 namespace YoutubeCutter.Helpers
 {
@@ -31,19 +34,17 @@ namespace YoutubeCutter.Helpers
             }
         }
 
-        public string[] GetVideoInfo(string videoID)
+        public void GetVideoInfo(VideoInformation information, string videoID)
         {
             Dictionary<string, object> videoInformation = RequestAndGetJson(_noembed + videoID);
             if (videoInformation.ContainsKey("title"))
             {
-                string[] information = new string[3];
-                information[0] = videoInformation["title"].ToString();
-                information[1] = videoInformation["author_name"].ToString();
-                information[2] = videoInformation["thumbnail_url"].ToString();
-                return information;
+                information.VideoTitle = videoInformation["title"].ToString();
+                information.ChannelName = videoInformation["author_name"].ToString();
+                information.VideoThumbnailURL = videoInformation["thumbnail_url"].ToString();
+                information.AuthorURL = videoInformation["author_url"].ToString();
             }
             //bad video
-            return new string[] { "", "", "" };
         }
 
         private Dictionary<string, object> RequestAndGetJson(string url)
@@ -70,6 +71,29 @@ namespace YoutubeCutter.Helpers
                 return data;
             }
             return "404";
+        }
+
+        public void DownloadImage(string url, string filename)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            using (var stream = response.GetResponseStream())
+            {
+                using (var fileStream = File.OpenWrite(filename))
+                {
+                    var bytes = new byte[4096];
+                    var read = 0;
+                    do
+                    {
+                        if (stream == null)
+                        {
+                            continue;
+                        }
+                        read = stream.Read(bytes, 0, bytes.Length);
+                        fileStream.Write(bytes, 0, read);
+                    } while (read != 0);
+                }
+            }
         }
     }
 }

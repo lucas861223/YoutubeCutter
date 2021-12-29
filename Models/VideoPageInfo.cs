@@ -10,7 +10,7 @@ namespace YoutubeCutter.Models
     {
         public int Identifier { get; set; }
 
-        public delegate void NotifyChangesFunction(int identifier, string videoName, string channelname, string thumbnailURL);
+        public delegate void NotifyChangesFunction(int identifier, VideoInformation information);
 
         public NotifyChangesFunction function { get; set; }
 

@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using System.Collections.Generic;
+using System.Windows.Media.Imaging;
 
 using MahApps.Metro.Controls;
 
@@ -57,6 +58,10 @@ namespace YoutubeCutter.ViewModels
             get { return _selectedOptionsMenuItem; }
             set { SetProperty(ref _selectedOptionsMenuItem, value); }
         }
+
+        
+
+        
 
         // TODO WTS: Change the icons and titles for all HamburgerMenuItems here.
         public ObservableCollection<HamburgerMenuItem> MenuItems { get; } = new ObservableCollection<HamburgerMenuItem>()
@@ -161,17 +166,22 @@ namespace YoutubeCutter.ViewModels
 
             GoBackCommand.NotifyCanExecuteChanged();
         }
-        private void NotifyChanges(int identifier, string videoName, string channelName, string thumbnailURL)
+        private void NotifyChanges(int identifier, VideoInformation videoInformation)
         {
             int index = _identifiersArray.IndexOf(identifier);
-            MenuItems[index + 3].Label = videoName + "\n" + channelName;
-            if (videoName == "")
+            VideosHamburgerMenuGlyphItem item = MenuItems[index + 3] as VideosHamburgerMenuGlyphItem;
+            if (videoInformation.VideoTitle != null)
             {
-                MenuItems[index + 3].Label = Resources.ShellDownloadsPage;
+                item.VideoTitle = videoInformation.VideoTitle;
+                item.ChannelName = videoInformation.ChannelName;
+                item.VideoThumbnail = new BitmapImage(new Uri(DownloadManager.DownloadThumbnail(videoInformation.VideoThumbnailURL, videoInformation.VideoID)));
+                item.ChannelThumbnail = new BitmapImage(new Uri(DownloadManager.DownloadThumbnail(videoInformation.ChannelThumbnailURL, videoInformation.ChannelID)));
+                item.ToolTip = videoInformation.VideoTitle + "\n" + videoInformation.ChannelName;
             }
             else
             {
-                MenuItems[index + 3].Label = videoName + "\n" + channelName;
+                item.Label = Resources.ShellDownloadsPage;
+                item.ChannelName = null;
             }
         }
 

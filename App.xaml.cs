@@ -48,7 +48,7 @@ namespace YoutubeCutter
                     })
                     .ConfigureServices(ConfigureServices)
                     .Build();
-
+            DownloadManager.MakeChacheFolder();
             await _host.StartAsync();
         }
 
@@ -96,6 +96,7 @@ namespace YoutubeCutter
 
         private async void OnExit(object sender, ExitEventArgs e)
         {
+            DownloadManager.ClearCacheFolder();
             await _host.StopAsync();
             _host.Dispose();
             _host = null;

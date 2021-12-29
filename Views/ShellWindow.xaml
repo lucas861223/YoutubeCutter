@@ -102,47 +102,52 @@
                                 <ColumnDefinition Width="48" />
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
-                            <TextBlock
-                                Grid.Column="0"
+                            <Image
+                                x:Name="VideoThumbnail"
+                                Grid.Row="1"
+                                Width="24"
+                                Height="24"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                FontFamily="Segoe MDL2 Assets"
-                                FontSize="16"
-                                Text="{Binding Glyph}" />
-                            <Grid Grid.Column="1" Visibility="{Binding Path=ChannelName, Converter={StaticResource NullableStringToVisibilityConverterInverse}}">
+                                ToolTip="{Binding Label}" />
+                            <Grid Grid.Column="1" Visibility="{Binding Path=ChannelNameProperty, Converter={StaticResource NullableStringToVisibilityConverterInverse}}">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="6*" />
                                     <RowDefinition Height="4*" />
                                 </Grid.RowDefinitions>
                                 <TextBlock
-                                    Grid.Column="0"
+                                    Grid.Row="0"
                                     VerticalAlignment="Center"
                                     FontSize="16"
-                                    Text="{Binding VideoTitle}" />
+                                    Text="{Binding VideoTitleProperty}" />
                                 <TextBlock
-                                    Grid.Column="1"
+                                    Grid.Row="1"
                                     VerticalAlignment="Center"
                                     FontSize="16"
-                                    Text="{Binding ChannelName}" />
+                                    Text="{Binding ChannelNameProperty}" />
                             </Grid>
                             <TextBlock
                                 Grid.Column="1"
                                 VerticalAlignment="Center"
                                 FontSize="16"
                                 Text="{Binding Label}"
-                                Visibility="{Binding Path=ChannelName, Converter={StaticResource NullableStringToVisibilityConverter}}" />
+                                Visibility="{Binding Path=ChannelNameProperty, Converter={StaticResource NullableStringToVisibilityConverter}}" />
                         </Grid>
-                        <Ellipse
-                            Grid.Column="1"
+                        <Image
+                            Grid.Row="1"
                             Width="24"
                             Height="24"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
+                            Source="{Binding ChannelThumbnail}"
                             ToolTip="{Binding Label}">
-                            <Ellipse.Fill>
-                                <ImageBrush ImageSource="{Binding ThumbnailURL}" />
-                            </Ellipse.Fill>
-                        </Ellipse>
+                            <Image.Clip>
+                                <EllipseGeometry
+                                    Center="100,100"
+                                    RadiusX="100"
+                                    RadiusY="100" />
+                            </Image.Clip>
+                        </Image>
                     </Grid>
                 </DataTemplate>
             </templateSelectors:MenuItemTemplateSelector.VideoDataTemplate>
