@@ -35,9 +35,9 @@ namespace YoutubeCutter.Helpers
             {
                 Directory.Delete(_cacheLocation, true);
             }
-            catch (DirectoryNotFoundException e)
+            catch (DirectoryNotFoundException)
             {
-
+                
             }
 
         }

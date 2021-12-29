@@ -18,18 +18,23 @@ namespace YoutubeCutter.Converters
             {
                 if (parameter != null)
                 {
+                    var bitmap = Resources.YoutubeChannelDefaultIcon;
                     if (parameter as string == "Channel")
                     {
-                        var bitmap = Resources.YoutubeChannelDefaultIcon;
-                        var memoryStream = new MemoryStream();
-                        bitmap.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Bmp);
-                        memoryStream.Position = 0;
-
-                        image.StreamSource = memoryStream;
-                        image.CacheOption = BitmapCacheOption.OnLoad;
+                        bitmap = Resources.YoutubeChannelDefaultIcon;
                     }
+                    else if (parameter as string == "Video")
+                    {
+                        bitmap = Resources.YoutubeVideoDefaultIcon;
+                    }
+                    var memoryStream = new MemoryStream();
+                    bitmap.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Bmp);
+                    memoryStream.Position = 0;
+
+                    image.StreamSource = memoryStream;
+                    image.CacheOption = BitmapCacheOption.OnLoad;
                 }
-            } 
+            }
             else
             {
                 image.UriSource = new Uri(value as string);
