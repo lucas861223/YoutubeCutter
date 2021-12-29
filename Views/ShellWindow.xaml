@@ -2,8 +2,10 @@
     x:Class="YoutubeCutter.Views.ShellWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:VM="clr-namespace:YoutubeCutter.ViewModels"
     xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:converters="clr-namespace:YoutubeCutter.Converters"
+    xmlns:customControls="clr-namespace:YoutubeCutter.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -39,6 +41,7 @@
         </controls:WindowCommands>
     </controls:MetroWindow.LeftWindowCommands>
     <controls:MetroWindow.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <converters:NullableStringToVisibilityConverter x:Key="NullableStringToVisibilityConverter" />
         <converters:NullableStringToVisibilityConverterInverse x:Key="NullableStringToVisibilityConverterInverse" />
         <templateSelectors:MenuItemTemplateSelector x:Key="MenuItemTemplateSelector">
@@ -55,32 +58,94 @@
                             VerticalAlignment="Center"
                             FontFamily="Segoe MDL2 Assets"
                             FontSize="16"
-                            Text="{Binding Glyph}" />
-                        <Grid Grid.Column="1" Visibility="{Binding Path=ToolTip, Converter={StaticResource NullableStringToVisibilityConverterInverse}}">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="6*" />
-                                <RowDefinition Height="4*" />
-                            </Grid.RowDefinitions>
-                            <TextBlock
-                                Grid.Column="0"
-                                VerticalAlignment="Center"
-                                FontSize="16"
-                                Text="{Binding Label}" />
-                            <TextBlock
-                                Grid.Column="1"
-                                VerticalAlignment="Center"
-                                FontSize="16"
-                                Text="{Binding ToolTip}" />
-                        </Grid>
+                            Text="{Binding Glyph}"
+                            ToolTip="{Binding Label}" />
                         <TextBlock
                             Grid.Column="1"
                             VerticalAlignment="Center"
                             FontSize="16"
-                            Text="{Binding Label}"
-                            Visibility="{Binding Path=ToolTip, Converter={StaticResource NullableStringToVisibilityConverter}}" />
+                            Text="{Binding Label}" />
                     </Grid>
                 </DataTemplate>
             </templateSelectors:MenuItemTemplateSelector.GlyphDataTemplate>
+            <templateSelectors:MenuItemTemplateSelector.VideoDataTemplate>
+                <DataTemplate DataType="{x:Type customControls:VideosHamburgerMenuGlyphItem}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Name="PaneOpenRow">
+                                <RowDefinition.Style>
+                                    <Style TargetType="{x:Type RowDefinition}">
+                                        <Setter Property="Height" Value="0" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding DataContext.IsPaneOpen, RelativeSource={RelativeSource AncestorType=controls:MetroWindow}}" Value="True">
+                                                <Setter Property="Height" Value="96" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </RowDefinition.Style>
+                            </RowDefinition>
+                            <RowDefinition Name="PaneClosedRow">
+                                <RowDefinition.Style>
+                                    <Style TargetType="{x:Type RowDefinition}">
+                                        <Setter Property="Height" Value="0" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding DataContext.IsPaneOpen, RelativeSource={RelativeSource AncestorType=controls:MetroWindow}}" Value="False">
+                                                <Setter Property="Height" Value="48" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </RowDefinition.Style>
+                            </RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="48" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontFamily="Segoe MDL2 Assets"
+                                FontSize="16"
+                                Text="{Binding Glyph}" />
+                            <Grid Grid.Column="1" Visibility="{Binding Path=ChannelName, Converter={StaticResource NullableStringToVisibilityConverterInverse}}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="6*" />
+                                    <RowDefinition Height="4*" />
+                                </Grid.RowDefinitions>
+                                <TextBlock
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    FontSize="16"
+                                    Text="{Binding VideoTitle}" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    VerticalAlignment="Center"
+                                    FontSize="16"
+                                    Text="{Binding ChannelName}" />
+                            </Grid>
+                            <TextBlock
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                FontSize="16"
+                                Text="{Binding Label}"
+                                Visibility="{Binding Path=ChannelName, Converter={StaticResource NullableStringToVisibilityConverter}}" />
+                        </Grid>
+                        <Ellipse
+                            Grid.Column="1"
+                            Width="24"
+                            Height="24"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            ToolTip="{Binding Label}">
+                            <Ellipse.Fill>
+                                <ImageBrush ImageSource="{Binding ThumbnailURL}" />
+                            </Ellipse.Fill>
+                        </Ellipse>
+                    </Grid>
+                </DataTemplate>
+            </templateSelectors:MenuItemTemplateSelector.VideoDataTemplate>
             <templateSelectors:MenuItemTemplateSelector.ImageDataTemplate>
                 <DataTemplate DataType="{x:Type controls:HamburgerMenuImageItem}">
                     <Grid Height="48">
@@ -114,7 +179,7 @@
             x:Name="hamburgerMenu"
             DisplayMode="CompactInline"
             HamburgerButtonName="{x:Static properties:Resources.ShellHamburgerButtonName}"
-            IsPaneOpen="False"
+            IsPaneOpen="{Binding Path=IsPaneOpen, Mode=OneWayToSource}"
             ItemCommand="{Binding MenuItemInvokedCommand}"
             ItemTemplateSelector="{StaticResource MenuItemTemplateSelector}"
             ItemsSource="{Binding MenuItems}"

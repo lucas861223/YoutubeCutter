@@ -10,7 +10,6 @@ namespace YoutubeCutter.ViewModels
     {
         public MainViewModel()
         {
-            ConfigManager.InitializeConfig();
         }
     }
 }

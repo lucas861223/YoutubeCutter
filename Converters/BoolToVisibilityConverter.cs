@@ -20,7 +20,15 @@ namespace YoutubeCutter.Converters
                 bool? tmp = (bool?)value;
                 bValue = tmp.HasValue ? tmp.Value : false;
             }
-            return (bValue) ? Visibility.Visible : Visibility.Collapsed;
+            if (parameter == null)
+            {
+                return bValue ? Visibility.Visible : Visibility.Collapsed;
+            }
+            else
+            {
+                return !bValue ? Visibility.Visible : Visibility.Collapsed;
+            }
+            
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

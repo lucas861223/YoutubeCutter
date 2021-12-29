@@ -14,6 +14,7 @@ using YoutubeCutter.Properties;
 
 using YoutubeCutter.Models;
 using YoutubeCutter.Helpers;
+using YoutubeCutter.Controls;
 
 namespace YoutubeCutter.ViewModels
 {
@@ -31,6 +32,19 @@ namespace YoutubeCutter.ViewModels
         private int _alreadyAvaliableIdentifier = 0;
         private int _identifierCount = 0;
         private WebClient _webClient = WebClient.Instance;
+        private bool _isPaneOpen;
+        public bool IsPaneOpen
+        {
+            get
+            {
+                return _isPaneOpen;
+            }
+            set
+            {
+                _isPaneOpen = value;
+                OnPropertyChanged("IsPaneOpen");
+            }
+        }
 
         public HamburgerMenuItem SelectedMenuItem
         {
@@ -117,7 +131,7 @@ namespace YoutubeCutter.ViewModels
                     pageInfo.Identifier = ++_identifierCount;
                     _identifiersArray.Add(_identifierCount);
                     //shellemptydownloadpage
-                    MenuItems.Add(new HamburgerMenuGlyphItem() { Label = Resources.ShellDownloadsPage, ToolTip = "", Glyph = "\uE8A5", TargetPageType = typeof(VideoViewModel) });
+                    MenuItems.Add(new VideosHamburgerMenuGlyphItem() { Label = Resources.ShellDownloadsPage, ChannelName = "", Glyph = "\uE8A5", TargetPageType = typeof(VideoViewModel) });
                     SelectedMenuItem = MenuItems[MenuItems.Count - 1];
                 }
                 pageInfo.function = NotifyChanges;

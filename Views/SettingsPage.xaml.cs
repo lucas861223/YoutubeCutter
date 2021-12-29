@@ -20,18 +20,7 @@ namespace YoutubeCutter.Views
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            switch ((Languages) LanguageCombobox.SelectedIndex)
-            {
-                case Languages.English:
-                    CultureResources.ChangeCulture(new CultureInfo("en-US"));
-                    break;
-                case Languages.SimplifiedChinese:
-                    CultureResources.ChangeCulture(new CultureInfo("zh-CN"));
-                    break;
-                case Languages.TraditionalChinese:
-                    CultureResources.ChangeCulture(new CultureInfo("zh-TW"));
-                    break;
-            }
+            ((SettingsViewModel)DataContext).Language = (Languages)LanguageCombobox.SelectedIndex;
             ((ObjectDataProvider)FindResource("LanguageResources")).Refresh();
         }
 

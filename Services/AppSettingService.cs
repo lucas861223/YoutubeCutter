@@ -10,36 +10,33 @@ namespace YoutubeCutter.Services
     {
         public AppSettingService()
         {
-        }         
-
-        int IAppSettingService.GetCurrentFontSize()
-        {
-            throw new NotImplementedException();
         }
 
-        Languages IAppSettingService.GetCurrentLanguage()
+        public void InitializeSettingsWithDefault()
         {
-            throw new NotImplementedException();
-        }
-
-        string IAppSettingService.GetLoggedInYoutubeID()
-        {
-            throw new NotImplementedException();
-        }
-
-        void IAppSettingService.SetFontSize(int size)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IAppSettingService.SetLanguage(Languages language)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IAppSettingService.SetLoggedInYoutubeID(string ID)
-        {
-            throw new NotImplementedException();
+            if (!App.Current.Properties.Contains("FontSize"))
+            {
+                App.Current.Properties.Add("FontSize", 12);
+            } else
+            {
+                App.Current.Properties["FontSize"] = Convert.ToInt32((Int64)App.Current.Properties["Language"]);
+            }
+            if (!App.Current.Properties.Contains("YoutubedlPath"))
+            {
+                App.Current.Properties.Add("YoutubedlPath", "youtube-dl.exe");
+            }
+            if (!App.Current.Properties.Contains("Language"))
+            {
+                App.Current.Properties.Add("Language", Languages.English);
+            }
+            else if (App.Current.Properties["Language"] is Int64)
+            {
+                App.Current.Properties["Language"] = (Languages)Convert.ToInt32((Int64)App.Current.Properties["Language"]);
+            }
+            if (!App.Current.Properties.Contains("FfmpegPath"))
+            {
+                App.Current.Properties.Add("FfmpegPath", "ffmpeg.exe");
+            }
         }
     }
 }

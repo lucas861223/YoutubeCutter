@@ -2,7 +2,6 @@
 {
     public class AppConfig
     {
-        public static string DEFAULT_SETTING_PATH = System.AppDomain.CurrentDomain.BaseDirectory + "settings.json";
         public string ConfigurationsFolder { get; set; }
 
         public string AppPropertiesFileName { get; set; }

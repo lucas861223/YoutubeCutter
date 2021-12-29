@@ -17,6 +17,7 @@
     <Page.Resources>
         <converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" EnumType="models:AppTheme" />
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:LanguagesToIntConverter x:Key="LanguagesToIntConverter" />
     </Page.Resources>
 
     <ScrollViewer>
@@ -152,7 +153,7 @@
                     Height="30"
                     Margin="{StaticResource SmallTopBottomMargin}"
                     HorizontalAlignment="Left"
-                    SelectedIndex="{Binding Language}"
+                    SelectedIndex="{Binding Path=Language, Converter={StaticResource LanguagesToIntConverter}, UpdateSourceTrigger=PropertyChanged}"
                     SelectionChanged="ComboBox_SelectionChanged">
                     <ComboBoxItem Content="English" />
                     <ComboBoxItem Content="中文" />

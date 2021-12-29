@@ -27,10 +27,20 @@ namespace YoutubeCutter.ViewModels
         private string _versionDescription;
         private ICommand _setThemeCommand;
         private ICommand _privacyStatementCommand;
-        private AppConfig _newConfig;
         public bool IsInvalidYoutubeDL { get; set; }
         public bool IsInvalidFfmpeg { get; set; }
-        public int Language { get; set; }
+        private Languages _language;
+        public Languages Language
+        {
+            get { return _language; }
+            set
+            {
+                {
+                    _language = value;
+                    CultureResources.ChangeCulture(_language);
+                }
+            }
+        }
         public string Test { get; set; }
         private string _youtubeDLPath;
         public string YoutubeDLPath
@@ -40,7 +50,7 @@ namespace YoutubeCutter.ViewModels
             {
                 _youtubeDLPath = value;
                 IsInvalidYoutubeDL = !_youtubeDLPath.EndsWith("\\youtube-dl.exe");
-                _newConfig.YoutubedlPath = _youtubeDLPath;
+                App.Current.Properties["YoutubedlPath"] = _youtubeDLPath;
                 OnPropertyChanged("YoutubeDLPath");
                 OnPropertyChanged("IsInvalidYoutubeDL");
             }
@@ -84,24 +94,24 @@ namespace YoutubeCutter.ViewModels
             _themeSelectorService = themeSelectorService;
             _systemService = systemService;
             _applicationInfoService = applicationInfoService;
-            _newConfig = ConfigManager.getAppConfigFromApp();
         }
 
         public void OnNavigatedTo(object parameter)
         {
             VersionDescription = $"{Properties.Resources.AppDisplayName} - {_applicationInfoService.GetVersion()}";
             Theme = _themeSelectorService.GetCurrentTheme();
-            Language = (int)(Languages)App.Current.Properties["Language"];
+            Language = (Languages)App.Current.Properties["Language"];
             YoutubeDLPath = (string)App.Current.Properties["YoutubedlPath"];
-            System.Collections.IDictionary x = App.Current.Properties;
             FFmpegPath = (string)App.Current.Properties["FfmpegPath"];
             FontSize = (int)App.Current.Properties["FontSize"];
         }
 
         public void OnNavigatedFrom()
         {
-            ConfigManager.ApplyAppConfig(_newConfig);
-            ConfigManager.SaveSettingsWithAppConfig(_newConfig);
+            App.Current.Properties["Language"] = Language;
+            App.Current.Properties["YoutubedlPath"] = YoutubeDLPath;
+            App.Current.Properties["FfmpegPath"] = FFmpegPath;
+            App.Current.Properties["FontSize"] = FontSize;
         }
 
         private void OnSetTheme(string themeName)
@@ -112,9 +122,5 @@ namespace YoutubeCutter.ViewModels
 
         private void OnPrivacyStatement()
             => _systemService.OpenInWebBrowser((string)App.Current.Properties["PrivacyStatement"]);
-
-
-
-
     }
 }

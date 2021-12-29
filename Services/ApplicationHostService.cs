@@ -57,7 +57,7 @@ namespace YoutubeCutter.Services
             if (!_isInitialized)
             {
                 _persistAndRestoreService.RestoreData();
-                //_appSettingService.InitializeSettings();
+                _appSettingService.InitializeSettingsWithDefault();
                 // TODO initialize setting
                 _themeSelectorService.InitializeTheme();
                 await Task.CompletedTask;
