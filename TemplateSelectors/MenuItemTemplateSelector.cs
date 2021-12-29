@@ -16,7 +16,7 @@ namespace YoutubeCutter.TemplateSelectors
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            if (item is VideosHamburgerMenuGlyphItem)
+            if (item is VideosHamburgerMenuItem)
             {
                 return VideoDataTemplate;
             }

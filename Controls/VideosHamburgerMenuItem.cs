@@ -10,24 +10,25 @@ using System.Windows;
 
 namespace YoutubeCutter.Controls
 {
-    class VideosHamburgerMenuGlyphItem : HamburgerMenuGlyphItem
+    class VideosHamburgerMenuItem : HamburgerMenuItem
     {
+
         public static readonly DependencyProperty VideoThumbnailProperty =
         DependencyProperty.Register("VideoThumbnailProperty",
-            typeof(BitmapImage),
-            typeof(VideosHamburgerMenuGlyphItem),
+            typeof(string),
+            typeof(VideosHamburgerMenuItem),
             new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.None, (d, e) => { }));
 
-        public BitmapImage VideoThumbnail
+        public string VideoThumbnail
         {
-            get { return (BitmapImage)this.GetValue(VideoThumbnailProperty); }
+            get { return (string)this.GetValue(VideoThumbnailProperty); }
             set { this.SetValue(VideoThumbnailProperty, value); }
         }
 
         public static readonly DependencyProperty VideoTitleProperty =
         DependencyProperty.Register("VideoTitleProperty",
             typeof(string),
-            typeof(VideosHamburgerMenuGlyphItem),
+            typeof(VideosHamburgerMenuItem),
             new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.None, (d, e) => { }));
 
         public string VideoTitle
@@ -39,7 +40,7 @@ namespace YoutubeCutter.Controls
         public static readonly DependencyProperty ChannelNameProperty =
         DependencyProperty.Register("ChannelNameProperty",
             typeof(string),
-            typeof(VideosHamburgerMenuGlyphItem),
+            typeof(VideosHamburgerMenuItem),
             new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.None, (d, e) => { }));
 
         public string ChannelName
@@ -50,12 +51,12 @@ namespace YoutubeCutter.Controls
 
         public static readonly DependencyProperty ChannelThumbnailProperty =
         DependencyProperty.Register("ChannelThumbnailProperty",
-            typeof(BitmapImage),
-            typeof(VideosHamburgerMenuGlyphItem),
+            typeof(string),
+            typeof(VideosHamburgerMenuItem),
             new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.None, (d, e) => { }));
-        public BitmapImage ChannelThumbnail
+        public string ChannelThumbnail
         {
-            get { return (BitmapImage)this.GetValue(ChannelThumbnailProperty); }
+            get { return (string)this.GetValue(ChannelThumbnailProperty); }
             set { this.SetValue(ChannelThumbnailProperty, value); }
         }
     }

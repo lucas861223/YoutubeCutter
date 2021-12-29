@@ -11,12 +11,21 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile></DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
+    <WarningLevel>2</WarningLevel>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="NewFolder\**" />
+    <EmbeddedResource Remove="NewFolder\**" />
+    <None Remove="NewFolder\**" />
+    <Page Remove="NewFolder\**" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Remove="Converters\StringToBooleanConverter.cs" />
     <Compile Remove="ViewModels\Window1.xaml.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Icons\YoutubeChannelDefaultIcon.png" />
+    <None Remove="Icons\YoutubeVideoDefaultIcon.png" />
     <None Remove="YoutubeCutter.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -44,6 +53,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -60,5 +74,14 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Icons\YoutubeChannelDefaultIcon.png" />
+    <Resource Include="Icons\YoutubeVideoDefaultIcon.png" />
   </ItemGroup>
 </Project>

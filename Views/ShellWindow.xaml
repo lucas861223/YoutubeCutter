@@ -41,6 +41,7 @@
         </controls:WindowCommands>
     </controls:MetroWindow.LeftWindowCommands>
     <controls:MetroWindow.Resources>
+        <converters:StringToImageSourceConverter x:Key="StringToImageSourceConverter" />
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <converters:NullableStringToVisibilityConverter x:Key="NullableStringToVisibilityConverter" />
         <converters:NullableStringToVisibilityConverterInverse x:Key="NullableStringToVisibilityConverterInverse" />
@@ -69,7 +70,7 @@
                 </DataTemplate>
             </templateSelectors:MenuItemTemplateSelector.GlyphDataTemplate>
             <templateSelectors:MenuItemTemplateSelector.VideoDataTemplate>
-                <DataTemplate DataType="{x:Type customControls:VideosHamburgerMenuGlyphItem}">
+                <DataTemplate DataType="{x:Type customControls:VideosHamburgerMenuItem}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Name="PaneOpenRow">
@@ -102,14 +103,10 @@
                                 <ColumnDefinition Width="48" />
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
-                            <Image
-                                x:Name="VideoThumbnail"
-                                Grid.Row="1"
-                                Width="24"
-                                Height="24"
-                                HorizontalAlignment="Center"
+                            <TextBlock
                                 VerticalAlignment="Center"
-                                ToolTip="{Binding Label}" />
+                                FontSize="16"
+                                Text="{Binding VideoThumbnailProperty}" />
                             <Grid Grid.Column="1" Visibility="{Binding Path=ChannelNameProperty, Converter={StaticResource NullableStringToVisibilityConverterInverse}}">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="6*" />
@@ -126,28 +123,18 @@
                                     FontSize="16"
                                     Text="{Binding ChannelNameProperty}" />
                             </Grid>
-                            <TextBlock
-                                Grid.Column="1"
-                                VerticalAlignment="Center"
-                                FontSize="16"
-                                Text="{Binding Label}"
-                                Visibility="{Binding Path=ChannelNameProperty, Converter={StaticResource NullableStringToVisibilityConverter}}" />
                         </Grid>
-                        <Image
-                            Grid.Row="1"
-                            Width="24"
-                            Height="24"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Source="{Binding ChannelThumbnail}"
-                            ToolTip="{Binding Label}">
-                            <Image.Clip>
-                                <EllipseGeometry
-                                    Center="100,100"
-                                    RadiusX="100"
-                                    RadiusY="100" />
-                            </Image.Clip>
-                        </Image>
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="48" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Ellipse Stretch="Fill" Stroke="Black">
+                                <Ellipse.Fill>
+                                    <ImageBrush ImageSource="{Binding ChannelThumbnailProperty, Converter={StaticResource StringToImageSourceConverter}, ConverterParameter=Channel}" Stretch="UniformToFill" />
+                                </Ellipse.Fill>
+                            </Ellipse>
+                        </Grid>
                     </Grid>
                 </DataTemplate>
             </templateSelectors:MenuItemTemplateSelector.VideoDataTemplate>

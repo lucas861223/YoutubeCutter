@@ -268,11 +268,31 @@ namespace YoutubeCutter.Properties {
         }
         
         /// <summary>
+        ///   查詢類型 System.Drawing.Bitmap 的當地語系化資源。
+        /// </summary>
+        public static System.Drawing.Bitmap YoutubeChannelDefaultIcon {
+            get {
+                object obj = ResourceManager.GetObject("YoutubeChannelDefaultIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 *You must have youtube-dl.exe for this program to work.  的當地語系化字串。
         /// </summary>
         public static string YoutubeDLPathWarning {
             get {
                 return ResourceManager.GetString("YoutubeDLPathWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類型 System.Drawing.Bitmap 的當地語系化資源。
+        /// </summary>
+        public static System.Drawing.Bitmap YoutubeVideoDefaultIcon {
+            get {
+                object obj = ResourceManager.GetObject("YoutubeVideoDefaultIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

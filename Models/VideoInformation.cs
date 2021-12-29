@@ -15,5 +15,7 @@ namespace YoutubeCutter.Models
         public string ChannelID { set; get; }
         public string VideoThumbnailURL { set; get; }
         public string ChannelThumbnailURL { set; get; }
+        public string VideoThumbnailLocation { set; get; }
+        public string ChannelThumbnailLocation { set; get; }
     }
 }

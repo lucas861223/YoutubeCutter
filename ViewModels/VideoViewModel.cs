@@ -11,14 +11,13 @@ using YoutubeCutter.Models;
 using System.Windows.Navigation;
 using System.Windows.Input;
 using System.Windows.Controls;
-using System.Collections.Generic;
 
 namespace YoutubeCutter.ViewModels
 {
     public class VideoViewModel : ObservableObject, INavigationAware
     {
         private Regex _youtubeRegex = new Regex(@"^(?:https?\:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v\=))([^\?\&\#]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private Regex _channelThumbnailRegex = new Regex(@"channelId[^a-zA-Z0-9-]+(?<channelID>[a-zA-Z0-9-]+).*avatar.*(?<thumbnail>https\:\/\/yt3.ggpht.com/ytc/[^=]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private Regex _channelThumbnailRegex = new Regex(@"channelId[^a-zA-Z0-9-]+(?<channelID>[a-zA-Z0-9-_]+).*avatar[^=]+(?<thumbnail>https\:\/\/yt3.ggpht.com[^=]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private string _youtubeID;
         private string _youtubeURL;
         private WebClient _webClient = WebClient.Instance;
@@ -94,9 +93,11 @@ namespace YoutubeCutter.ViewModels
                     Match match = _channelThumbnailRegex.Match(data);
                     if (match.Success)
                     {
-                        _videoInformation.ChannelThumbnailURL = match.Groups["thumbnail"].ToString();
+                        _videoInformation.ChannelThumbnailURL = match.Groups["thumbnail"].ToString() + "=s48-c-k-c0x00ffffff-no-rj-mo";
                         _videoInformation.ChannelID = match.Groups["channelID"].ToString();
                     }
+                    _videoInformation.VideoThumbnailLocation = DownloadManager.DownloadThumbnail(_videoInformation.VideoThumbnailURL, _videoInformation.VideoID);
+                    _videoInformation.ChannelThumbnailLocation = DownloadManager.DownloadThumbnail(_videoInformation.ChannelThumbnailURL, _videoInformation.ChannelID);
                 }
                 App.Current.Dispatcher.Invoke(() =>
                 {

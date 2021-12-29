@@ -136,7 +136,7 @@ namespace YoutubeCutter.ViewModels
                     pageInfo.Identifier = ++_identifierCount;
                     _identifiersArray.Add(_identifierCount);
                     //shellemptydownloadpage
-                    MenuItems.Add(new VideosHamburgerMenuGlyphItem() { Label = Resources.ShellDownloadsPage, ChannelName = "", Glyph = "\uE8A5", TargetPageType = typeof(VideoViewModel) });
+                    MenuItems.Add(new VideosHamburgerMenuItem() { Label = Resources.ShellDownloadsPage, ChannelName = "", TargetPageType = typeof(VideoViewModel) });
                     SelectedMenuItem = MenuItems[MenuItems.Count - 1];
                 }
                 pageInfo.function = NotifyChanges;
@@ -169,19 +169,21 @@ namespace YoutubeCutter.ViewModels
         private void NotifyChanges(int identifier, VideoInformation videoInformation)
         {
             int index = _identifiersArray.IndexOf(identifier);
-            VideosHamburgerMenuGlyphItem item = MenuItems[index + 3] as VideosHamburgerMenuGlyphItem;
+            VideosHamburgerMenuItem item = MenuItems[index + 3] as VideosHamburgerMenuItem;
             if (videoInformation.VideoTitle != null)
             {
                 item.VideoTitle = videoInformation.VideoTitle;
                 item.ChannelName = videoInformation.ChannelName;
-                item.VideoThumbnail = new BitmapImage(new Uri(DownloadManager.DownloadThumbnail(videoInformation.VideoThumbnailURL, videoInformation.VideoID)));
-                item.ChannelThumbnail = new BitmapImage(new Uri(DownloadManager.DownloadThumbnail(videoInformation.ChannelThumbnailURL, videoInformation.ChannelID)));
+                item.VideoThumbnail = videoInformation.VideoThumbnailLocation;
+                item.ChannelThumbnail = videoInformation.ChannelThumbnailLocation;
                 item.ToolTip = videoInformation.VideoTitle + "\n" + videoInformation.ChannelName;
             }
             else
             {
                 item.Label = Resources.ShellDownloadsPage;
                 item.ChannelName = null;
+                item.VideoThumbnail = "";
+                item.ChannelThumbnail = "";
             }
         }
 
