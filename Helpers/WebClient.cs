@@ -40,7 +40,6 @@ namespace YoutubeCutter.Helpers
             {
                 information.VideoTitle = videoInformation["title"].ToString();
                 information.ChannelName = videoInformation["author_name"].ToString();
-                information.VideoThumbnailURL = videoInformation["thumbnail_url"].ToString();
                 information.AuthorURL = videoInformation["author_url"].ToString();
             }
             //bad video

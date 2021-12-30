@@ -127,18 +127,21 @@ namespace YoutubeCutter.ViewModels
             else if (targetViewModel == null)
             {
                 VideoPageInfo pageInfo = new VideoPageInfo();
+                VideosHamburgerMenuItem item = null;
                 if (_alreadyAvaliableIdentifier != 0)
                 {
-                    VideosHamburgerMenuItem item = FindItemWithIdentifier(_alreadyAvaliableIdentifier);
+                    item = FindItemWithIdentifier(_alreadyAvaliableIdentifier);
                     if (item != null)
                     {
                         item.loadPageInfo(pageInfo);
-                        _navigationService.NavigateTo(targetViewModel.FullName, pageInfo);
+                        SelectedMenuItem = item;
+                        _navigationService.NavigateTo(typeof(VideoViewModel).FullName, pageInfo);
                     }
                 }
-                else
+                if (item == null)
                 {
                     pageInfo.Identifier = _identifierCount++;
+                    _alreadyAvaliableIdentifier = pageInfo.Identifier;
                     //shellemptydownloadpage
                     MenuItems.Add(new VideosHamburgerMenuItem() { Label = Resources.ShellDownloadsPage, Identifier = pageInfo.Identifier, ChannelName = "", TargetPageType = typeof(VideoViewModel) });
                     SelectedMenuItem = MenuItems[MenuItems.Count - 1];
@@ -166,16 +169,6 @@ namespace YoutubeCutter.ViewModels
             VideosHamburgerMenuItem item = FindItemWithIdentifier(pageInfo.Identifier);
             item.EmbedYoutubeURL = pageInfo.EmbedYoutubeURL;
             item.YoutubeURL = pageInfo.YoutubeURL;
-            if (pageInfo.EmbedYoutubeURL != null)
-            {
-                _alreadyAvaliableIdentifier = pageInfo.Identifier;
-            }
-            else if (_alreadyAvaliableIdentifier == pageInfo.Identifier)
-            {
-                _alreadyAvaliableIdentifier = 0;
-            }
-
-
         }
         private void OnNavigated(object sender, string viewModelName)
         {
@@ -205,6 +198,10 @@ namespace YoutubeCutter.ViewModels
                 item.VideoThumbnail = videoInformation.VideoThumbnailLocation;
                 item.ChannelThumbnail = videoInformation.ChannelThumbnailLocation;
                 item.ToolTip = videoInformation.VideoTitle + "\n" + videoInformation.ChannelName;
+                if (_alreadyAvaliableIdentifier == identifier)
+                {
+                    _alreadyAvaliableIdentifier = 0;
+                }
             }
             else
             {
@@ -212,6 +209,9 @@ namespace YoutubeCutter.ViewModels
                 item.ChannelName = null;
                 item.VideoThumbnail = "";
                 item.ChannelThumbnail = "";
+                item.EmbedYoutubeURL = null;
+                item.YoutubeURL = null;
+                _alreadyAvaliableIdentifier = identifier;
             }
         }
     }

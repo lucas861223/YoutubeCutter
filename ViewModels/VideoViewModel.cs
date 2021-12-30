@@ -23,7 +23,6 @@ namespace YoutubeCutter.ViewModels
         private WebClient _webClient = WebClient.Instance;
         private VideoInformation _videoInformation = new();
         public bool IsAvaliableVideo { get; set; }
-        //thumbnail https://img.youtube.com/vi/<ID>/0.jpg
         public string YoutubeEmbedVideoURL { get; set; }
 
         private int _identifier;
@@ -71,7 +70,7 @@ namespace YoutubeCutter.ViewModels
             //add download to manager
             VideoPageInfo pageInfo = new VideoPageInfo();
             pageInfo.Identifier = _identifier;
-            pageInfo.EmbedYoutubeURL = _youtubeID == "Youtube URL" ? null : YoutubeEmbedVideoURL;
+            pageInfo.EmbedYoutubeURL = _youtubeURL == "Youtube URL" ? null : YoutubeEmbedVideoURL;
             pageInfo.YoutubeURL = _youtubeURL;
             _saveProgress(pageInfo);
         }
@@ -88,7 +87,10 @@ namespace YoutubeCutter.ViewModels
                 _notifyChanges = VideoPageInfo.NotifyFunction;
                 _saveProgress = VideoPageInfo.SaveFunction;
                 YoutubeEmbedVideoURL = pageInfo.EmbedYoutubeURL;
-                _youtubeURL = pageInfo.YoutubeURL;
+                if (pageInfo.YoutubeURL != null)
+                {
+                    _youtubeURL = pageInfo.YoutubeURL;
+                }
                 IsAvaliableVideo = pageInfo.EmbedYoutubeURL != null;
                 OnPropertyChanged("YoutubeEmbedVideoURL");
                 OnPropertyChanged("YoutubeURL");
@@ -110,7 +112,7 @@ namespace YoutubeCutter.ViewModels
                         _videoInformation.ChannelThumbnailURL = match.Groups["thumbnail"].ToString() + "=s48-c-k-c0x00ffffff-no-rj-mo";
                         _videoInformation.ChannelID = match.Groups["channelID"].ToString();
                     }
-                    _videoInformation.VideoThumbnailURL.Replace("hqdefault", "mqdefault");
+                    _videoInformation.VideoThumbnailURL = "https://i.ytimg.com/vi/" + _youtubeID + "/mqdefault.jpg";
                     _videoInformation.VideoThumbnailLocation = DownloadManager.DownloadThumbnail(_videoInformation.VideoThumbnailURL, _videoInformation.VideoID);
                     _videoInformation.ChannelThumbnailLocation = DownloadManager.DownloadThumbnail(_videoInformation.ChannelThumbnailURL, _videoInformation.ChannelID);
                 }
