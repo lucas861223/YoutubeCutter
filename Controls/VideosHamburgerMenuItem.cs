@@ -8,11 +8,22 @@ using System.Windows.Media.Imaging;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using System.Windows;
 
+using YoutubeCutter.Models;
+
 namespace YoutubeCutter.Controls
 {
     class VideosHamburgerMenuItem : HamburgerMenuItem
     {
+        public void loadPageInfo(VideoPageInfo pageInfo)
+        {
+            pageInfo.Identifier = Identifier;
+            pageInfo.EmbedYoutubeURL = EmbedYoutubeURL;
+            pageInfo.YoutubeURL = YoutubeURL;
+        }
 
+        public string YoutubeURL { get; set; }
+        public string EmbedYoutubeURL { get; set; }
+        public int Identifier { get; set; }
         public static readonly DependencyProperty VideoThumbnailProperty =
         DependencyProperty.Register("VideoThumbnailProperty",
             typeof(string),

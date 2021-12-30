@@ -79,7 +79,7 @@
                                         <Setter Property="Height" Value="0" />
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding DataContext.IsPaneOpen, RelativeSource={RelativeSource AncestorType=controls:MetroWindow}}" Value="True">
-                                                <Setter Property="Height" Value="141" />
+                                                <Setter Property="Height" Value="157" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -103,16 +103,17 @@
                                 <RowDefinition Height="7*" />
                                 <RowDefinition Height="50" />
                             </Grid.RowDefinitions>
-                            <Grid Grid.Row="0">
+                            <Grid Grid.Row="0" Background="Black">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="25*" />
-                                    <ColumnDefinition Width="75*" />
+                                    <ColumnDefinition Width="48" />
+                                    <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <Ellipse
                                     Grid.Column="0"
                                     Width="48"
                                     Height="48"
-                                    HorizontalAlignment="Center"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
                                     ToolTip="{Binding ChannelNameProperty}">
                                     <Ellipse.Fill>
                                         <ImageBrush ImageSource="{Binding ChannelThumbnailProperty, Converter={StaticResource StringToImageSourceConverter}, ConverterParameter=Channel}" Stretch="UniformToFill" />
@@ -120,11 +121,11 @@
                                 </Ellipse>
                                 <Image
                                     Grid.Column="1"
-                                    Width="216"
-                                    Height="121"
-                                    HorizontalAlignment="Center"
+                                    Margin="0,0,2,0"
+                                    HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
                                     Source="{Binding VideoThumbnailProperty, Converter={StaticResource StringToImageSourceConverter}, ConverterParameter=Video}"
+                                    Stretch="UniformToFill"
                                     ToolTip="{Binding VideoTitleProperty}" />
                             </Grid>
                             <Border

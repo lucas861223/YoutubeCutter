@@ -28,6 +28,7 @@ namespace YoutubeCutter.ViewModels
 
         private int _identifier;
         private VideoPageInfo.NotifyChangesFunction _notifyChanges;
+        private VideoPageInfo.SaveWorkProgressFunction _saveProgress;
         public string YoutubeVideoURL
         {
             get
@@ -58,6 +59,7 @@ namespace YoutubeCutter.ViewModels
                             GetVideoInformation();
                         }
                         OnPropertyChanged("YoutubeEmbedVideoURL");
+                        OnPropertyChanged("YoutubeVideoURL");
                     }
                     OnPropertyChanged("IsAvaliableVideo");
                 }
@@ -67,6 +69,11 @@ namespace YoutubeCutter.ViewModels
         public void OnNavigatedFrom()
         {
             //add download to manager
+            VideoPageInfo pageInfo = new VideoPageInfo();
+            pageInfo.Identifier = _identifier;
+            pageInfo.EmbedYoutubeURL = _youtubeID == "Youtube URL" ? null : YoutubeEmbedVideoURL;
+            pageInfo.YoutubeURL = _youtubeURL;
+            _saveProgress(pageInfo);
         }
 
         public void OnNavigatedTo(object parameter)
@@ -78,7 +85,14 @@ namespace YoutubeCutter.ViewModels
             {
                 VideoPageInfo pageInfo = parameter as VideoPageInfo;
                 _identifier = pageInfo.Identifier;
-                _notifyChanges = pageInfo.function;
+                _notifyChanges = VideoPageInfo.NotifyFunction;
+                _saveProgress = VideoPageInfo.SaveFunction;
+                YoutubeEmbedVideoURL = pageInfo.EmbedYoutubeURL;
+                _youtubeURL = pageInfo.YoutubeURL;
+                IsAvaliableVideo = pageInfo.EmbedYoutubeURL != null;
+                OnPropertyChanged("YoutubeEmbedVideoURL");
+                OnPropertyChanged("YoutubeURL");
+                OnPropertyChanged("IsAvaliableVideo");
             }
         }
         public async void GetVideoInformation()
@@ -96,6 +110,7 @@ namespace YoutubeCutter.ViewModels
                         _videoInformation.ChannelThumbnailURL = match.Groups["thumbnail"].ToString() + "=s48-c-k-c0x00ffffff-no-rj-mo";
                         _videoInformation.ChannelID = match.Groups["channelID"].ToString();
                     }
+                    _videoInformation.VideoThumbnailURL.Replace("hqdefault", "mqdefault");
                     _videoInformation.VideoThumbnailLocation = DownloadManager.DownloadThumbnail(_videoInformation.VideoThumbnailURL, _videoInformation.VideoID);
                     _videoInformation.ChannelThumbnailLocation = DownloadManager.DownloadThumbnail(_videoInformation.ChannelThumbnailURL, _videoInformation.ChannelID);
                 }
