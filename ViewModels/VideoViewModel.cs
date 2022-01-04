@@ -34,10 +34,10 @@ namespace YoutubeCutter.ViewModels
         private ObservableCollection<ClipItem> _menuItems;
         private string[] _downloadURL;
         private Time _duration = new Time();
-        private string _startTime;
-        public string StartTime { get; set; }
-
-        public string EndTime { get; set; }
+        private string _startTime = "00:00:00";
+        public string StartTime { get { return _startTime; } set { value = value.Trim();  if (TimeUtil.IsFormattedTime(value)) { _startTime = value; OnPropertyChanged("StartTime");  } } }
+        private string _endTime = "00:00:00";
+        public string EndTime { get { return _endTime; } set { value = value.Trim(); if (TimeUtil.IsFormattedTime(value)) { _endTime = value; OnPropertyChanged("EndTime"); } } }
 
         private ClipItem _selectedItem;
         public ObservableCollection<ClipItem> MenuItems { get { return _menuItems; } }

@@ -6,10 +6,10 @@
     xmlns:converters="clr-namespace:YoutubeCutter.Converters"
     xmlns:customControls="clr-namespace:YoutubeCutter.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:input="clr-namespace:System.Windows.Input;assembly=PresentationCore"
     xmlns:local="clr-namespace:YoutubeCutter.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:s="clr-namespace:System;assembly=mscorlib"
-    xmlns:wpfx="http://schemas.xceed.com/wpf/xaml/toolkit"
     Title="VideoPage"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -46,37 +46,23 @@
                 <cefSharp:ChromiumWebBrowser Address="{Binding Path=YoutubeEmbedVideoURL, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Path=IsAvaliableVideo, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" />
                 <DockPanel Grid.Row="2" HorizontalAlignment="Center">
                     <TextBlock VerticalAlignment="Center" Text="Start:" />
-                    <wpfx:MaskedTextBox
+                    <TextBox
                         x:Name="StartTimeMaskedTextBox"
                         Margin="5,0,20,0"
                         VerticalAlignment="Center"
-                        AllowPromptAsInput="True"
-                        GotFocus="TimeGotFocus"
-                        LostFocus="TimeLostFocus"
-                        Mask="00:00:00"
-                        PromptChar="0"
-                        ResetOnPrompt="False"
-                        SkipLiterals="False"
-                        ValueDataType="{x:Type s:String}"
-                        Value="{Binding StartTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        input:InputMethod.IsInputMethodEnabled="False"
+                        KeyDown="TimeBoxOnKeyDownHandler"
+                        PreviewKeyDown="TimeBoxOnPreviewKeyDownHandler"
+                        Text="{Binding StartTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     <TextBlock VerticalAlignment="Center" Text="End:" />
-                    <wpfx:MaskedTextBox
-                        x:Name="EndTimeMaskedTextBox"
+                    <TextBox
+                        x:Name="StartEndMaskedTextBox"
                         Margin="5,0,20,0"
                         VerticalAlignment="Center"
-                        AllowPromptAsInput="True"
-                        GotFocus="TimeGotFocus"
-                        IsReadOnly="True"
-                        LostFocus="TimeLostFocus"
-                        
-                        Mask="00:00:00"
-                        PreviewMouseDown="OnPreviewMouseDown"
-                        PromptChar="0"
-                        ResetOnPrompt="False"
-                        SkipLiterals="False"
-                        Text="{Binding EndTime, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                        ValueDataType="{x:Type s:String}"
-                        Value="{Binding EndTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        input:InputMethod.IsInputMethodEnabled="False"
+                        KeyDown="TimeBoxOnKeyDownHandler"
+                        PreviewKeyDown="TimeBoxOnPreviewKeyDownHandler"
+                        Text="{Binding EndTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </DockPanel>
             </Grid>
             <Grid Grid.Column="1">
