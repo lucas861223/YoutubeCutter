@@ -4,17 +4,21 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:cefSharp="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
     xmlns:converters="clr-namespace:YoutubeCutter.Converters"
+    xmlns:customControls="clr-namespace:YoutubeCutter.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:YoutubeCutter.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
+    xmlns:wpfx="http://schemas.xceed.com/wpf/xaml/toolkit"
     Title="VideoPage"
     d:DesignHeight="450"
     d:DesignWidth="800"
+    Style="{DynamicResource MahApps.Styles.Page}"
     mc:Ignorable="d">
     <Page.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     </Page.Resources>
-    <Grid>
+    <Grid x:Name="Grid" Focusable="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
             <RowDefinition Height="15*" />
@@ -23,8 +27,9 @@
             x:Name="VideoPageURLBar"
             Grid.Row="0"
             VerticalAlignment="Center"
+            GotFocus="URLTextBoxOnGotFocus"
             KeyDown="YoutubeDLPathOnKeyDownHandler"
-            PreviewMouseDown="OnPreviewMouseDown"
+            LostFocus="URLTextBoxOnLostFocus"
             Text="{Binding Path=YoutubeVideoURL, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
             TextAlignment="Center"
             TextWrapping="Wrap" />
@@ -34,7 +39,45 @@
                 <ColumnDefinition Width="4*" />
             </Grid.ColumnDefinitions>
             <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="15*" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
                 <cefSharp:ChromiumWebBrowser Address="{Binding Path=YoutubeEmbedVideoURL, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Path=IsAvaliableVideo, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                <DockPanel Grid.Row="2" HorizontalAlignment="Center">
+                    <TextBlock VerticalAlignment="Center" Text="Start:" />
+                    <wpfx:MaskedTextBox
+                        x:Name="StartTimeMaskedTextBox"
+                        Margin="5,0,20,0"
+                        VerticalAlignment="Center"
+                        AllowPromptAsInput="True"
+                        GotFocus="TimeGotFocus"
+                        LostFocus="TimeLostFocus"
+                        Mask="00:00:00"
+                        PromptChar="0"
+                        ResetOnPrompt="False"
+                        SkipLiterals="False"
+                        ValueDataType="{x:Type s:String}"
+                        Value="{Binding StartTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock VerticalAlignment="Center" Text="End:" />
+                    <wpfx:MaskedTextBox
+                        x:Name="EndTimeMaskedTextBox"
+                        Margin="5,0,20,0"
+                        VerticalAlignment="Center"
+                        AllowPromptAsInput="True"
+                        GotFocus="TimeGotFocus"
+                        IsReadOnly="True"
+                        LostFocus="TimeLostFocus"
+                        
+                        Mask="00:00:00"
+                        PreviewMouseDown="OnPreviewMouseDown"
+                        PromptChar="0"
+                        ResetOnPrompt="False"
+                        SkipLiterals="False"
+                        Text="{Binding EndTime, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                        ValueDataType="{x:Type s:String}"
+                        Value="{Binding EndTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                </DockPanel>
             </Grid>
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
@@ -42,8 +85,47 @@
                     <RowDefinition Height="15*" />
                     <RowDefinition Height="15*" />
                 </Grid.RowDefinitions>
-                <ScrollViewer Grid.Row="0" />
-                <Button Grid.Row="1" Visibility="{Binding Path=IsAvaliableVideo, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">Add More Clip</Button>
+                <Border BorderBrush="Gray" BorderThickness="2,2,0,2">
+                    <ListBox
+                        Grid.Row="0"
+                        ItemsSource="{Binding MenuItems}"
+                        SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                        SelectionMode="Extended">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type customControls:ClipItem}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock
+                                        Grid.Row="0"
+                                        Grid.ColumnSpan="6"
+                                        Text="Filename" />
+                                    <TextBox
+                                        Grid.Row="1"
+                                        Grid.ColumnSpan="6"
+                                        Text="{Binding Path=Filename, Mode=TwoWay}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Border>
+                <Button Grid.Row="1" Visibility="{Binding Path=IsAvaliableVideo, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+                    Add More Clip
+                </Button>
                 <Grid Grid.Row="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="5*" />

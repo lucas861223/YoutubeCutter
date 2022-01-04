@@ -68,7 +68,6 @@ namespace YoutubeCutter.Services
                         navigationAware.OnNavigatedFrom();
                     }
                 }
-
                 return navigated;
             }
 

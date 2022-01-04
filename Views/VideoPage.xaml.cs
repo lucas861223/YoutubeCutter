@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Xceed.Wpf.Toolkit;
 using YoutubeCutter.ViewModels;
 
 namespace YoutubeCutter.Views
@@ -26,12 +27,21 @@ namespace YoutubeCutter.Views
             InitializeComponent();
             DataContext = videoViewModel;
         }
-        private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
+        private void URLTextBoxOnGotFocus(object sender, RoutedEventArgs e)
         {
             TextBox textbox = sender as TextBox;
             if (textbox.Text == "Youtube URL")
             {
                 textbox.Text = "";
+            }
+        }
+
+        private void URLTextBoxOnLostFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox textbox = sender as TextBox;
+            if (textbox.Text == "")
+            {
+                textbox.Text = "Youtube URL";
             }
         }
         private void YoutubeDLPathOnKeyDownHandler(object sender, KeyEventArgs e)
@@ -40,13 +50,24 @@ namespace YoutubeCutter.Views
             {
                 TextBox textbox = sender as TextBox;
                 textbox.Text = textbox.Text.Trim();
-                if (textbox.Text == "")
-                {
-                    textbox.Text = "Youtube URL";
-                }
-                ((TextBox)sender).GetBindingExpression(TextBox.TextProperty).UpdateSource();
+                textbox.GetBindingExpression(TextBox.TextProperty).UpdateSource();
+                Grid grid = FindName("Grid") as Grid;
+                grid.Focus();
                 Keyboard.ClearFocus();
             }
+        }
+
+        private void TimeGotFocus(object sender, RoutedEventArgs e)
+        {
+            (sender as MaskedTextBox).Value = (DataContext as VideoViewModel).EndTime;
+        }
+
+        private void TimeLostFocus(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
         }
 
     }
