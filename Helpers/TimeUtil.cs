@@ -10,7 +10,24 @@ namespace YoutubeCutter.Helpers
 {
     class TimeUtil
     {
+        private static Regex _durationRegex = new Regex(@"(((?<Hours>\d+):)?(?<Minutes>\d+):)?(?<Seconds>\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+        public static void ParseIrregularTimeFromString(string text, Time time)
+        {
+            Match match = _durationRegex.Match(text);
+            if (match.Success)
+            {
+                time.Second = int.Parse(match.Groups["Seconds"].ToString());
+                time.Minute = match.Groups["Minutes"].ToString() != "" ? int.Parse(match.Groups["Minutes"].ToString()) : 0;
+                time.Hour = match.Groups["Hours"].ToString() != "" ? int.Parse(match.Groups["Hours"].ToString()) : 0;
+            }
+        }
+        public static Time ParseTimeFromString(string text)
+        {
+            Time time = new Time();
+            ParseTimeFromString(text, time);
+            return time;
+        }
         public static void ParseTimeFromString(string text, Time time)
         {
             if (IsFormattedTime(text))
@@ -22,13 +39,13 @@ namespace YoutubeCutter.Helpers
         }
         public static bool IsFormattedTime(string text)
         {
-            //it's probably faster to just do dummy check
+            //it's probably faster to just do dummy check instead of regex
             int x;
             if (text.Length != 8)
             {
                 return false;
             }
-            if (!int.TryParse(text.Substring(0, 2), out x) || x >= 60) {
+            if (!int.TryParse(text.Substring(0, 2), out x)) {
                 return false;
             }
             if (text[2] != ':')
@@ -57,6 +74,11 @@ namespace YoutubeCutter.Helpers
         public static string TimeToString(Time time)
         {
             return String.Format("{0,0:D2}:{1,0:D2}:{2,0:D2}", time.Hour, time.Minute, time.Second);
+        }
+
+        public static int ConvertToSeconds(Time time)
+        {
+            return time.Hour * 3600 + time.Minute * 60 + time.Second;
         }
     }
 }

@@ -63,7 +63,7 @@ namespace YoutubeCutter.Views
 
         private void TimeLostFocus(object sender, RoutedEventArgs e)
         {
-
+            (DataContext as VideoViewModel).Validate();
         }
 
         private void TimeBoxOnKeyDownHandler(object sender, KeyEventArgs e)
@@ -91,12 +91,20 @@ namespace YoutubeCutter.Views
                     textbox.Text = text;
                     textbox.CaretIndex = index + 2;
                 }
-                e.Handled = true;
             }
-            else 
+            else if (e.Key == Key.Enter)
             {
-                e.Handled = true;
-            }
+                if ((sender as TextBox).Name == "StartTimeMaskedTextBox")
+                {
+                    (FindName("EndTimeMaskedTextBox") as TextBox).Focus();
+                } else
+                {
+                    (FindName("Grid") as Grid).Focus();
+                    Keyboard.ClearFocus();
+                }
+            } 
+             e.Handled = true;
+            
         }
         private void TimeBoxOnPreviewKeyDownHandler(object sender, KeyEventArgs e)
         {

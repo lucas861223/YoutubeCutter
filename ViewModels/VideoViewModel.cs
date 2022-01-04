@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Input;
 using System.Windows.Controls;
 using System.Collections.ObjectModel;
+using Microsoft.Toolkit.Mvvm.Input;
 
 namespace YoutubeCutter.ViewModels
 {
@@ -35,7 +36,7 @@ namespace YoutubeCutter.ViewModels
         private string[] _downloadURL;
         private Time _duration = new Time();
         private string _startTime = "00:00:00";
-        public string StartTime { get { return _startTime; } set { value = value.Trim();  if (TimeUtil.IsFormattedTime(value)) { _startTime = value; OnPropertyChanged("StartTime");  } } }
+        public string StartTime { get { return _startTime; } set { value = value.Trim(); if (TimeUtil.IsFormattedTime(value)) { _startTime = value; OnPropertyChanged("StartTime"); } } }
         private string _endTime = "00:00:00";
         public string EndTime { get { return _endTime; } set { value = value.Trim(); if (TimeUtil.IsFormattedTime(value)) { _endTime = value; OnPropertyChanged("EndTime"); } } }
 
@@ -49,7 +50,7 @@ namespace YoutubeCutter.ViewModels
             }
             set
             {
-                _selectedItem = value; 
+                _selectedItem = value;
                 if (_selectedItem != null)
                 {
                     StartTime = TimeUtil.TimeToString(_selectedItem.StartTime);
@@ -57,6 +58,33 @@ namespace YoutubeCutter.ViewModels
                     OnPropertyChanged("EndTime");
                     OnPropertyChanged("StartTime");
                 }
+            }
+        }
+
+        public void Validate()
+        {
+            SelectedItem.StartTime = TimeUtil.ParseTimeFromString(StartTime);
+            SelectedItem.EndTime = TimeUtil.ParseTimeFromString(EndTime);
+            Time clipLength = SelectedItem.EndTime - SelectedItem.StartTime;
+            if (clipLength.Hour < 0 || clipLength.Minute < 0 || clipLength.Second < 0)
+            {
+                SelectedItem.IsValidClip = false;
+                SelectedItem.InformationMessage = "End time is earlier than Start time";
+            }
+            else if (clipLength.Hour == 0 && clipLength.Minute == 0 && clipLength.Second == 0)
+            {
+                SelectedItem.IsValidClip = false;
+                SelectedItem.InformationMessage = "Clip Length is 0 second";
+            }
+            else if (TimeUtil.ConvertToSeconds(SelectedItem.EndTime) > TimeUtil.ConvertToSeconds(_duration))
+            {
+                SelectedItem.IsValidClip = false;
+                SelectedItem.InformationMessage = "End time longer than video length";
+            }
+            else
+            {
+                SelectedItem.IsValidClip = true;
+                SelectedItem.InformationMessage = StartTime + " ~ " + EndTime + "\n" + "Duration: " + TimeUtil.TimeToString(clipLength);
             }
         }
         public bool VideoIsReady { get; set; } = false;
@@ -73,6 +101,7 @@ namespace YoutubeCutter.ViewModels
                     _videoInformation = new VideoInformation();
                     _youtubeURL = value.Trim();
                     IsAvaliableVideo = false;
+                    VideoIsReady = false;
                     MenuItems.Clear();
                     if (_youtubeURL == "" || _youtubeURL == "Youtube URL")
                     {
@@ -84,7 +113,6 @@ namespace YoutubeCutter.ViewModels
                         Match match = _youtubeRegex.Match(_youtubeURL);
                         if (match.Success)
                         {
-                            VideoIsReady = false;
                             IsAvaliableVideo = true;
                             _youtubeID = match.Groups[1].ToString();
                             _youtubeURL = "https://www.youtube.com/watch?v=" + _youtubeID;
@@ -95,6 +123,7 @@ namespace YoutubeCutter.ViewModels
                         OnPropertyChanged("YoutubeVideoURL");
                     }
                     OnPropertyChanged("IsAvaliableVideo");
+                    OnPropertyChanged("VideoIsReady");
                 }
             }
         }
@@ -148,13 +177,15 @@ namespace YoutubeCutter.ViewModels
                 p.WaitForExit();
                 string[] result = p.StandardOutput.ReadToEnd().TrimEnd().Split("\n");
                 _downloadURL = result[0..(result.Length - 1)];
-                TimeUtil.ParseTimeFromString(result[result.Length - 1], _duration);
+                TimeUtil.ParseIrregularTimeFromString(result[result.Length - 1], _duration);
+                //todo handle parsing error, https://www.youtube.com/watch?v=x8VYWazR5mE
                 App.Current.Dispatcher.Invoke(() =>
                 {
                     VideoIsReady = true;
                     OnPropertyChanged("VideoIsReady");
-                    MenuItems.Add(new ClipItem() { Filename = "test", EndTime = _duration, StartTime = new Time() { Hour = 0, Minute = 0, Second = 0 } });
+                    MenuItems.Add(new ClipItem() { Filename = "test", EndTime = _duration, IsValidClip = true, StartTime = new Time() { Hour = 0, Minute = 0, Second = 0 } });
                     SelectedItem = MenuItems[0];
+                    SelectedItem.InformationMessage = TimeUtil.TimeToString(SelectedItem.StartTime) + " ~ " + TimeUtil.TimeToString(SelectedItem.EndTime) + "\n" + "Duration: " + TimeUtil.TimeToString(_duration);
                     OnPropertyChanged("SelectedItem");
                 });
                 _webClient.GetVideoInfo(_videoInformation, _youtubeID);

@@ -17,6 +17,7 @@
     mc:Ignorable="d">
     <Page.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:BoolToBorderThicknessConverter x:Key="BoolToBorderThicknessConverter" />
     </Page.Resources>
     <Grid x:Name="Grid" Focusable="True">
         <Grid.RowDefinitions>
@@ -31,8 +32,7 @@
             KeyDown="YoutubeDLPathOnKeyDownHandler"
             LostFocus="URLTextBoxOnLostFocus"
             Text="{Binding Path=YoutubeVideoURL, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
-            TextAlignment="Center"
-            TextWrapping="Wrap" />
+            TextAlignment="Center" />
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="15*" />
@@ -41,10 +41,25 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="15*" />
-                    <RowDefinition Height="1*" />
+                    <RowDefinition>
+                        <RowDefinition.Style>
+                            <Style TargetType="{x:Type RowDefinition}">
+                                <Setter Property="Height" Value="0" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsAvaliableVideo}" Value="True">
+                                        <Setter Property="Height" Value="1*" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </RowDefinition.Style>
+                    </RowDefinition>
                 </Grid.RowDefinitions>
                 <cefSharp:ChromiumWebBrowser Address="{Binding Path=YoutubeEmbedVideoURL, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Path=IsAvaliableVideo, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" />
-                <DockPanel Grid.Row="2" HorizontalAlignment="Center">
+                <DockPanel
+                    Name="ParentDockPanel"
+                    Grid.Row="2"
+                    HorizontalAlignment="Center"
+                    Visibility="{Binding VideoIsReady, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToVisibilityConverter}}">
                     <TextBlock VerticalAlignment="Center" Text="Start:" />
                     <TextBox
                         x:Name="StartTimeMaskedTextBox"
@@ -52,18 +67,26 @@
                         VerticalAlignment="Center"
                         input:InputMethod.IsInputMethodEnabled="False"
                         KeyDown="TimeBoxOnKeyDownHandler"
+                        LostFocus="TimeLostFocus"
                         PreviewKeyDown="TimeBoxOnPreviewKeyDownHandler"
                         Text="{Binding StartTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     <TextBlock VerticalAlignment="Center" Text="End:" />
                     <TextBox
-                        x:Name="StartEndMaskedTextBox"
+                        x:Name="EndTimeMaskedTextBox"
                         Margin="5,0,20,0"
                         VerticalAlignment="Center"
                         input:InputMethod.IsInputMethodEnabled="False"
                         KeyDown="TimeBoxOnKeyDownHandler"
+                        LostFocus="TimeLostFocus"
                         PreviewKeyDown="TimeBoxOnPreviewKeyDownHandler"
                         Text="{Binding EndTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </DockPanel>
+                <TextBlock
+                    Grid.Row="2"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Text="Preparing Video..."
+                    Visibility="{Binding VideoIsReady, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse}" />
             </Grid>
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
@@ -71,40 +94,34 @@
                     <RowDefinition Height="15*" />
                     <RowDefinition Height="15*" />
                 </Grid.RowDefinitions>
-                <Border BorderBrush="Gray" BorderThickness="2,2,0,2">
+                <Border
+                    Grid.Row="0"
+                    BorderBrush="Gray"
+                    BorderThickness="2,2,0,2"
+                    Visibility="{Binding VideoIsReady, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToVisibilityConverter}}">
                     <ListBox
-                        Grid.Row="0"
+                        Name="ParentBox"
                         ItemsSource="{Binding MenuItems}"
                         SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                         SelectionMode="Extended">
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="{x:Type customControls:ClipItem}">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition />
-                                        <RowDefinition />
-                                        <RowDefinition />
-                                        <RowDefinition />
-                                        <RowDefinition />
-                                        <RowDefinition />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock
-                                        Grid.Row="0"
-                                        Grid.ColumnSpan="6"
-                                        Text="Filename" />
-                                    <TextBox
-                                        Grid.Row="1"
-                                        Grid.ColumnSpan="6"
-                                        Text="{Binding Path=Filename, Mode=TwoWay}" />
-                                </Grid>
+                                <Border BorderBrush="Red" BorderThickness="{Binding IsValidClip, Converter={StaticResource BoolToBorderThicknessConverter}}">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" Text="Filename" />
+                                        <TextBox Grid.Row="1" Text="{Binding Path=Filename, Mode=TwoWay}" />
+                                        <TextBlock
+                                            Grid.Row="2"
+                                            MaxWidth="{Binding Path=ActualWidth, ElementName=ParentBox}"
+                                            Text="{Binding Path=InformationMessage, UpdateSourceTrigger=PropertyChanged}"
+                                            TextWrapping="Wrap" />
+                                    </Grid>
+                                </Border>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
