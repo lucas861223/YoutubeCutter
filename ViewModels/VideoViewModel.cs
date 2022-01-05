@@ -18,6 +18,7 @@ using Microsoft.Toolkit.Mvvm.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.IO;
+using System.Windows;
 
 namespace YoutubeCutter.ViewModels
 {
@@ -46,9 +47,18 @@ namespace YoutubeCutter.ViewModels
         private ICommand _toEndCommand;
         private ICommand _toStartCommand;
         private ICommand _validateCommand;
+        private ICommand _addClipCommand;
+        private ICommand _changeSelectedItemCommand;
+        private ICommand _checkFilenameCommand;
+        private ICommand _enterCommand;
+        public ICommand EnterCommand => _enterCommand ?? (_enterCommand = new RelayCommand<KeyEventArgs>(Enter));
         public ICommand ToEndCommand => _toEndCommand ?? (_toEndCommand = new RelayCommand(ToEnd));
+        public ICommand CheckFilenameCommand => _checkFilenameCommand ?? (_checkFilenameCommand = new RelayCommand<RoutedEventArgs>(CheckFilename));
         public ICommand ToStartCommand => _toStartCommand ?? (_toStartCommand = new RelayCommand(ToStart));
         public ICommand ValidateCommand => _validateCommand ?? (_validateCommand = new RelayCommand(Validate));
+        public ICommand ChangeSelectedItemCommand => _changeSelectedItemCommand ?? (_changeSelectedItemCommand = new RelayCommand<RoutedEventArgs>(ChangeSelectedItem));
+        public ICommand AddClipCommand => _addClipCommand ?? (_addClipCommand = new RelayCommand(AddClip));
+        private int _identifierCount = 0;
         private ClipItem _selectedItem;
         public ObservableCollection<ClipItem> MenuItems { get { return _menuItems; } }
         public ClipItem SelectedItem
@@ -67,9 +77,9 @@ namespace YoutubeCutter.ViewModels
                     OnPropertyChanged("EndTime");
                     OnPropertyChanged("StartTime");
                 }
+                OnPropertyChanged("SelectedItem");
             }
         }
-        public ImageSource ForwardToEndIcon { get; set; }
         public void Validate()
         {
             SelectedItem.StartTime = TimeUtil.ParseTimeFromString(StartTime);
@@ -128,7 +138,6 @@ namespace YoutubeCutter.ViewModels
                 }
             }
         }
-
         public void OnNavigatedFrom()
         {
             //add download to manager
@@ -147,7 +156,7 @@ namespace YoutubeCutter.ViewModels
             }
             _saveProgress(pageInfo);
         }
-
+        private Dictionary<string, List<ClipItem>> _filenameDictionary = new Dictionary<string, List<ClipItem>>();
         public void OnNavigatedTo(object parameter)
         {
             //tood to think
@@ -172,17 +181,10 @@ namespace YoutubeCutter.ViewModels
                         _downloadURL = pageInfo.DownloadURL;
                         for (int i = 0; i < pageInfo.MenuItems.Length / 3; i++)
                         {
-                            MenuItems.Add(new ClipItem()
-                            {
-                                Filename = pageInfo.MenuItems[i * 3],
-                                EndTime = TimeUtil.ParseTimeFromString(pageInfo.MenuItems[i * 3 + 2]),
-                                StartTime = TimeUtil.ParseTimeFromString(pageInfo.MenuItems[i * 3 + 1])
-                            });
-                            MenuItems[i].Validate(_duration);
+                            AddClip(pageInfo.MenuItems[i * 3], TimeUtil.ParseTimeFromString(pageInfo.MenuItems[i * 3 + 1]), TimeUtil.ParseTimeFromString(pageInfo.MenuItems[i * 3 + 2]));
                         }
                         SelectedItem = MenuItems[0];
                         OnPropertyChanged("IsVideoReady");
-                        OnPropertyChanged("SelectedItem");
                     }
                 }
                 IsAvaliableVideo = pageInfo.EmbedYoutubeURL != null;
@@ -217,10 +219,8 @@ namespace YoutubeCutter.ViewModels
                 {
                     IsVideoReady = true;
                     OnPropertyChanged("IsVideoReady");
-                    MenuItems.Add(new ClipItem() { Filename = "test", EndTime = _duration, IsValidClip = true, StartTime = new Time() { Hour = 0, Minute = 0, Second = 0 } });
+                    AddClip("test", new Time() { Hour = 0, Minute = 0, Second = 0 }, _duration);
                     SelectedItem = MenuItems[0];
-                    SelectedItem.InformationMessage = TimeUtil.TimeToString(SelectedItem.StartTime) + " ~ " + TimeUtil.TimeToString(SelectedItem.EndTime) + "\n" + "Duration: " + TimeUtil.TimeToString(_duration);
-                    OnPropertyChanged("SelectedItem");
                     _updatePageInfo(_identifier, pageInfo);
                 });
                 _webClient.GetVideoInfo(_videoInformation, _youtubeID);
@@ -244,7 +244,67 @@ namespace YoutubeCutter.ViewModels
                 });
             });
         }
-
-
+        public void AddClip()
+        {
+            AddClip("test", new Time { Hour = 0, Second = 0, Minute = 0 }, _duration);
+        }
+        private void AddClip(string filename, Time startTime, Time endTime)
+        {
+            MenuItems.Add(new ClipItem() { Identifier = "" + _identifierCount++, Filename = filename, EndTime = endTime, StartTime = startTime });
+            MenuItems[MenuItems.Count - 1].Validate(_duration);
+            if (!_filenameDictionary.ContainsKey(filename))
+            {
+                _filenameDictionary.Add(filename, new List<ClipItem>());
+            }
+            _filenameDictionary[filename].Add(MenuItems[MenuItems.Count - 1]);
+            UpdateClipsWithFilename(filename);
+        }
+        public void ChangeSelectedItem(RoutedEventArgs eventArgs)
+        {
+            SelectedItem = FindClipByIdentifier((eventArgs.Source as TextBox).Tag as string);
+        }
+        private ClipItem FindClipByIdentifier(string identifier)
+        {
+            foreach (ClipItem clip in MenuItems)
+            {
+                if (clip.Identifier == identifier)
+                {
+                    return clip;
+                }
+            }
+            return null;
+        }
+        public void CheckFilename(RoutedEventArgs eventArgs)
+        {
+            UpdateClipFilename((eventArgs.Source as TextBox).Text.Trim(), FindClipByIdentifier((eventArgs.Source as TextBox).Tag as string));
+        }
+        private void UpdateClipFilename(string filename, ClipItem clip)
+        {
+            _filenameDictionary[clip.Filename].Remove(clip);
+            UpdateClipsWithFilename(clip.Filename);
+            if (!_filenameDictionary.ContainsKey(filename))
+            {
+                _filenameDictionary.Add(filename, new List<ClipItem>());
+            }
+            _filenameDictionary[filename].Add(clip);
+            clip.Filename = filename;
+            UpdateClipsWithFilename(clip.Filename);
+        }
+        private void UpdateClipsWithFilename(string filename)
+        {
+            bool isUnique = _filenameDictionary[filename].Count == 1;
+            foreach (ClipItem clip in _filenameDictionary[filename])
+            {
+                clip.IsFilenameUnique(isUnique);
+            }
+        }
+        public void Enter(KeyEventArgs eventArgs)
+        {
+            if (eventArgs.Key == Key.Enter)
+            {
+                UpdateClipFilename((eventArgs.Source as TextBox).Text.Trim(), FindClipByIdentifier((eventArgs.Source as TextBox).Tag as string));
+                Keyboard.ClearFocus();
+            }
+        }
     }
 }

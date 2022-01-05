@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using YoutubeCutter.ViewModels;
+using YoutubeCutter.Controls;
 
 namespace YoutubeCutter.Views
 {
@@ -50,8 +51,7 @@ namespace YoutubeCutter.Views
                 TextBox textbox = sender as TextBox;
                 textbox.Text = textbox.Text.Trim();
                 textbox.GetBindingExpression(TextBox.TextProperty).UpdateSource();
-                Grid grid = FindName("Grid") as Grid;
-                grid.Focus();
+                (FindName("Grid") as Grid).Focus();
                 Keyboard.ClearFocus();
             }
         }
@@ -138,7 +138,7 @@ namespace YoutubeCutter.Views
             }
         }
 
-        private String ConvertKeyCodeToString(Key key)
+        private string ConvertKeyCodeToString(Key key)
         {
             if (key >= Key.D0 && key <= Key.D9)
             {
@@ -149,5 +149,6 @@ namespace YoutubeCutter.Views
                 return ((char)((int)'0' + (int)(key - Key.NumPad0))).ToString();
             }
         }
+
     }
 }

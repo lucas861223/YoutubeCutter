@@ -61,7 +61,7 @@
                 <cefSharp:ChromiumWebBrowser Address="{Binding Path=YoutubeEmbedVideoURL, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding Path=IsAvaliableVideo, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" />
                 <DockPanel
                     Name="ParentDockPanel"
-                    Grid.Row="2"
+                    Grid.Row="1"
                     HorizontalAlignment="Center"
                     Visibility="{Binding IsVideoReady, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToVisibilityConverter}}">
                     <Button MaxHeight="{Binding Path=ActualHeight, ElementName=StartTimeMaskedTextBox}">
@@ -115,7 +115,7 @@
                     </Button>
                 </DockPanel>
                 <TextBlock
-                    Grid.Row="2"
+                    Grid.Row="1"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Text="Preparing Video..."
@@ -124,8 +124,8 @@
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
-                    <RowDefinition MaxHeight="{Binding Path=ActualHeight, ElementName=ParentDockPanel}" />
-                    <RowDefinition MaxHeight="{Binding Path=ActualHeight, ElementName=ParentDockPanel}" />
+                    <RowDefinition MaxHeight="{Binding Path=ActualHeight, ElementName=VideoPageURLBar}" />
+                    <RowDefinition MaxHeight="{Binding Path=ActualHeight, ElementName=VideoPageURLBar}" />
                 </Grid.RowDefinitions>
                 <Border
                     Grid.Row="0"
@@ -147,7 +147,22 @@
                                             <RowDefinition />
                                         </Grid.RowDefinitions>
                                         <TextBlock Grid.Row="0" Text="Filename" />
-                                        <TextBox Grid.Row="1" Text="{Binding Path=Filename, Mode=TwoWay}" />
+                                        <TextBox
+                                            Grid.Row="1"
+                                            Tag="{Binding Identifier, Mode=OneTime}"
+                                            Text="{Binding Path=Filename, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="GotFocus">
+                                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.ChangeSelectedItemCommand, RelativeSource={RelativeSource AncestorType={x:Type Page}}}" PassEventArgsToCommand="True" />
+                                                </i:EventTrigger>
+                                                <i:EventTrigger EventName="LostFocus">
+                                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.CheckFilenameCommand, RelativeSource={RelativeSource AncestorType={x:Type Page}}}" PassEventArgsToCommand="True" />
+                                                </i:EventTrigger>
+                                                <i:EventTrigger EventName="KeyDown">
+                                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.EnterCommand, RelativeSource={RelativeSource AncestorType={x:Type Page}}}" PassEventArgsToCommand="True" />
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </TextBox>
                                         <TextBlock
                                             Grid.Row="2"
                                             MaxWidth="{Binding Path=ActualWidth, ElementName=ParentBox}"
@@ -159,15 +174,20 @@
                         </ListBox.ItemTemplate>
                     </ListBox>
                 </Border>
-                <Button Grid.Row="1" Visibility="{Binding Path=IsAvaliableVideo, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+                <Button Grid.Row="1" Visibility="{Binding Path=IsVideoReady, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
                     Add More Clip
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <i:InvokeCommandAction Command="{Binding AddClipCommand}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
                 </Button>
                 <Grid Grid.Row="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="5*" />
                         <ColumnDefinition Width="5*" />
                     </Grid.ColumnDefinitions>
-                    <Button Grid.Column="0" Visibility="{Binding Path=IsAvaliableVideo, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+                    <Button Grid.Column="0" Visibility="{Binding Path=IsVideoReady, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
                         Download
                     </Button>
                     <Button Grid.Column="1">
