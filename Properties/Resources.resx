@@ -120,6 +120,10 @@
   <data name="AppDisplayName" xml:space="preserve">
     <value>YoutubeCutter</value>
   </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="BackwardToStartIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\BackwardToStartIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="DownloadsListDescription" xml:space="preserve">
     <value>Sample Orders</value>
   </data>
@@ -128,6 +132,9 @@
   </data>
   <data name="FFmpegPathWarning" xml:space="preserve">
     <value>*You must have ffmpeg.exe for this program to work.</value>
+  </data>
+  <data name="ForwardToEndIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\ForwardToEndIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Instruction" xml:space="preserve">
     <value>instructions</value>
@@ -186,7 +193,6 @@
   <data name="ShellSettingsPage" xml:space="preserve">
     <value>Settings</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="YoutubeChannelDefaultIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\YoutubeChannelDefaultIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

@@ -15,6 +15,9 @@ using System.Windows.Input;
 using System.Windows.Controls;
 using System.Collections.ObjectModel;
 using Microsoft.Toolkit.Mvvm.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.IO;
 
 namespace YoutubeCutter.ViewModels
 {
@@ -32,14 +35,20 @@ namespace YoutubeCutter.ViewModels
         private int _identifier;
         private VideoPageInfo.NotifyChangesFunction _notifyChanges;
         private VideoPageInfo.SaveWorkProgressFunction _saveProgress;
-        private ObservableCollection<ClipItem> _menuItems;
+        private VideoPageInfo.UpdateVideoPageInfo _updatePageInfo;
+        private ObservableCollection<ClipItem> _menuItems = new ObservableCollection<ClipItem>();
         private string[] _downloadURL;
         private Time _duration = new Time();
         private string _startTime = "00:00:00";
         public string StartTime { get { return _startTime; } set { value = value.Trim(); if (TimeUtil.IsFormattedTime(value)) { _startTime = value; OnPropertyChanged("StartTime"); } } }
         private string _endTime = "00:00:00";
         public string EndTime { get { return _endTime; } set { value = value.Trim(); if (TimeUtil.IsFormattedTime(value)) { _endTime = value; OnPropertyChanged("EndTime"); } } }
-
+        private ICommand _toEndCommand;
+        private ICommand _toStartCommand;
+        private ICommand _validateCommand;
+        public ICommand ToEndCommand => _toEndCommand ?? (_toEndCommand = new RelayCommand(ToEnd));
+        public ICommand ToStartCommand => _toStartCommand ?? (_toStartCommand = new RelayCommand(ToStart));
+        public ICommand ValidateCommand => _validateCommand ?? (_validateCommand = new RelayCommand(Validate));
         private ClipItem _selectedItem;
         public ObservableCollection<ClipItem> MenuItems { get { return _menuItems; } }
         public ClipItem SelectedItem
@@ -60,34 +69,26 @@ namespace YoutubeCutter.ViewModels
                 }
             }
         }
-
+        public ImageSource ForwardToEndIcon { get; set; }
         public void Validate()
         {
             SelectedItem.StartTime = TimeUtil.ParseTimeFromString(StartTime);
             SelectedItem.EndTime = TimeUtil.ParseTimeFromString(EndTime);
-            Time clipLength = SelectedItem.EndTime - SelectedItem.StartTime;
-            if (clipLength.Hour < 0 || clipLength.Minute < 0 || clipLength.Second < 0)
-            {
-                SelectedItem.IsValidClip = false;
-                SelectedItem.InformationMessage = "End time is earlier than Start time";
-            }
-            else if (clipLength.Hour == 0 && clipLength.Minute == 0 && clipLength.Second == 0)
-            {
-                SelectedItem.IsValidClip = false;
-                SelectedItem.InformationMessage = "Clip Length is 0 second";
-            }
-            else if (TimeUtil.ConvertToSeconds(SelectedItem.EndTime) > TimeUtil.ConvertToSeconds(_duration))
-            {
-                SelectedItem.IsValidClip = false;
-                SelectedItem.InformationMessage = "End time longer than video length";
-            }
-            else
-            {
-                SelectedItem.IsValidClip = true;
-                SelectedItem.InformationMessage = StartTime + " ~ " + EndTime + "\n" + "Duration: " + TimeUtil.TimeToString(clipLength);
-            }
+            SelectedItem.Validate(_duration);
         }
-        public bool VideoIsReady { get; set; } = false;
+        public void ToEnd()
+        {
+            _endTime = TimeUtil.TimeToString(_duration);
+            OnPropertyChanged("EndTime");
+            Validate();
+        }
+        public void ToStart()
+        {
+            _startTime = "00:00:00";
+            OnPropertyChanged("StartTime");
+            Validate();
+        }
+        public bool IsVideoReady { get; set; } = false;
         public string YoutubeVideoURL
         {
             get
@@ -101,7 +102,7 @@ namespace YoutubeCutter.ViewModels
                     _videoInformation = new VideoInformation();
                     _youtubeURL = value.Trim();
                     IsAvaliableVideo = false;
-                    VideoIsReady = false;
+                    IsVideoReady = false;
                     MenuItems.Clear();
                     if (_youtubeURL == "" || _youtubeURL == "Youtube URL")
                     {
@@ -123,7 +124,7 @@ namespace YoutubeCutter.ViewModels
                         OnPropertyChanged("YoutubeVideoURL");
                     }
                     OnPropertyChanged("IsAvaliableVideo");
-                    OnPropertyChanged("VideoIsReady");
+                    OnPropertyChanged("IsVideoReady");
                 }
             }
         }
@@ -135,12 +136,22 @@ namespace YoutubeCutter.ViewModels
             pageInfo.Identifier = _identifier;
             pageInfo.EmbedYoutubeURL = _youtubeURL == "Youtube URL" ? null : YoutubeEmbedVideoURL;
             pageInfo.YoutubeURL = _youtubeURL;
+            pageInfo.Duration = _duration;
+            pageInfo.DownloadURL = _downloadURL;
+            pageInfo.MenuItems = new string[MenuItems.Count * 3];
+            for (int i = 0; i < MenuItems.Count; i++)
+            {
+                pageInfo.MenuItems[i * 3] = MenuItems[i].Filename;
+                pageInfo.MenuItems[i * 3 + 1] = TimeUtil.TimeToString(MenuItems[i].StartTime);
+                pageInfo.MenuItems[i * 3 + 2] = TimeUtil.TimeToString(MenuItems[i].EndTime);
+            }
             _saveProgress(pageInfo);
         }
 
         public void OnNavigatedTo(object parameter)
         {
             //tood to think
+            _menuItems = new ObservableCollection<ClipItem>();
             IsAvaliableVideo = false;
             _youtubeURL = "Youtube URL";
             if (parameter != null)
@@ -149,17 +160,36 @@ namespace YoutubeCutter.ViewModels
                 _identifier = pageInfo.Identifier;
                 _notifyChanges = VideoPageInfo.NotifyFunction;
                 _saveProgress = VideoPageInfo.SaveFunction;
+                _updatePageInfo = VideoPageInfo.UpdatePageInfoFunction;
                 YoutubeEmbedVideoURL = pageInfo.EmbedYoutubeURL;
                 if (pageInfo.YoutubeURL != null)
                 {
                     _youtubeURL = pageInfo.YoutubeURL;
+                    if (pageInfo.MenuItems != null && pageInfo.MenuItems.Length > 0)
+                    {
+                        IsVideoReady = true;
+                        _duration = pageInfo.Duration;
+                        _downloadURL = pageInfo.DownloadURL;
+                        for (int i = 0; i < pageInfo.MenuItems.Length / 3; i++)
+                        {
+                            MenuItems.Add(new ClipItem()
+                            {
+                                Filename = pageInfo.MenuItems[i * 3],
+                                EndTime = TimeUtil.ParseTimeFromString(pageInfo.MenuItems[i * 3 + 2]),
+                                StartTime = TimeUtil.ParseTimeFromString(pageInfo.MenuItems[i * 3 + 1])
+                            });
+                            MenuItems[i].Validate(_duration);
+                        }
+                        SelectedItem = MenuItems[0];
+                        OnPropertyChanged("IsVideoReady");
+                        OnPropertyChanged("SelectedItem");
+                    }
                 }
                 IsAvaliableVideo = pageInfo.EmbedYoutubeURL != null;
                 OnPropertyChanged("YoutubeEmbedVideoURL");
                 OnPropertyChanged("YoutubeURL");
                 OnPropertyChanged("IsAvaliableVideo");
             }
-            _menuItems = new ObservableCollection<ClipItem>();
         }
         public async void GetVideoInformation()
         {
@@ -179,14 +209,19 @@ namespace YoutubeCutter.ViewModels
                 _downloadURL = result[0..(result.Length - 1)];
                 TimeUtil.ParseIrregularTimeFromString(result[result.Length - 1], _duration);
                 //todo handle parsing error, https://www.youtube.com/watch?v=x8VYWazR5mE
+                VideoPageInfo pageInfo = new VideoPageInfo();
+                pageInfo.Duration = _duration;
+                pageInfo.DownloadURL = _downloadURL;
+                pageInfo.MenuItems = new string[] { "test", "00:00:00", TimeUtil.TimeToString(_duration) };
                 App.Current.Dispatcher.Invoke(() =>
                 {
-                    VideoIsReady = true;
-                    OnPropertyChanged("VideoIsReady");
+                    IsVideoReady = true;
+                    OnPropertyChanged("IsVideoReady");
                     MenuItems.Add(new ClipItem() { Filename = "test", EndTime = _duration, IsValidClip = true, StartTime = new Time() { Hour = 0, Minute = 0, Second = 0 } });
                     SelectedItem = MenuItems[0];
                     SelectedItem.InformationMessage = TimeUtil.TimeToString(SelectedItem.StartTime) + " ~ " + TimeUtil.TimeToString(SelectedItem.EndTime) + "\n" + "Duration: " + TimeUtil.TimeToString(_duration);
                     OnPropertyChanged("SelectedItem");
+                    _updatePageInfo(_identifier, pageInfo);
                 });
                 _webClient.GetVideoInfo(_videoInformation, _youtubeID);
                 if (_videoInformation.AuthorURL != null)

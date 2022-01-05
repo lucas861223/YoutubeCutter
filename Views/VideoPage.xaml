@@ -6,6 +6,7 @@
     xmlns:converters="clr-namespace:YoutubeCutter.Converters"
     xmlns:customControls="clr-namespace:YoutubeCutter.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:input="clr-namespace:System.Windows.Input;assembly=PresentationCore"
     xmlns:local="clr-namespace:YoutubeCutter.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -18,6 +19,9 @@
     <Page.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <converters:BoolToBorderThicknessConverter x:Key="BoolToBorderThicknessConverter" />
+        <converters:StringToImageSourceConverter x:Key="StringToImageSourceConverter" />
+        <BitmapImage x:Key="ForwardToEndIcon" UriSource="../Icons/ForwardToEndIcon.png" />
+        <BitmapImage x:Key="BackWardToStartIcon" UriSource="../Icons/BackwardToStartIcon.png" />
     </Page.Resources>
     <Grid x:Name="Grid" Focusable="True">
         <Grid.RowDefinitions>
@@ -59,46 +63,75 @@
                     Name="ParentDockPanel"
                     Grid.Row="2"
                     HorizontalAlignment="Center"
-                    Visibility="{Binding VideoIsReady, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <TextBlock VerticalAlignment="Center" Text="Start:" />
+                    Visibility="{Binding IsVideoReady, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <Button MaxHeight="{Binding Path=ActualHeight, ElementName=StartTimeMaskedTextBox}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click">
+                                <i:InvokeCommandAction Command="{Binding ToStartCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <Image Source="{StaticResource BackWardToStartIcon}" />
+                    </Button>
+                    <TextBlock
+                        Margin="10,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="Start:" />
                     <TextBox
                         x:Name="StartTimeMaskedTextBox"
                         Margin="5,0,20,0"
                         VerticalAlignment="Center"
                         input:InputMethod.IsInputMethodEnabled="False"
                         KeyDown="TimeBoxOnKeyDownHandler"
-                        LostFocus="TimeLostFocus"
                         PreviewKeyDown="TimeBoxOnPreviewKeyDownHandler"
-                        Text="{Binding StartTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        Text="{Binding StartTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="LostFocus">
+                                <i:InvokeCommandAction Command="{Binding ValidateCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </TextBox>
                     <TextBlock VerticalAlignment="Center" Text="End:" />
                     <TextBox
                         x:Name="EndTimeMaskedTextBox"
-                        Margin="5,0,20,0"
+                        Margin="5,0,10,0"
                         VerticalAlignment="Center"
                         input:InputMethod.IsInputMethodEnabled="False"
                         KeyDown="TimeBoxOnKeyDownHandler"
-                        LostFocus="TimeLostFocus"
                         PreviewKeyDown="TimeBoxOnPreviewKeyDownHandler"
-                        Text="{Binding EndTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        Text="{Binding EndTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="LostFocus">
+                                <i:InvokeCommandAction Command="{Binding ValidateCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </TextBox>
+                    <Button MaxHeight="{Binding Path=ActualHeight, ElementName=StartTimeMaskedTextBox}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click">
+                                <i:InvokeCommandAction Command="{Binding ToEndCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <Image Source="{StaticResource ForwardToEndIcon}" />
+                    </Button>
                 </DockPanel>
                 <TextBlock
                     Grid.Row="2"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Text="Preparing Video..."
-                    Visibility="{Binding VideoIsReady, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse}" />
+                    Visibility="{Binding IsVideoReady, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse}" />
             </Grid>
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="160*" />
-                    <RowDefinition Height="15*" />
-                    <RowDefinition Height="15*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition MaxHeight="{Binding Path=ActualHeight, ElementName=ParentDockPanel}" />
+                    <RowDefinition MaxHeight="{Binding Path=ActualHeight, ElementName=ParentDockPanel}" />
                 </Grid.RowDefinitions>
                 <Border
                     Grid.Row="0"
                     BorderBrush="Gray"
                     BorderThickness="2,2,0,2"
-                    Visibility="{Binding VideoIsReady, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToVisibilityConverter}}">
+                    Visibility="{Binding IsVideoReady, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToVisibilityConverter}}">
                     <ListBox
                         Name="ParentBox"
                         ItemsSource="{Binding MenuItems}"

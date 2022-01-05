@@ -56,16 +56,6 @@ namespace YoutubeCutter.Views
             }
         }
 
-        private void TimeGotFocus(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void TimeLostFocus(object sender, RoutedEventArgs e)
-        {
-            (DataContext as VideoViewModel).Validate();
-        }
-
         private void TimeBoxOnKeyDownHandler(object sender, KeyEventArgs e)
         {
             if (e.Key >= Key.D0 && e.Key <= Key.D9 || e.Key >= Key.NumPad0 && e.Key <= Key.NumPad9)

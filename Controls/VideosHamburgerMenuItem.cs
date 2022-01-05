@@ -19,8 +19,13 @@ namespace YoutubeCutter.Controls
             pageInfo.Identifier = Identifier;
             pageInfo.EmbedYoutubeURL = EmbedYoutubeURL;
             pageInfo.YoutubeURL = YoutubeURL;
+            pageInfo.Duration = Duration;
+            pageInfo.DownloadURL = DownloadURL;
+            pageInfo.MenuItems = MenuItems;
         }
-
+        public string[] MenuItems { get; set; }
+        public Time Duration { get; set; }
+        public string[] DownloadURL { get; set; }
         public string YoutubeURL { get; set; }
         public string EmbedYoutubeURL { get; set; }
         public int Identifier { get; set; }

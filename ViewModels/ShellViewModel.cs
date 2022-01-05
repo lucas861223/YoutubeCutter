@@ -58,10 +58,6 @@ namespace YoutubeCutter.ViewModels
             set { SetProperty(ref _selectedOptionsMenuItem, value); }
         }
 
-
-
-
-
         // TODO WTS: Change the icons and titles for all HamburgerMenuItems here.
         public ObservableCollection<HamburgerMenuItem> MenuItems { get; } = new ObservableCollection<HamburgerMenuItem>()
         {
@@ -90,6 +86,7 @@ namespace YoutubeCutter.ViewModels
             _navigationService = navigationService;
             VideoPageInfo.NotifyFunction = NotifyChanges;
             VideoPageInfo.SaveFunction = SaveWorkProgress;
+            VideoPageInfo.UpdatePageInfoFunction = UpdatePageInfo;
         }
 
         private void OnLoaded()
@@ -169,6 +166,9 @@ namespace YoutubeCutter.ViewModels
             VideosHamburgerMenuItem item = FindItemWithIdentifier(pageInfo.Identifier);
             item.EmbedYoutubeURL = pageInfo.EmbedYoutubeURL;
             item.YoutubeURL = pageInfo.YoutubeURL;
+            item.Duration = pageInfo.Duration;
+            item.DownloadURL = pageInfo.DownloadURL;
+            item.MenuItems = pageInfo.MenuItems;
         }
         private void OnNavigated(object sender, string viewModelName)
         {
@@ -191,27 +191,40 @@ namespace YoutubeCutter.ViewModels
         private void NotifyChanges(int identifier, VideoInformation videoInformation)
         {
             VideosHamburgerMenuItem item = FindItemWithIdentifier(identifier); ;
-            if (videoInformation.VideoTitle != null)
+            if (item != null)
             {
-                item.VideoTitle = videoInformation.VideoTitle;
-                item.ChannelName = videoInformation.ChannelName;
-                item.VideoThumbnail = videoInformation.VideoThumbnailLocation;
-                item.ChannelThumbnail = videoInformation.ChannelThumbnailLocation;
-                item.ToolTip = videoInformation.VideoTitle + "\n" + videoInformation.ChannelName;
-                if (_alreadyAvaliableIdentifier == identifier)
+                if (videoInformation.VideoTitle != null)
                 {
-                    _alreadyAvaliableIdentifier = 0;
+                    item.VideoTitle = videoInformation.VideoTitle;
+                    item.ChannelName = videoInformation.ChannelName;
+                    item.VideoThumbnail = videoInformation.VideoThumbnailLocation;
+                    item.ChannelThumbnail = videoInformation.ChannelThumbnailLocation;
+                    item.ToolTip = videoInformation.VideoTitle + "\n" + videoInformation.ChannelName;
+                    if (_alreadyAvaliableIdentifier == identifier)
+                    {
+                        _alreadyAvaliableIdentifier = 0;
+                    }
+                }
+                else
+                {
+                    item.Label = Resources.ShellDownloadsPage;
+                    item.ChannelName = null;
+                    item.VideoThumbnail = "";
+                    item.ChannelThumbnail = "";
+                    item.EmbedYoutubeURL = null;
+                    item.YoutubeURL = null;
+                    _alreadyAvaliableIdentifier = identifier;
                 }
             }
-            else
+        }
+        private void UpdatePageInfo(int identifier, VideoPageInfo pageInfo)
+        {
+            VideosHamburgerMenuItem item = FindItemWithIdentifier(identifier);
+            if (item != null)
             {
-                item.Label = Resources.ShellDownloadsPage;
-                item.ChannelName = null;
-                item.VideoThumbnail = "";
-                item.ChannelThumbnail = "";
-                item.EmbedYoutubeURL = null;
-                item.YoutubeURL = null;
-                _alreadyAvaliableIdentifier = identifier;
+                item.Duration = pageInfo.Duration;
+                item.DownloadURL = pageInfo.DownloadURL;
+                item.MenuItems = pageInfo.MenuItems;
             }
         }
     }

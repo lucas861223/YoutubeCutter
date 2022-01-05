@@ -70,6 +70,16 @@ namespace YoutubeCutter.Properties {
         }
         
         /// <summary>
+        ///   查詢類型 System.Drawing.Bitmap 的當地語系化資源。
+        /// </summary>
+        public static System.Drawing.Bitmap BackwardToStartIcon {
+            get {
+                object obj = ResourceManager.GetObject("BackwardToStartIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Sample Orders 的當地語系化字串。
         /// </summary>
         public static string DownloadsListDescription {
@@ -93,6 +103,16 @@ namespace YoutubeCutter.Properties {
         public static string FFmpegPathWarning {
             get {
                 return ResourceManager.GetString("FFmpegPathWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類型 System.Drawing.Bitmap 的當地語系化資源。
+        /// </summary>
+        public static System.Drawing.Bitmap ForwardToEndIcon {
+            get {
+                object obj = ResourceManager.GetObject("ForwardToEndIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
