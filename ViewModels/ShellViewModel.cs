@@ -87,6 +87,7 @@ namespace YoutubeCutter.ViewModels
             VideoPageInfo.NotifyFunction = NotifyChanges;
             VideoPageInfo.SaveFunction = SaveWorkProgress;
             VideoPageInfo.UpdatePageInfoFunction = UpdatePageInfo;
+            VideoPageInfo.RemovePage = RemoveVideoPage;
         }
 
         private void OnLoaded()
@@ -226,6 +227,28 @@ namespace YoutubeCutter.ViewModels
                 item.DownloadURL = pageInfo.DownloadURL;
                 item.MenuItems = pageInfo.MenuItems;
             }
+        }
+
+        private void RemoveVideoPage(int identifier)
+        {
+            VideosHamburgerMenuItem item = FindItemWithIdentifier(identifier);
+            int index = MenuItems.IndexOf(item);
+            if ((SelectedMenuItem as VideosHamburgerMenuItem).Identifier == identifier)
+            {
+                if (index > 3)
+                {
+                    SelectedMenuItem = MenuItems[index - 1];
+                }
+                else if (MenuItems.Count > 4)
+                {
+                    SelectedMenuItem = MenuItems[4];
+                } else
+                {
+                    SelectedMenuItem = MenuItems[0];
+                }
+
+            }
+            MenuItems.RemoveAt(index);
         }
     }
 }

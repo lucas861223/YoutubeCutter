@@ -22,6 +22,7 @@
         <converters:StringToImageSourceConverter x:Key="StringToImageSourceConverter" />
         <BitmapImage x:Key="ForwardToEndIcon" UriSource="../Icons/ForwardToEndIcon.png" />
         <BitmapImage x:Key="BackWardToStartIcon" UriSource="../Icons/BackwardToStartIcon.png" />
+        <BitmapImage x:Key="CloseIconButton" UriSource="../Icons/CloseButtonIcon.png" />
     </Page.Resources>
     <Grid x:Name="Grid" Focusable="True">
         <Grid.RowDefinitions>
@@ -146,8 +147,26 @@
                                             <RowDefinition />
                                             <RowDefinition />
                                         </Grid.RowDefinitions>
-                                        <TextBlock Grid.Row="0" Text="Filename" />
+                                        <TextBlock
+                                            Name="FileNameTextBlock"
+                                            Grid.Row="0"
+                                            VerticalAlignment="Center"
+                                            Text="Filename" />
+                                        <Button
+                                            Grid.Row="0"
+                                            Height="{Binding Path=ActualHeight, ElementName=FileNameTextBlock}"
+                                            HorizontalAlignment="Right"
+                                            Tag="{Binding Identifier, Mode=OneTime}"
+                                            Visibility="{Binding Path=DataContext.CanRemoveClips, RelativeSource={RelativeSource AncestorType={x:Type Page}}, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="Click">
+                                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.RemoveClipCommand, RelativeSource={RelativeSource AncestorType={x:Type Page}}}" PassEventArgsToCommand="True" />
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                            <Image Source="{StaticResource CloseIconButton}" />
+                                        </Button>
                                         <TextBox
+                                            Name="FileNameTextBox"
                                             Grid.Row="1"
                                             Tag="{Binding Identifier, Mode=OneTime}"
                                             Text="{Binding Path=Filename, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
@@ -192,6 +211,11 @@
                     </Button>
                     <Button Grid.Column="1">
                         Cancel
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click">
+                                <i:InvokeCommandAction Command="{Binding Path=RemovePageCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                     </Button>
                 </Grid>
 

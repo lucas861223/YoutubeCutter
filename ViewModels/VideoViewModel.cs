@@ -37,6 +37,7 @@ namespace YoutubeCutter.ViewModels
         private VideoPageInfo.NotifyChangesFunction _notifyChanges;
         private VideoPageInfo.SaveWorkProgressFunction _saveProgress;
         private VideoPageInfo.UpdateVideoPageInfo _updatePageInfo;
+        private VideoPageInfo.RemovePageFunction _removePage;
         private ObservableCollection<ClipItem> _menuItems = new ObservableCollection<ClipItem>();
         private string[] _downloadURL;
         private Time _duration = new Time();
@@ -51,6 +52,10 @@ namespace YoutubeCutter.ViewModels
         private ICommand _changeSelectedItemCommand;
         private ICommand _checkFilenameCommand;
         private ICommand _enterCommand;
+        private ICommand _removeClipCommand;
+        private ICommand _removePageCommand;
+        public ICommand RemovePageCommand => _removePageCommand ?? (_removePageCommand = new RelayCommand(RemovePage));
+        public ICommand RemoveClipCommand => _removeClipCommand ?? (_removeClipCommand = new RelayCommand<RoutedEventArgs>(RemoveClip));
         public ICommand EnterCommand => _enterCommand ?? (_enterCommand = new RelayCommand<KeyEventArgs>(Enter));
         public ICommand ToEndCommand => _toEndCommand ?? (_toEndCommand = new RelayCommand(ToEnd));
         public ICommand CheckFilenameCommand => _checkFilenameCommand ?? (_checkFilenameCommand = new RelayCommand<RoutedEventArgs>(CheckFilename));
@@ -61,6 +66,7 @@ namespace YoutubeCutter.ViewModels
         private int _identifierCount = 0;
         private ClipItem _selectedItem;
         public ObservableCollection<ClipItem> MenuItems { get { return _menuItems; } }
+        public bool CanRemoveClips { get { return _menuItems.Count > 1; } }
         public ClipItem SelectedItem
         {
             get
@@ -170,6 +176,7 @@ namespace YoutubeCutter.ViewModels
                 _notifyChanges = VideoPageInfo.NotifyFunction;
                 _saveProgress = VideoPageInfo.SaveFunction;
                 _updatePageInfo = VideoPageInfo.UpdatePageInfoFunction;
+                _removePage = VideoPageInfo.RemovePage;
                 YoutubeEmbedVideoURL = pageInfo.EmbedYoutubeURL;
                 if (pageInfo.YoutubeURL != null)
                 {
@@ -248,6 +255,26 @@ namespace YoutubeCutter.ViewModels
         {
             AddClip("test", new Time { Hour = 0, Second = 0, Minute = 0 }, _duration);
         }
+        public void RemoveClip(RoutedEventArgs eventArgs)
+        {
+            ClipItem clip = FindClipByIdentifier((eventArgs.Source as Button).Tag as string);
+            _filenameDictionary[clip.Filename].Remove(clip);
+            UpdateClipsWithFilename(clip.Filename);
+            if (SelectedItem.Identifier == clip.Identifier)
+            {
+                int index = MenuItems.IndexOf(clip);
+                if (index > 0)
+                {
+                    SelectedItem = MenuItems[index - 1];
+                }
+                else
+                {
+                    SelectedItem = MenuItems[1];
+                }
+            }
+            MenuItems.Remove(clip);
+            OnPropertyChanged("CanRemoveClips");
+        }
         private void AddClip(string filename, Time startTime, Time endTime)
         {
             MenuItems.Add(new ClipItem() { Identifier = "" + _identifierCount++, Filename = filename, EndTime = endTime, StartTime = startTime });
@@ -258,6 +285,7 @@ namespace YoutubeCutter.ViewModels
             }
             _filenameDictionary[filename].Add(MenuItems[MenuItems.Count - 1]);
             UpdateClipsWithFilename(filename);
+            OnPropertyChanged("CanRemoveClips");
         }
         public void ChangeSelectedItem(RoutedEventArgs eventArgs)
         {
@@ -305,6 +333,10 @@ namespace YoutubeCutter.ViewModels
                 UpdateClipFilename((eventArgs.Source as TextBox).Text.Trim(), FindClipByIdentifier((eventArgs.Source as TextBox).Tag as string));
                 Keyboard.ClearFocus();
             }
+        }
+        private void RemovePage()
+        {
+            _removePage(_identifier);
         }
     }
 }

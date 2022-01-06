@@ -80,6 +80,16 @@ namespace YoutubeCutter.Properties {
         }
         
         /// <summary>
+        ///   查詢類型 System.Drawing.Bitmap 的當地語系化資源。
+        /// </summary>
+        public static System.Drawing.Bitmap CloseButtonIcon {
+            get {
+                object obj = ResourceManager.GetObject("CloseButtonIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Sample Orders 的當地語系化字串。
         /// </summary>
         public static string DownloadsListDescription {

@@ -25,6 +25,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Icons\BackwardToStartIcon.png" />
+    <None Remove="Icons\CloseButtonIcon.png" />
     <None Remove="Icons\ForwardToEndIcon.png" />
     <None Remove="Icons\YoutubeChannelDefaultIcon.png" />
     <None Remove="Icons\YoutubeVideoDefaultIcon.png" />
@@ -84,6 +85,7 @@
 
   <ItemGroup>
     <Resource Include="Icons\BackwardToStartIcon.png" />
+    <Resource Include="Icons\CloseButtonIcon.png" />
     <Resource Include="Icons\ForwardToEndIcon.png" />
     <Resource Include="Icons\YoutubeChannelDefaultIcon.png" />
     <Resource Include="Icons\YoutubeVideoDefaultIcon.png" />
