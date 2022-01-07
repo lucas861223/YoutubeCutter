@@ -27,6 +27,32 @@ namespace YoutubeCutter.ViewModels
         private string _versionDescription;
         private ICommand _setThemeCommand;
         private ICommand _privacyStatementCommand;
+        private bool _categorizeByChannel;
+        public bool CategorizeByChannel { get { return _categorizeByChannel; } set { _categorizeByChannel = value; OnPropertyChanged("CurrentFormat"); } }
+        private bool _categorizeByVideo;
+        public bool CategorizeByVideo { get { return _categorizeByVideo; } set { _categorizeByVideo = value; OnPropertyChanged("CurrentFormat"); } }
+        private bool _categorizeByDate;
+        public bool CategorizeByDate { get { return _categorizeByDate; } set { _categorizeByDate = value; OnPropertyChanged("CurrentFormat"); } }
+        public string CurrentFormat
+        {
+            get
+            {
+                string format = "Current Format: " + "DownloadPath\\";
+                if (CategorizeByDate)
+                {
+                    format += DateTime.Today.ToString("yyyy-MM-dd") + "\\";
+                }
+                if (CategorizeByChannel)
+                {
+                    format += "Channel\\";
+                }
+                if (CategorizeByVideo)
+                {
+                    format += "Video\\";
+                }
+                return format + "clip.mp4";
+            }
+        }
         public bool IsInvalidYoutubeDL { get; set; }
         public bool IsInvalidFfmpeg { get; set; }
         private Languages _language;
@@ -55,6 +81,7 @@ namespace YoutubeCutter.ViewModels
                 OnPropertyChanged("IsInvalidYoutubeDL");
             }
         }
+        public string DownloadPath { get; set; }
         private string _ffmpegPath;
         public string FFmpegPath
         {
@@ -104,6 +131,17 @@ namespace YoutubeCutter.ViewModels
             YoutubeDLPath = (string)App.Current.Properties["YoutubedlPath"];
             FFmpegPath = (string)App.Current.Properties["FfmpegPath"];
             FontSize = (int)App.Current.Properties["FontSize"];
+            CategorizeByChannel = (bool)App.Current.Properties["CategorizeByChannel"];
+            CategorizeByDate = (bool)App.Current.Properties["CategorizeByDate"];
+            CategorizeByVideo = (bool)App.Current.Properties["CategorizeByVideo"];
+            DownloadPath = (string)App.Current.Properties["DownloadPath"];
+            OnPropertyChanged("Language");
+            OnPropertyChanged("YoutubeDLPath");
+            OnPropertyChanged("FFmpegPath");
+            OnPropertyChanged("CategorizeByChannel");
+            OnPropertyChanged("CategorizeByDate");
+            OnPropertyChanged("CategorizeByVideo");
+            OnPropertyChanged("DownloadPath");
         }
 
         public void OnNavigatedFrom()
@@ -112,6 +150,10 @@ namespace YoutubeCutter.ViewModels
             App.Current.Properties["YoutubedlPath"] = YoutubeDLPath;
             App.Current.Properties["FfmpegPath"] = FFmpegPath;
             App.Current.Properties["FontSize"] = FontSize;
+            App.Current.Properties["CategorizeByChannel"] = _categorizeByChannel;
+            App.Current.Properties["CategorizeByDate"] = _categorizeByDate;
+            App.Current.Properties["CategorizeByVideo"] = _categorizeByVideo;
+            App.Current.Properties["DownloadPath"] = DownloadPath;
         }
 
         private void OnSetTheme(string themeName)

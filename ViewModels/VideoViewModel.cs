@@ -63,7 +63,7 @@ namespace YoutubeCutter.ViewModels
         public ICommand ValidateCommand => _validateCommand ?? (_validateCommand = new RelayCommand(Validate));
         public ICommand ChangeSelectedItemCommand => _changeSelectedItemCommand ?? (_changeSelectedItemCommand = new RelayCommand<RoutedEventArgs>(ChangeSelectedItem));
         public ICommand AddClipCommand => _addClipCommand ?? (_addClipCommand = new RelayCommand(AddClip));
-        private int _identifierCount = 0;
+        private int _identifierCount = 1;
         private ClipItem _selectedItem;
         public ObservableCollection<ClipItem> MenuItems { get { return _menuItems; } }
         public bool CanRemoveClips { get { return _menuItems.Count > 1; } }
@@ -226,7 +226,7 @@ namespace YoutubeCutter.ViewModels
                 {
                     IsVideoReady = true;
                     OnPropertyChanged("IsVideoReady");
-                    AddClip("test", new Time() { Hour = 0, Minute = 0, Second = 0 }, _duration);
+                    AddClip();
                     SelectedItem = MenuItems[0];
                     _updatePageInfo(_identifier, pageInfo);
                 });
@@ -253,7 +253,7 @@ namespace YoutubeCutter.ViewModels
         }
         public void AddClip()
         {
-            AddClip("test", new Time { Hour = 0, Second = 0, Minute = 0 }, _duration);
+            AddClip("Clip " + _identifierCount, new Time { Hour = 0, Second = 0, Minute = 0 }, _duration);
         }
         public void RemoveClip(RoutedEventArgs eventArgs)
         {

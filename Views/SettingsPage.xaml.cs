@@ -6,7 +6,7 @@ using YoutubeCutter.Models;
 using YoutubeCutter.Helpers;
 using System.Globalization;
 using System.Windows.Data;
-
+using System.Windows.Forms;
 
 namespace YoutubeCutter.Views
 {
@@ -24,7 +24,7 @@ namespace YoutubeCutter.Views
             ((ObjectDataProvider)FindResource("LanguageResources")).Refresh();
         }
 
-        private void openFileDialogForYoutubeDL(object sender, System.Windows.RoutedEventArgs e)
+        private void openFileDialogForYoutubeDL(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.OpenFileDialog dlg = this.OpenFileDialog("youtube-dl");
             bool? result = dlg.ShowDialog();
@@ -36,7 +36,7 @@ namespace YoutubeCutter.Views
             }
         }
 
-        private void openFileDialogForFfmpeg(object sender, System.Windows.RoutedEventArgs e)
+        private void openFileDialogForFfmpeg(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.OpenFileDialog dlg = this.OpenFileDialog("ffmpeg");
             bool? result = dlg.ShowDialog();
@@ -58,16 +58,17 @@ namespace YoutubeCutter.Views
             return dlg;
         }
 
-        private void logInButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void openFileDialogForDownloadPath(object sender, RoutedEventArgs e)
         {
-            youtubeUserName.Visibility = Visibility.Visible;
-            youtubeProfilePicture.Visibility = Visibility.Visible;
-        }
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            fbd.SelectedPath = System.AppDomain.CurrentDomain.BaseDirectory;
+            DialogResult result = fbd.ShowDialog();
 
-        private void logOutButton_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            youtubeUserName.Visibility = Visibility.Collapsed;
-            youtubeProfilePicture.Visibility = Visibility.Collapsed;
+            // Process open file dialog box results
+            if (result == DialogResult.OK)
+            {
+                ((SettingsViewModel)DataContext).DownloadPath  = fbd.SelectedPath;
+            }
         }
     }
 }

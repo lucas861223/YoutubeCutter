@@ -37,6 +37,22 @@ namespace YoutubeCutter.Services
             {
                 App.Current.Properties.Add("FfmpegPath", "ffmpeg.exe");
             }
+            if (!App.Current.Properties.Contains("CategorizeByVideo"))
+            {
+                App.Current.Properties.Add("CategorizeByVideo", false);
+            }
+            if (!App.Current.Properties.Contains("CategorizeByChannel"))
+            {
+                App.Current.Properties.Add("CategorizeByChannel", false);
+            }
+            if (!App.Current.Properties.Contains("CategorizeByDate"))
+            {
+                App.Current.Properties.Add("CategorizeByDate", false);
+            }
+            if (!App.Current.Properties.Contains("DownloadPath"))
+            {
+                App.Current.Properties.Add("DownloadPath", AppDomain.CurrentDomain.BaseDirectory + "Download\\");
+            }
         }
     }
 }

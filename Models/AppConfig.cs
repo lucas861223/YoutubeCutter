@@ -17,5 +17,9 @@
         public string FfmpegPath { get; set; }
 
         public Languages Language { get; set; }
+        public bool CategorizeByVideo { get; set; }
+        public bool CategorizeByChannel { get; set; }
+        public bool CategorizeByDate { get; set; }
+        public string DownloadPath { get; set; }
     }
 }

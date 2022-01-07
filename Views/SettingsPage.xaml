@@ -28,6 +28,7 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <TextBlock Style="{StaticResource PageTitleStyle}" Text="{x:Static properties:Resources.SettingsPageTitle}" />
             <StackPanel
@@ -68,6 +69,10 @@
                     </Hyperlink>
                     <Run Text="{Binding Path=Period, Mode=OneWay, Source={StaticResource LanguageResources}}" />
                 </TextBlock>
+                <TextBlock
+                    Margin="{StaticResource SmallTopMargin}"
+                    Style="{StaticResource SubtitleTextStyle}"
+                    Text="{Binding Path=FFmpegPath, UpdateSourceTrigger=PropertyChanged}" />
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="90*" />
@@ -98,6 +103,44 @@
                     </Hyperlink>
                     <Run Text="{Binding Path=Period, Mode=OneWay, Source={StaticResource LanguageResources}}" />
                 </TextBlock>
+                <TextBlock
+                    Margin="{StaticResource SmallTopMargin}"
+                    Style="{StaticResource SubtitleTextStyle}"
+                    Text="Download Location" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="90*" />
+                        <ColumnDefinition Width="10*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox
+                        x:Name="DownloadLocationTextBox"
+                        Grid.Column="0"
+                        Margin="{StaticResource SmallTopMargin}"
+                        IsEnabled="false"
+                        Text="{Binding Path=DownloadPath, UpdateSourceTrigger=PropertyChanged}" />
+                    <Button
+                        x:Name="ChooseDownloadLocationButton"
+                        Grid.Column="1"
+                        VerticalAlignment="Bottom"
+                        Click="openFileDialogForDownloadPath">
+                        Browse
+                    </Button>
+                </Grid>
+                <StackPanel Margin="{StaticResource SmallTopBottomMargin}">
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox IsChecked="{Binding CategorizeByDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock>Categorize by date</TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox IsChecked="{Binding CategorizeByChannel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock>Categorize by channel</TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox IsChecked="{Binding CategorizeByVideo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock>Categorize by Video</TextBlock>
+                    </StackPanel>
+                    <TextBlock Text="{Binding CurrentFormat, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
                 <TextBlock
                     Margin="{StaticResource SmallTopMargin}"
                     Style="{StaticResource SubtitleTextStyle}"
@@ -160,36 +203,6 @@
                 </ComboBox>
 
             </StackPanel>
-            <StackPanel Grid.Row="1" Margin="{StaticResource MediumLeftRightMargin}">
-                <TextBlock Style="{StaticResource SubtitleTextStyle}" Text="{x:Static properties:Resources.SettingsPageYoutube}" />
-                <StackPanel Orientation="Horizontal">
-                    <Image
-                        x:Name="youtubeProfilePicture"
-                        Width="56"
-                        Height="56"
-                        Source="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png" />
-
-                    <TextBlock
-                        x:Name="youtubeUserName"
-                        Width="218"
-                        Height="23"
-                        Margin="{StaticResource SmallLeftRightMargin}"
-                        Text="test" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Button
-                        x:Name="logInButton"
-                        Click="logInButton_Click"
-                        Content="Log In" />
-
-                    <Button
-                        x:Name="logOutButton"
-                        Click="logOutButton_Click"
-                        Content="Log Out" />
-                </StackPanel>
-            </StackPanel>
-
-
         </Grid>
     </ScrollViewer>
 </Page>
