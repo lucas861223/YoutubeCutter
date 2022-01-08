@@ -13,7 +13,8 @@ using YoutubeCutter.Helpers;
 
 using System.IO;
 using System.Text.Json;
-
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace YoutubeCutter.ViewModels
 {
@@ -28,11 +29,11 @@ namespace YoutubeCutter.ViewModels
         private ICommand _setThemeCommand;
         private ICommand _privacyStatementCommand;
         private bool _categorizeByChannel;
-        public bool CategorizeByChannel { get { return _categorizeByChannel; } set { _categorizeByChannel = value; OnPropertyChanged("CurrentFormat"); } }
+        public bool CategorizeByChannel { get { return _categorizeByChannel; } set { _categorizeByChannel = value; OnPropertyChanged("CurrentFormat"); App.Current.Properties["CategorizeByChannel"] = _categorizeByChannel; } }
         private bool _categorizeByVideo;
-        public bool CategorizeByVideo { get { return _categorizeByVideo; } set { _categorizeByVideo = value; OnPropertyChanged("CurrentFormat"); } }
+        public bool CategorizeByVideo { get { return _categorizeByVideo; } set { _categorizeByVideo = value; OnPropertyChanged("CurrentFormat"); App.Current.Properties["CategorizeByVideo"] = _categorizeByVideo;  } }
         private bool _categorizeByDate;
-        public bool CategorizeByDate { get { return _categorizeByDate; } set { _categorizeByDate = value; OnPropertyChanged("CurrentFormat"); } }
+        public bool CategorizeByDate { get { return _categorizeByDate; } set { _categorizeByDate = value; OnPropertyChanged("CurrentFormat"); App.Current.Properties["CategorizeByDate"] = _categorizeByDate; } }
         public string CurrentFormat
         {
             get
@@ -64,6 +65,7 @@ namespace YoutubeCutter.ViewModels
                 {
                     _language = value;
                     CultureResources.ChangeCulture(_language);
+                    App.Current.Properties["Language"] = _language;
                 }
             }
         }
@@ -72,34 +74,104 @@ namespace YoutubeCutter.ViewModels
         public string YoutubeDLPath
         {
             get { return _youtubeDLPath; }
-            set
-            {
-                _youtubeDLPath = value;
-                IsInvalidYoutubeDL = !_youtubeDLPath.EndsWith("\\youtube-dl.exe");
-                App.Current.Properties["YoutubedlPath"] = _youtubeDLPath;
-                OnPropertyChanged("YoutubeDLPath");
-                OnPropertyChanged("IsInvalidYoutubeDL");
-            }
+            set { _youtubeDLPath = value; OnPropertyChanged("YoutubeDLPath"); App.Current.Properties["YoutubedlPath"] = _youtubeDLPath; }
         }
         public string DownloadPath { get; set; }
         private string _ffmpegPath;
         public string FFmpegPath
         {
             get { return _ffmpegPath; }
-            set
+            set { _ffmpegPath = value; OnPropertyChanged("FFmpegPath"); App.Current.Properties["FfmpegPath"] = FFmpegPath; }
+        }
+        public bool IsVerifyingYoutubeDL { get; set; } = false;
+        public bool IsVerifyingFfmpeg { get; set; } = false;
+        public int FontSize { get; set; }
+        private ICommand _getYoutubeDLCommand;
+        public ICommand GetYoutubeDLCommand => _getYoutubeDLCommand ?? (_getYoutubeDLCommand = new RelayCommand(GetYoutubeDL));
+        private ICommand _getFfmpegommand;
+        public ICommand GetFfMpegCommand => _getFfmpegommand ?? (_getFfmpegommand = new RelayCommand(GetFffmpeg));
+        private async void GetYoutubeDL()
+        {
+            Microsoft.Win32.OpenFileDialog dlg = this.OpenFileDialog("youtube-dl");
+            bool? result = dlg.ShowDialog();
+
+            // Process open file dialog box results
+            if (result == true)
             {
-                if (value == null)
+                IsVerifyingYoutubeDL = true;
+                YoutubeDLPath = dlg.FileName;
+                OnPropertyChanged("IsVerifyingYoutubeDL");
+                IsInvalidYoutubeDL = false;
+                OnPropertyChanged("IsInvalidYoutubeDL");
+                App.Current.Properties["IsValidYoutubeDL"] = !IsInvalidYoutubeDL;
+                await Task.Run(() =>
                 {
-                    value = "";
-                }
-                _ffmpegPath = value;
-                IsInvalidFfmpeg = !_ffmpegPath.EndsWith("\\ffmpeg.exe");
-                OnPropertyChanged("FFmpegPath");
-                OnPropertyChanged("IsInvalidFfmpeg");
+
+                    var p = Process.Start(
+                        new ProcessStartInfo(YoutubeDLPath, "https://www.youtube.com/watch?v=jNQXAC9IVRw --get-duration")
+                        {
+                            CreateNoWindow = true,
+                            UseShellExecute = false,
+                            RedirectStandardError = true,
+                            RedirectStandardOutput = true,
+                        }
+                    );
+                    p.WaitForExit();
+                    string cmdResult = p.StandardOutput.ReadToEnd().TrimEnd();
+                    IsInvalidYoutubeDL = !cmdResult.StartsWith("19");
+                    IsVerifyingYoutubeDL = false;
+                    OnPropertyChanged("IsVerifyingYoutubeDL");
+                    OnPropertyChanged("IsInvalidYoutubeDL");
+                    App.Current.Properties["IsValidYoutubeDL"] = !IsInvalidYoutubeDL;
+                });
             }
         }
-        public int FontSize { get; set; }
+        private async void GetFffmpeg()
+        {
+            Microsoft.Win32.OpenFileDialog dlg = this.OpenFileDialog("ffmpeg");
+            bool? result = dlg.ShowDialog();
 
+            // Process open file dialog box results
+            if (result == true)
+            {
+                IsVerifyingFfmpeg = true;
+                FFmpegPath = dlg.FileName;
+                OnPropertyChanged("IsVerifyingFfmpeg");
+                IsInvalidFfmpeg = false;
+                OnPropertyChanged("IsInvalidFfmpeg");
+                App.Current.Properties["IsValidFfmpeg"] = !IsInvalidFfmpeg;
+                await Task.Run(() =>
+                {
+
+                    var p = Process.Start(
+                        new ProcessStartInfo(FFmpegPath, "-version")
+                        {
+                            CreateNoWindow = true,
+                            UseShellExecute = false,
+                            RedirectStandardError = true,
+                            RedirectStandardOutput = true,
+                        }
+                    );
+                    p.WaitForExit();
+                    string cmdResult = p.StandardOutput.ReadToEnd().TrimEnd();
+                    IsInvalidFfmpeg = !cmdResult.StartsWith("ffmpeg version");
+                    IsVerifyingFfmpeg = false;
+                    OnPropertyChanged("IsVerifyingFfmpeg");
+                    OnPropertyChanged("IsInvalidFfmpeg");
+                    App.Current.Properties["IsValidFfmpeg"] = !IsInvalidFfmpeg;
+                });
+            }
+        }
+        private Microsoft.Win32.OpenFileDialog OpenFileDialog(string defaultFileName)
+        {
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            dlg.FileName = defaultFileName; // Default file name
+            dlg.DefaultExt = ".exe"; // Default file extension
+            dlg.Filter = "Exe Files (.exe)|*.exe|All Files (*.*)|*.*"; // Filter files by extension
+
+            // Show open file dialog box
+            return dlg;
+        }
         public AppTheme Theme
         {
             get { return _theme; }
@@ -135,6 +207,8 @@ namespace YoutubeCutter.ViewModels
             CategorizeByDate = (bool)App.Current.Properties["CategorizeByDate"];
             CategorizeByVideo = (bool)App.Current.Properties["CategorizeByVideo"];
             DownloadPath = (string)App.Current.Properties["DownloadPath"];
+            IsInvalidFfmpeg = !(bool)App.Current.Properties["IsValidFfmpeg"];
+            IsInvalidYoutubeDL = !(bool)App.Current.Properties["IsValidYoutubeDL"];
             OnPropertyChanged("Language");
             OnPropertyChanged("YoutubeDLPath");
             OnPropertyChanged("FFmpegPath");
@@ -142,18 +216,13 @@ namespace YoutubeCutter.ViewModels
             OnPropertyChanged("CategorizeByDate");
             OnPropertyChanged("CategorizeByVideo");
             OnPropertyChanged("DownloadPath");
+            OnPropertyChanged("IsInvalidYoutubeDL");
+            OnPropertyChanged("IsInvalidFfmpeg");
         }
 
         public void OnNavigatedFrom()
         {
-            App.Current.Properties["Language"] = Language;
-            App.Current.Properties["YoutubedlPath"] = YoutubeDLPath;
-            App.Current.Properties["FfmpegPath"] = FFmpegPath;
             App.Current.Properties["FontSize"] = FontSize;
-            App.Current.Properties["CategorizeByChannel"] = _categorizeByChannel;
-            App.Current.Properties["CategorizeByDate"] = _categorizeByDate;
-            App.Current.Properties["CategorizeByVideo"] = _categorizeByVideo;
-            App.Current.Properties["DownloadPath"] = DownloadPath;
         }
 
         private void OnSetTheme(string themeName)
@@ -164,5 +233,6 @@ namespace YoutubeCutter.ViewModels
 
         private void OnPrivacyStatement()
             => _systemService.OpenInWebBrowser((string)App.Current.Properties["PrivacyStatement"]);
+
     }
 }

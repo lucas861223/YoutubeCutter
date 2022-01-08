@@ -17,12 +17,13 @@ namespace YoutubeCutter.Controls
         public string Filename { get { return _filename; } set { _filename = value; OnPropertyChanged("Filename"); } }
         public Time StartTime { get; set; }
         public Time EndTime { get; set; }
-        public bool IsValidClip { get { return _isLengthPositive && _isEndWithinVideo && _isEndAfterStart && _isFilenameUnique; } }
+        public bool IsValidClip { get { return _isLengthPositive && _isEndWithinVideo && _isEndAfterStart && _isFilenameUnique && !_fileAlreadyExists; } }
 
         private bool _isLengthPositive = true;
         private bool _isEndWithinVideo = true;
         private bool _isEndAfterStart = true;
         private bool _isFilenameUnique = true;
+        private bool _fileAlreadyExists = false;
         private string _informationMessage;
         public string InformationMessage
         {
@@ -31,6 +32,10 @@ namespace YoutubeCutter.Controls
                 if (!_isFilenameUnique)
                 {
                     return "Filename is already taken";
+                }
+                else if (_fileAlreadyExists)
+                {
+                    return "This file already exists";
                 }
                 else if (!_isLengthPositive)
                 {
@@ -69,6 +74,13 @@ namespace YoutubeCutter.Controls
         public void IsFilenameUnique(bool isUnique)
         {
             _isFilenameUnique = isUnique;
+            OnPropertyChanged("IsValidClip");
+            OnPropertyChanged("InformationMessage");
+        }
+
+        public void DoesFileExist(bool doesFileExist)
+        {
+            _fileAlreadyExists = doesFileExist;
             OnPropertyChanged("IsValidClip");
             OnPropertyChanged("InformationMessage");
         }

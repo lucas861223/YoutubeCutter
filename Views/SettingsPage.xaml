@@ -53,8 +53,12 @@
                     <Button
                         x:Name="ChooseYoutubeDLPathButton"
                         Grid.Column="1"
-                        VerticalAlignment="Bottom"
-                        Click="openFileDialogForYoutubeDL">
+                        VerticalAlignment="Bottom">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click">
+                                <i:InvokeCommandAction Command="{Binding GetYoutubeDLCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                         Browse
                     </Button>
                 </Grid>
@@ -69,6 +73,11 @@
                     </Hyperlink>
                     <Run Text="{Binding Path=Period, Mode=OneWay, Source={StaticResource LanguageResources}}" />
                 </TextBlock>
+                <TextBlock
+                    Margin="{StaticResource SmallTopMargin}"
+                    Style="{StaticResource BodyTextStyle}"
+                    Text="Verifying, Please wait..."
+                    Visibility="{Binding Path=IsVerifyingYoutubeDL, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBlock
                     Margin="{StaticResource SmallTopMargin}"
                     Style="{StaticResource SubtitleTextStyle}"
@@ -87,8 +96,12 @@
                     <Button
                         x:Name="ChooseFfmpegPathButton"
                         Grid.Column="1"
-                        VerticalAlignment="Bottom"
-                        Click="openFileDialogForFfmpeg">
+                        VerticalAlignment="Bottom">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click">
+                                <i:InvokeCommandAction Command="{Binding GetFfMpegCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                         Browse
                     </Button>
                 </Grid>
@@ -103,6 +116,12 @@
                     </Hyperlink>
                     <Run Text="{Binding Path=Period, Mode=OneWay, Source={StaticResource LanguageResources}}" />
                 </TextBlock>
+                <TextBlock
+                    Margin="{StaticResource SmallTopMargin}"
+                    Style="{StaticResource BodyTextStyle}"
+                    Text="Verifying, Please wait..."
+                    Visibility="{Binding Path=IsVerifyingFfmpeg, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" />
+
                 <TextBlock
                     Margin="{StaticResource SmallTopMargin}"
                     Style="{StaticResource SubtitleTextStyle}"

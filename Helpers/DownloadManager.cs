@@ -29,6 +29,24 @@ namespace YoutubeCutter.Helpers
 
         }
 
+        public static string GetDownloadPath(string videoTitle, string channelName)
+        {
+            string path = (string)App.Current.Properties["DownloadPath"];
+            if ((bool)App.Current.Properties["CategorizeByDate"])
+            {
+                path += DateTime.Today.ToString("yyyy-MM-dd") + "\\";
+            }
+            if ((bool)App.Current.Properties["CategorizeByChannel"])
+            {
+                path += channelName + "\\";
+            }
+            if ((bool)App.Current.Properties["CategorizeByVideo"])
+            {
+                path += videoTitle + "\\";
+            }
+            return path;
+        }
+
         public static void ClearCacheFolder()
         {
             try

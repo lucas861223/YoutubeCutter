@@ -9,6 +9,7 @@ namespace YoutubeCutter.Models
 {
     public class VideoPageInfo
     {
+        public string DownloadPath { get; set; }
         public int Identifier { get; set; }
         public string YoutubeURL { get; set; }
         public delegate void NotifyChangesFunction(int identifier, VideoInformation information);

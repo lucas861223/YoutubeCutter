@@ -7,6 +7,7 @@ using MahApps.Metro.Controls;
 using System.Windows.Media.Imaging;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using System.Windows;
+using YoutubeCutter.Helpers;
 
 using YoutubeCutter.Models;
 
@@ -22,6 +23,7 @@ namespace YoutubeCutter.Controls
             pageInfo.Duration = Duration;
             pageInfo.DownloadURL = DownloadURL;
             pageInfo.MenuItems = MenuItems;
+            pageInfo.DownloadPath = DownloadManager.GetDownloadPath(VideoTitle, ChannelName);
         }
         public string[] MenuItems { get; set; }
         public Time Duration { get; set; }

@@ -53,6 +53,14 @@ namespace YoutubeCutter.Services
             {
                 App.Current.Properties.Add("DownloadPath", AppDomain.CurrentDomain.BaseDirectory + "Download\\");
             }
+            if (!App.Current.Properties.Contains("IsValidFfmpeg"))
+            {
+                App.Current.Properties.Add("IsValidFfmpeg", false);
+            }
+            if (!App.Current.Properties.Contains("IsValidYoutubeDL"))
+            {
+                App.Current.Properties.Add("IsValidYoutubeDL", false);
+            }
         }
     }
 }
