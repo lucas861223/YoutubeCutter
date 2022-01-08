@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YoutubeCutter.Models;
 
 namespace YoutubeCutter.Helpers
 {
@@ -11,7 +13,6 @@ namespace YoutubeCutter.Helpers
     {
         private static WebClient _webClient = WebClient.Instance;
         private static string _cacheLocation = AppDomain.CurrentDomain.BaseDirectory + "Cache";
-
         public static string DownloadThumbnail(string url, string youtubeID)
         {
             if (!Directory.Exists(_cacheLocation + "\\" + youtubeID))
@@ -21,14 +22,12 @@ namespace YoutubeCutter.Helpers
             }
             return _cacheLocation + "\\" + youtubeID + "\\thumbnail.jpg";
         }
-
         public static void MakeChacheFolder()
         {
 
             Directory.CreateDirectory(_cacheLocation);
 
         }
-
         public static string GetDownloadPath(string videoTitle, string channelName)
         {
             string path = (string)App.Current.Properties["DownloadPath"];
@@ -46,7 +45,6 @@ namespace YoutubeCutter.Helpers
             }
             return path;
         }
-
         public static void ClearCacheFolder()
         {
             try

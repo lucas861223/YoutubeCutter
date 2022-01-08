@@ -25,7 +25,7 @@ namespace YoutubeCutter.Models
         public delegate void RemovePageFunction(int identifier);
         public static RemovePageFunction  RemovePage{ get; set; }
         public Time Duration { set; get; }
-        public string[] DownloadURL { set; get; }
+        public string DownloadURL { set; get; }
         public string[] MenuItems { get; set; }
     }
 }

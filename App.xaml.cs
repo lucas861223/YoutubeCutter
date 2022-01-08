@@ -96,10 +96,10 @@ namespace YoutubeCutter
 
         private async void OnExit(object sender, ExitEventArgs e)
         {
-            DownloadManager.ClearCacheFolder();
             await _host.StopAsync();
             _host.Dispose();
             _host = null;
+            DownloadManager.ClearCacheFolder();
         }
 
         private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)

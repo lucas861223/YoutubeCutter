@@ -5,9 +5,12 @@ using System.Linq;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 
+using System.Threading.Tasks;
+using YoutubeCutter.Models;
 using YoutubeCutter.Contracts.ViewModels;
 using YoutubeCutter.Core.Contracts.Services;
 using YoutubeCutter.Core.Models;
+using System.Collections.Concurrent;
 
 namespace YoutubeCutter.ViewModels
 {
@@ -15,6 +18,8 @@ namespace YoutubeCutter.ViewModels
     {
         private readonly ISampleDataService _sampleDataService;
         private SampleOrder _selected;
+        private static bool _hasThreadWorking = false;
+        public ConcurrentQueue<DownloadItem> DownloadQueue { get; set; }
 
         public SampleOrder Selected
         {

@@ -39,7 +39,7 @@ namespace YoutubeCutter.ViewModels
         private VideoPageInfo.UpdateVideoPageInfo _updatePageInfo;
         private VideoPageInfo.RemovePageFunction _removePage;
         private ObservableCollection<ClipItem> _menuItems = new ObservableCollection<ClipItem>();
-        private string[] _downloadURL;
+        private string _downloadURL;
         private Time _duration = new Time();
         private string _startTime = "00:00:00";
         public string StartTime { get { return _startTime; } set { value = value.Trim(); if (TimeUtil.IsFormattedTime(value)) { _startTime = value; OnPropertyChanged("StartTime"); } } }
@@ -65,6 +65,23 @@ namespace YoutubeCutter.ViewModels
         public ICommand ChangeSelectedItemCommand => _changeSelectedItemCommand ?? (_changeSelectedItemCommand = new RelayCommand<RoutedEventArgs>(ChangeSelectedItem));
         public ICommand AddClipCommand => _addClipCommand ?? (_addClipCommand = new RelayCommand(AddClip));
         private int _identifierCount = 1;
+        public bool IsDownloadEnabled { get { return (bool)App.Current.Properties["IsValidFfmpeg"] && ClipErrorCount == 0; } }
+        public string DownloadButtonToolTip
+        {
+            get
+            {
+                if (!(bool)App.Current.Properties["IsValidFfmpeg"])
+                {
+                    return "You need a valid Ffmpeg to download clips.";
+                }
+                else if (ClipErrorCount > 0)
+                {
+                    return "You need to sort out the errors in the clips first.";
+                }
+                return null;
+            }
+        }
+        private int ClipErrorCount = 0;
         private ClipItem _selectedItem;
         public ObservableCollection<ClipItem> MenuItems { get { return _menuItems; } }
         public bool CanRemoveClips { get { return _menuItems.Count > 1; } }
@@ -89,9 +106,13 @@ namespace YoutubeCutter.ViewModels
         }
         public void Validate()
         {
+            int tmp = SelectedItem.IsValidClip ? 0 : 1;
             SelectedItem.StartTime = TimeUtil.ParseTimeFromString(StartTime);
             SelectedItem.EndTime = TimeUtil.ParseTimeFromString(EndTime);
             SelectedItem.Validate(_duration);
+            ClipErrorCount -= tmp - (SelectedItem.IsValidClip ? 0 : 1);
+            OnPropertyChanged("IsDownloadEnabled");
+            OnPropertyChanged("DownloadButtonToolTip");
         }
         public void ToEnd()
         {
@@ -190,6 +211,7 @@ namespace YoutubeCutter.ViewModels
                         for (int i = 0; i < pageInfo.MenuItems.Length / 3; i++)
                         {
                             AddClip(pageInfo.MenuItems[i * 3], TimeUtil.ParseTimeFromString(pageInfo.MenuItems[i * 3 + 1]), TimeUtil.ParseTimeFromString(pageInfo.MenuItems[i * 3 + 2]));
+                            ClipErrorCount += MenuItems[i].IsValidClip ? 0 : 1;
                         }
                         SelectedItem = MenuItems[0];
                         OnPropertyChanged("IsVideoReady");
@@ -200,6 +222,8 @@ namespace YoutubeCutter.ViewModels
                 OnPropertyChanged("YoutubeEmbedVideoURL");
                 OnPropertyChanged("YoutubeURL");
                 OnPropertyChanged("IsAvaliableVideo");
+                OnPropertyChanged("IsDownloadEnabled");
+                OnPropertyChanged("DownloadButtonToolTip");
             }
         }
         public async void GetVideoInformation()
@@ -220,7 +244,7 @@ namespace YoutubeCutter.ViewModels
                     );
                     p.WaitForExit();
                     string[] result = p.StandardOutput.ReadToEnd().TrimEnd().Split("\n");
-                    _downloadURL = result[0..(result.Length - 1)];
+                    _downloadURL = result[0];
                     TimeUtil.ParseIrregularTimeFromString(result[result.Length - 1], _duration);
                     //todo handle parsing error, https://www.youtube.com/watch?v=x8VYWazR5mE
                     VideoPageInfo pageInfo = new VideoPageInfo();
@@ -277,6 +301,9 @@ namespace YoutubeCutter.ViewModels
                 }
             }
             MenuItems.Remove(clip);
+            ClipErrorCount -= clip.IsValidClip ? 0 : 1;
+            OnPropertyChanged("IsDownloadEnabled");
+            OnPropertyChanged("DownloadButtonToolTip");
             OnPropertyChanged("CanRemoveClips");
         }
         private void AddClip(string filename, Time startTime, Time endTime)
@@ -321,14 +348,21 @@ namespace YoutubeCutter.ViewModels
             _filenameDictionary[filename].Add(clip);
             clip.Filename = filename;
             UpdateClipsWithFilename(clip.Filename);
+            int tmp = clip.IsValidClip ? 0 : 1;
             clip.DoesFileExist(File.Exists(_downloadPath + filename));
+            ClipErrorCount -= tmp - (clip.IsValidClip ? 0 : 1);
+            OnPropertyChanged("IsDownloadEnabled");
+            OnPropertyChanged("DownloadButtonToolTip");
         }
         private void UpdateClipsWithFilename(string filename)
         {
             bool isUnique = _filenameDictionary[filename].Count == 1;
+            int tmp;
             foreach (ClipItem clip in _filenameDictionary[filename])
             {
+                tmp = clip.IsValidClip ? 0 : 1;
                 clip.IsFilenameUnique(isUnique);
+                ClipErrorCount -= tmp - (clip.IsValidClip ? 0 : 1);
             }
         }
         public void Enter(KeyEventArgs eventArgs)

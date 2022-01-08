@@ -206,7 +206,11 @@
                         <ColumnDefinition Width="5*" />
                         <ColumnDefinition Width="5*" />
                     </Grid.ColumnDefinitions>
-                    <Button Grid.Column="0" Visibility="{Binding Path=IsVideoReady, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+                    <Button
+                        Grid.Column="0"
+                        IsEnabled="{Binding IsDownloadEnabled, UpdateSourceTrigger=PropertyChanged}"
+                        ToolTip="{Binding DownloadButtonToolTip, UpdateSourceTrigger=PropertyChanged}"
+                        Visibility="{Binding Path=IsVideoReady, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
                         Download
                     </Button>
                     <Button Grid.Column="1">

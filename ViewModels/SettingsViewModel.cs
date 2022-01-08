@@ -31,7 +31,7 @@ namespace YoutubeCutter.ViewModels
         private bool _categorizeByChannel;
         public bool CategorizeByChannel { get { return _categorizeByChannel; } set { _categorizeByChannel = value; OnPropertyChanged("CurrentFormat"); App.Current.Properties["CategorizeByChannel"] = _categorizeByChannel; } }
         private bool _categorizeByVideo;
-        public bool CategorizeByVideo { get { return _categorizeByVideo; } set { _categorizeByVideo = value; OnPropertyChanged("CurrentFormat"); App.Current.Properties["CategorizeByVideo"] = _categorizeByVideo;  } }
+        public bool CategorizeByVideo { get { return _categorizeByVideo; } set { _categorizeByVideo = value; OnPropertyChanged("CurrentFormat"); App.Current.Properties["CategorizeByVideo"] = _categorizeByVideo; } }
         private bool _categorizeByDate;
         public bool CategorizeByDate { get { return _categorizeByDate; } set { _categorizeByDate = value; OnPropertyChanged("CurrentFormat"); App.Current.Properties["CategorizeByDate"] = _categorizeByDate; } }
         public string CurrentFormat
@@ -142,7 +142,6 @@ namespace YoutubeCutter.ViewModels
                 App.Current.Properties["IsValidFfmpeg"] = !IsInvalidFfmpeg;
                 await Task.Run(() =>
                 {
-
                     var p = Process.Start(
                         new ProcessStartInfo(FFmpegPath, "-version")
                         {

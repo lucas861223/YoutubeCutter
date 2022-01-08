@@ -32,13 +32,13 @@ namespace YoutubeCutter.Converters
                     memoryStream.Position = 0;
 
                     image.StreamSource = memoryStream;
-                    image.CacheOption = BitmapCacheOption.OnLoad;
                 }
             }
             else
             {
                 image.UriSource = new Uri(value as string);
             }
+            image.CacheOption = BitmapCacheOption.OnLoad;
             image.EndInit();
             return image;
         }
