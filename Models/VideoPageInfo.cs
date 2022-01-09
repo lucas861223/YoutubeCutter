@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,9 @@ namespace YoutubeCutter.Models
 
         public delegate void RemovePageFunction(int identifier);
         public static RemovePageFunction  RemovePage{ get; set; }
+
+        public delegate void MoveToDownloadFunction(int identifier, ObservableCollection<ClipItem> clips);
+        public static MoveToDownloadFunction MoveToDownload { get; set; }
         public Time Duration { set; get; }
         public string DownloadURL { set; get; }
         public string[] MenuItems { get; set; }

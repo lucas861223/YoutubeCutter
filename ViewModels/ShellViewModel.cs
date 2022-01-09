@@ -88,6 +88,7 @@ namespace YoutubeCutter.ViewModels
             VideoPageInfo.SaveFunction = SaveWorkProgress;
             VideoPageInfo.UpdatePageInfoFunction = UpdatePageInfo;
             VideoPageInfo.RemovePage = RemoveVideoPage;
+            VideoPageInfo.MoveToDownload = MoveToDownload;
         }
 
         private void OnLoaded()
@@ -165,11 +166,14 @@ namespace YoutubeCutter.ViewModels
         public void SaveWorkProgress(VideoPageInfo pageInfo)
         {
             VideosHamburgerMenuItem item = FindItemWithIdentifier(pageInfo.Identifier);
-            item.EmbedYoutubeURL = pageInfo.EmbedYoutubeURL;
-            item.YoutubeURL = pageInfo.YoutubeURL;
-            item.Duration = pageInfo.Duration;
-            item.DownloadURL = pageInfo.DownloadURL;
-            item.MenuItems = pageInfo.MenuItems;
+            if (item != null)
+            {
+                item.EmbedYoutubeURL = pageInfo.EmbedYoutubeURL;
+                item.YoutubeURL = pageInfo.YoutubeURL;
+                item.Duration = pageInfo.Duration;
+                item.DownloadURL = pageInfo.DownloadURL;
+                item.MenuItems = pageInfo.MenuItems;
+            }
         }
         private void OnNavigated(object sender, string viewModelName)
         {
@@ -229,6 +233,38 @@ namespace YoutubeCutter.ViewModels
             }
         }
 
+        private void MoveToDownload(int identifier, ObservableCollection<ClipItem> clips)
+        {
+            DownloadItem[] downloadItems = new DownloadItem[clips.Count];
+            VideosHamburgerMenuItem videoMenuItem = FindItemWithIdentifier(identifier);
+            string downloadPath = (string)App.Current.Properties["DownloadPath"];
+            if ((bool)App.Current.Properties["CategorizeByDate"])
+            {
+                downloadPath += DateTime.Today.ToString("yyyy-MM-dd") + "\\";
+            }
+            if ((bool)App.Current.Properties["CategorizeByChannel"])
+            {
+                downloadPath += videoMenuItem.ChannelName + "\\";
+            }
+            if ((bool)App.Current.Properties["CategorizeByVideo"])
+            {
+                downloadPath += videoMenuItem.VideoTitle + "\\";
+            }
+            for (int i = 0; i < clips.Count; i++)
+            {
+                downloadItems[i] = new DownloadItem();
+                downloadItems[i].Filename = clips.ElementAt(i).Filename;
+                downloadItems[i].VideoTitle = videoMenuItem.VideoTitle;
+                downloadItems[i].ChannelName = videoMenuItem.ChannelName;
+                downloadItems[i].DownloadURL = videoMenuItem.DownloadURL;
+                downloadItems[i].StartTime = clips.ElementAt(i).StartTime;
+                downloadItems[i].EndTime = clips.ElementAt(i).EndTime;
+                downloadItems[i].Directory = downloadPath;
+            }
+            MenuItems.Remove(videoMenuItem);
+            SelectedMenuItem = MenuItems[1];
+            _navigationService.NavigateTo(typeof(DownloadsViewModel).FullName, downloadItems);
+        }
         private void RemoveVideoPage(int identifier)
         {
             VideosHamburgerMenuItem item = FindItemWithIdentifier(identifier);
@@ -242,7 +278,8 @@ namespace YoutubeCutter.ViewModels
                 else if (MenuItems.Count > 4)
                 {
                     SelectedMenuItem = MenuItems[4];
-                } else
+                }
+                else
                 {
                     SelectedMenuItem = MenuItems[0];
                 }

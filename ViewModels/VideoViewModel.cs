@@ -38,6 +38,7 @@ namespace YoutubeCutter.ViewModels
         private VideoPageInfo.SaveWorkProgressFunction _saveProgress;
         private VideoPageInfo.UpdateVideoPageInfo _updatePageInfo;
         private VideoPageInfo.RemovePageFunction _removePage;
+        private VideoPageInfo.MoveToDownloadFunction _moveToDownload;
         private ObservableCollection<ClipItem> _menuItems = new ObservableCollection<ClipItem>();
         private string _downloadURL;
         private Time _duration = new Time();
@@ -55,6 +56,8 @@ namespace YoutubeCutter.ViewModels
         private ICommand _enterCommand;
         private ICommand _removeClipCommand;
         private ICommand _removePageCommand;
+        private ICommand _downloadCommand;
+        public ICommand DownloadCommand => _downloadCommand ?? (_downloadCommand = new RelayCommand(Download));
         public ICommand RemovePageCommand => _removePageCommand ?? (_removePageCommand = new RelayCommand(RemovePage));
         public ICommand RemoveClipCommand => _removeClipCommand ?? (_removeClipCommand = new RelayCommand<RoutedEventArgs>(RemoveClip));
         public ICommand EnterCommand => _enterCommand ?? (_enterCommand = new RelayCommand<KeyEventArgs>(Enter));
@@ -199,6 +202,7 @@ namespace YoutubeCutter.ViewModels
                 _saveProgress = VideoPageInfo.SaveFunction;
                 _updatePageInfo = VideoPageInfo.UpdatePageInfoFunction;
                 _removePage = VideoPageInfo.RemovePage;
+                _moveToDownload = VideoPageInfo.MoveToDownload;
                 YoutubeEmbedVideoURL = pageInfo.EmbedYoutubeURL;
                 if (pageInfo.YoutubeURL != null)
                 {
@@ -376,6 +380,10 @@ namespace YoutubeCutter.ViewModels
         private void RemovePage()
         {
             _removePage(_identifier);
+        }
+        private void Download()
+        {
+            _moveToDownload(_identifier, MenuItems);
         }
     }
 }

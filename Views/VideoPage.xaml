@@ -211,6 +211,11 @@
                         IsEnabled="{Binding IsDownloadEnabled, UpdateSourceTrigger=PropertyChanged}"
                         ToolTip="{Binding DownloadButtonToolTip, UpdateSourceTrigger=PropertyChanged}"
                         Visibility="{Binding Path=IsVideoReady, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click">
+                                <i:InvokeCommandAction Command="{Binding Path=DownloadCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                         Download
                     </Button>
                     <Button Grid.Column="1">
