@@ -21,6 +21,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Converters\StringToBooleanConverter.cs" />
+    <Compile Remove="Styles\TabControl.xaml.cs" />
     <Compile Remove="ViewModels\Window1.xaml.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -32,6 +33,7 @@
     <None Remove="YoutubeCutter.xml" />
   </ItemGroup>
   <ItemGroup>
+    <Page Remove="Styles\TabControl.xaml" />
     <Page Remove="ViewModels\Window1.xaml" />
   </ItemGroup>
   <ItemGroup>

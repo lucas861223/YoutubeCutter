@@ -10,44 +10,63 @@ using YoutubeCutter.Models;
 using YoutubeCutter.Contracts.ViewModels;
 using YoutubeCutter.Core.Contracts.Services;
 using YoutubeCutter.Core.Models;
+using YoutubeCutter.Controls;
 using System.Collections.Concurrent;
 
 namespace YoutubeCutter.ViewModels
 {
     public class DownloadsViewModel : ObservableObject, INavigationAware
     {
-        private readonly ISampleDataService _sampleDataService;
-        private SampleOrder _selected;
+        private DownloadItem _selectedQueue;
+        private DownloadItem _selectedDone;
+        private DownloadItem _displayItem;
+        public ObservableCollection<DownloadItem> Queue { get; } = new ObservableCollection<DownloadItem>();
+        public ObservableCollection<DownloadItem> DoneList { get; } = new ObservableCollection<DownloadItem>();
         private static bool _hasThreadWorking = false;
         public ConcurrentQueue<DownloadItem> DownloadQueue { get; set; }
 
-        public SampleOrder Selected
+        public DownloadItem SelectedQueue
         {
-            get { return _selected; }
-            set { SetProperty(ref _selected, value); }
+            get { return _selectedQueue; }
+            set { SetProperty(ref _selectedQueue, value); SetProperty(ref _displayItem, value); }
         }
 
+        public DownloadItem SelectedDone
+        {
+            get { return _selectedDone; }
+            set { SetProperty(ref _selectedDone, value); SetProperty(ref _displayItem, value); }
+        }
+        public DownloadItem DisplayItem
+        {
+            get { return _displayItem; }
+        }
         public ObservableCollection<SampleOrder> SampleItems { get; private set; } = new ObservableCollection<SampleOrder>();
 
         public DownloadsViewModel(ISampleDataService sampleDataService)
         {
-            _sampleDataService = sampleDataService;
         }
 
         public async void OnNavigatedTo(object parameter)
         {
-            SampleItems.Clear();
-
-            var data = await _sampleDataService.GetListDetailsDataAsync();
-
-            foreach (var item in data)
+            if (parameter != null)
             {
-                SampleItems.Add(item);
+                foreach (DownloadItem item in (DownloadItem[]) parameter) 
+                {
+                    Queue.Add(item);
+                }
             }
-
-            Selected = SampleItems.First();
+            if (!_hasThreadWorking)
+            {
+                DownloadItemFromQueue();
+            }
         }
-
+        private async void DownloadItemFromQueue()
+        {
+            await Task.Run(() =>
+            {
+                
+            });
+        }
         public void OnNavigatedFrom()
         {
         }

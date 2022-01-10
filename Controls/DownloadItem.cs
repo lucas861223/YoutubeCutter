@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YoutubeCutter.Models;
 
-namespace YoutubeCutter.Models
+namespace YoutubeCutter.Controls
 {
     public class DownloadItem
     {
