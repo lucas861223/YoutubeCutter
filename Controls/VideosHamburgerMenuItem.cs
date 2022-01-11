@@ -16,7 +16,6 @@ namespace YoutubeCutter.Controls
 {
     class VideosHamburgerMenuItem : HamburgerMenuItem
     {
-        public VideoViewModel ViewModel { get; set; }
         public string[] MenuItems { get; set; }
         public Time Duration { get; set; }
         public string DownloadURL { get; set; }

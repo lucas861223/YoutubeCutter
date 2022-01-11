@@ -6,10 +6,9 @@ namespace YoutubeCutter.Views
 {
     public partial class DownloadsPage : Page
     {
-        public DownloadsPage(DownloadsViewModel viewModel)
+        public DownloadsPage()
         {
             InitializeComponent();
-            DataContext = viewModel;
         }
     }
 }

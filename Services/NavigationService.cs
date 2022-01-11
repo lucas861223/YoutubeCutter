@@ -81,10 +81,7 @@ namespace YoutubeCutter.Services
 
             _frame.Tag = clearNavigation;
             var page = _pageService.GetPage(pageKey);
-            if (viewModel is ViewModels.VideoViewModel)
-            {
-                (page as Views.VideoPage).SetViewModel(viewModel as ViewModels.VideoViewModel);
-            }
+            page.DataContext = viewModel;
             var navigated = _frame.Navigate(page, parameter);
             if (navigated)
             {
@@ -96,7 +93,6 @@ namespace YoutubeCutter.Services
                 }
             }
             return navigated;
-
         }
 
 

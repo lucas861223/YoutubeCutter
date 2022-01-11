@@ -35,8 +35,6 @@ namespace YoutubeCutter.ViewModels
         public bool TimeBoxClicked = false;
         private int _identifier;
         private VideoPageInfo.NotifyChangesFunction _notifyChanges;
-        private VideoPageInfo.SaveWorkProgressFunction _saveProgress;
-        private VideoPageInfo.UpdateVideoPageInfo _updatePageInfo;
         private VideoPageInfo.RemovePageFunction _removePage;
         private VideoPageInfo.MoveToDownloadFunction _moveToDownload;
         private ObservableCollection<ClipItem> _menuItems = new ObservableCollection<ClipItem>();
@@ -171,21 +169,6 @@ namespace YoutubeCutter.ViewModels
         }
         public void OnNavigatedFrom()
         {
-            //add download to manager
-            //VideoPageInfo pageInfo = new VideoPageInfo();
-            //pageInfo.Identifier = _identifier;
-            //pageInfo.EmbedYoutubeURL = _youtubeURL == "Youtube URL" ? null : YoutubeEmbedVideoURL;
-            //pageInfo.YoutubeURL = _youtubeURL;
-            //pageInfo.Duration = _duration;
-            //pageInfo.DownloadURL = _downloadURL;
-            //pageInfo.MenuItems = new string[MenuItems.Count * 3];
-            //for (int i = 0; i < MenuItems.Count; i++)
-            //{
-            //    pageInfo.MenuItems[i * 3] = MenuItems[i].Filename;
-            //    pageInfo.MenuItems[i * 3 + 1] = TimeUtil.TimeToString(MenuItems[i].StartTime);
-            //    pageInfo.MenuItems[i * 3 + 2] = TimeUtil.TimeToString(MenuItems[i].EndTime);
-            //}
-            _saveProgress(_identifier, this);
         }
         private Dictionary<string, List<ClipItem>> _filenameDictionary = new Dictionary<string, List<ClipItem>>();
         public void OnNavigatedTo(object parameter)
@@ -199,8 +182,6 @@ namespace YoutubeCutter.ViewModels
                 VideoPageInfo pageInfo = parameter as VideoPageInfo;
                 _identifier = pageInfo.Identifier;
                 _notifyChanges = VideoPageInfo.NotifyFunction;
-                _saveProgress = VideoPageInfo.SaveFunction;
-                _updatePageInfo = VideoPageInfo.UpdatePageInfoFunction;
                 _removePage = VideoPageInfo.RemovePage;
                 _moveToDownload = VideoPageInfo.MoveToDownload;
             }
@@ -376,6 +357,7 @@ namespace YoutubeCutter.ViewModels
         }
         private void RemovePage()
         {
+
             _removePage(_identifier);
         }
         private void Download()

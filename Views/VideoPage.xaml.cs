@@ -26,10 +26,6 @@ namespace YoutubeCutter.Views
         {
             InitializeComponent();
         }
-        public void SetViewModel(VideoViewModel viewModel)
-        {
-            DataContext = viewModel;
-        }
         private void URLTextBoxOnGotFocus(object sender, RoutedEventArgs e)
         {
             TextBox textbox = sender as TextBox;
