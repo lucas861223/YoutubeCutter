@@ -42,8 +42,9 @@ namespace YoutubeCutter.ViewModels
         }
         public ObservableCollection<SampleOrder> SampleItems { get; private set; } = new ObservableCollection<SampleOrder>();
 
-        public DownloadsViewModel(ISampleDataService sampleDataService)
+        public DownloadsViewModel()
         {
+
         }
 
         public async void OnNavigatedTo(object parameter)

@@ -22,10 +22,13 @@ namespace YoutubeCutter.Views
     /// </summary>
     public partial class VideoPage : Page
     {
-        public VideoPage(VideoViewModel videoViewModel)
+        public VideoPage()
         {
             InitializeComponent();
-            DataContext = videoViewModel;
+        }
+        public void SetViewModel(VideoViewModel viewModel)
+        {
+            DataContext = viewModel;
         }
         private void URLTextBoxOnGotFocus(object sender, RoutedEventArgs e)
         {

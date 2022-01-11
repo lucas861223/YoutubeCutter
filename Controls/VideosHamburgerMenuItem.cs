@@ -10,21 +10,13 @@ using System.Windows;
 using YoutubeCutter.Helpers;
 
 using YoutubeCutter.Models;
+using YoutubeCutter.ViewModels;
 
 namespace YoutubeCutter.Controls
 {
     class VideosHamburgerMenuItem : HamburgerMenuItem
     {
-        public void loadPageInfo(VideoPageInfo pageInfo)
-        {
-            pageInfo.Identifier = Identifier;
-            pageInfo.EmbedYoutubeURL = EmbedYoutubeURL;
-            pageInfo.YoutubeURL = YoutubeURL;
-            pageInfo.Duration = Duration;
-            pageInfo.DownloadURL = DownloadURL;
-            pageInfo.MenuItems = MenuItems;
-            pageInfo.DownloadPath = DownloadManager.GetDownloadPath(VideoTitle, ChannelName);
-        }
+        public VideoViewModel ViewModel { get; set; }
         public string[] MenuItems { get; set; }
         public Time Duration { get; set; }
         public string DownloadURL { get; set; }

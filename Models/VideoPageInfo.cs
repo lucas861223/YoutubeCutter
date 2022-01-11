@@ -10,14 +10,11 @@ namespace YoutubeCutter.Models
 {
     public class VideoPageInfo
     {
-        public string DownloadPath { get; set; }
         public int Identifier { get; set; }
-        public string YoutubeURL { get; set; }
         public delegate void NotifyChangesFunction(int identifier, VideoInformation information);
         public static NotifyChangesFunction NotifyFunction { get; set; }
-        public string EmbedYoutubeURL { get; set; }
 
-        public delegate void SaveWorkProgressFunction(VideoPageInfo pageInfo);
+        public delegate void SaveWorkProgressFunction(int identifier, ViewModels.VideoViewModel viewModel);
         public static SaveWorkProgressFunction SaveFunction { get; set; }
 
         public delegate void UpdateVideoPageInfo(int identifier, VideoPageInfo pageInfo);
@@ -28,8 +25,5 @@ namespace YoutubeCutter.Models
 
         public delegate void MoveToDownloadFunction(int identifier, ObservableCollection<ClipItem> clips);
         public static MoveToDownloadFunction MoveToDownload { get; set; }
-        public Time Duration { set; get; }
-        public string DownloadURL { set; get; }
-        public string[] MenuItems { get; set; }
     }
 }

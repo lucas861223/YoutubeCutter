@@ -86,7 +86,6 @@ namespace YoutubeCutter.ViewModels
             _navigationService = navigationService;
             VideoPageInfo.NotifyFunction = NotifyChanges;
             VideoPageInfo.SaveFunction = SaveWorkProgress;
-            VideoPageInfo.UpdatePageInfoFunction = UpdatePageInfo;
             VideoPageInfo.RemovePage = RemoveVideoPage;
             VideoPageInfo.MoveToDownload = MoveToDownload;
         }
@@ -119,9 +118,9 @@ namespace YoutubeCutter.ViewModels
         {
             if (targetViewModel == typeof(VideoViewModel))
             {
-                VideoPageInfo pageInfo = new VideoPageInfo();
-                ((VideosHamburgerMenuItem)SelectedMenuItem).loadPageInfo(pageInfo);
-                _navigationService.NavigateTo(targetViewModel.FullName, pageInfo);
+                //VideoPageInfo pageInfo = new VideoPageInfo();
+                //((VideosHamburgerMenuItem)SelectedMenuItem).loadPageInfo(pageInfo);
+                _navigationService.NavigateTo(targetViewModel.FullName, ((VideosHamburgerMenuItem)SelectedMenuItem).ViewModel);//pageInfo);
             }
             else if (targetViewModel == null)
             {
@@ -132,9 +131,8 @@ namespace YoutubeCutter.ViewModels
                     item = FindItemWithIdentifier(_alreadyAvaliableIdentifier);
                     if (item != null)
                     {
-                        item.loadPageInfo(pageInfo);
                         SelectedMenuItem = item;
-                        _navigationService.NavigateTo(typeof(VideoViewModel).FullName, pageInfo);
+                        _navigationService.NavigateTo(typeof(VideoViewModel).FullName, item.ViewModel);//, pageInfo);
                     }
                 }
                 if (item == null)
@@ -142,9 +140,16 @@ namespace YoutubeCutter.ViewModels
                     pageInfo.Identifier = _identifierCount++;
                     _alreadyAvaliableIdentifier = pageInfo.Identifier;
                     //shellemptydownloadpage
-                    MenuItems.Add(new VideosHamburgerMenuItem() { Label = Resources.ShellDownloadsPage, Identifier = pageInfo.Identifier, ChannelName = "", TargetPageType = typeof(VideoViewModel) });
+                    MenuItems.Add(new VideosHamburgerMenuItem()
+                    {
+                        Label = Resources.ShellDownloadsPage,
+                        Identifier = pageInfo.Identifier,
+                        ChannelName = "",
+                        TargetPageType = typeof(VideoViewModel),
+                        ViewModel = new VideoViewModel()
+                    });
                     SelectedMenuItem = MenuItems[MenuItems.Count - 1];
-                    _navigationService.NavigateTo(typeof(VideoViewModel).FullName, pageInfo);
+                    _navigationService.NavigateTo(typeof(VideoViewModel).FullName, ((VideosHamburgerMenuItem)SelectedMenuItem).ViewModel, pageInfo);
                 }
             }
             else
@@ -163,16 +168,17 @@ namespace YoutubeCutter.ViewModels
             }
             return null;
         }
-        public void SaveWorkProgress(VideoPageInfo pageInfo)
+        public void SaveWorkProgress(int identifier, VideoViewModel videoViewModel)
         {
-            VideosHamburgerMenuItem item = FindItemWithIdentifier(pageInfo.Identifier);
+            VideosHamburgerMenuItem item = FindItemWithIdentifier(identifier);
             if (item != null)
             {
-                item.EmbedYoutubeURL = pageInfo.EmbedYoutubeURL;
-                item.YoutubeURL = pageInfo.YoutubeURL;
-                item.Duration = pageInfo.Duration;
-                item.DownloadURL = pageInfo.DownloadURL;
-                item.MenuItems = pageInfo.MenuItems;
+                //item.EmbedYoutubeURL = pageInfo.EmbedYoutubeURL;
+                //item.YoutubeURL = pageInfo.YoutubeURL;
+                //item.Duration = pageInfo.Duration;
+                //item.DownloadURL = pageInfo.DownloadURL;
+                //item.MenuItems = pageInfo.MenuItems;
+                item.ViewModel = videoViewModel;
             }
         }
         private void OnNavigated(object sender, string viewModelName)
@@ -222,17 +228,6 @@ namespace YoutubeCutter.ViewModels
                 }
             }
         }
-        private void UpdatePageInfo(int identifier, VideoPageInfo pageInfo)
-        {
-            VideosHamburgerMenuItem item = FindItemWithIdentifier(identifier);
-            if (item != null)
-            {
-                item.Duration = pageInfo.Duration;
-                item.DownloadURL = pageInfo.DownloadURL;
-                item.MenuItems = pageInfo.MenuItems;
-            }
-        }
-
         private void MoveToDownload(int identifier, ObservableCollection<ClipItem> clips)
         {
             DownloadItem[] downloadItems = new DownloadItem[clips.Count];

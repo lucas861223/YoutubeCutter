@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+using System;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 
@@ -73,6 +74,32 @@ namespace YoutubeCutter.Services
 
             return false;
         }
+
+        public bool NavigateTo(string pageKey, ObservableObject viewModel, object parameter = null, bool clearNavigation = false)
+        {
+            var pageType = _pageService.GetPageType(pageKey);
+
+            _frame.Tag = clearNavigation;
+            var page = _pageService.GetPage(pageKey);
+            if (viewModel is ViewModels.VideoViewModel)
+            {
+                (page as Views.VideoPage).SetViewModel(viewModel as ViewModels.VideoViewModel);
+            }
+            var navigated = _frame.Navigate(page, parameter);
+            if (navigated)
+            {
+                _lastParameterUsed = parameter;
+                var dataContext = _frame.GetDataContext();
+                if (dataContext is INavigationAware navigationAware)
+                {
+                    navigationAware.OnNavigatedFrom();
+                }
+            }
+            return navigated;
+
+        }
+
+
 
         public void CleanNavigation()
             => _frame.CleanNavigation();

@@ -27,7 +27,7 @@ namespace YoutubeCutter.ViewModels
         private Regex _youtubeRegex = new Regex(@"^(?:https?\:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v\=))([^\?\&\#]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private Regex _channelThumbnailRegex = new Regex(@"channelId[^a-zA-Z0-9-]+(?<channelID>[a-zA-Z0-9-_]+).*avatar[^=]+(?<thumbnail>https\:\/\/yt3.ggpht.com[^=]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private string _youtubeID;
-        private string _youtubeURL;
+        private string _youtubeURL = "Youtube URL";
         private WebClient _webClient = WebClient.Instance;
         private VideoInformation _videoInformation = new();
         public bool IsAvaliableVideo { get; set; }
@@ -172,28 +172,28 @@ namespace YoutubeCutter.ViewModels
         public void OnNavigatedFrom()
         {
             //add download to manager
-            VideoPageInfo pageInfo = new VideoPageInfo();
-            pageInfo.Identifier = _identifier;
-            pageInfo.EmbedYoutubeURL = _youtubeURL == "Youtube URL" ? null : YoutubeEmbedVideoURL;
-            pageInfo.YoutubeURL = _youtubeURL;
-            pageInfo.Duration = _duration;
-            pageInfo.DownloadURL = _downloadURL;
-            pageInfo.MenuItems = new string[MenuItems.Count * 3];
-            for (int i = 0; i < MenuItems.Count; i++)
-            {
-                pageInfo.MenuItems[i * 3] = MenuItems[i].Filename;
-                pageInfo.MenuItems[i * 3 + 1] = TimeUtil.TimeToString(MenuItems[i].StartTime);
-                pageInfo.MenuItems[i * 3 + 2] = TimeUtil.TimeToString(MenuItems[i].EndTime);
-            }
-            _saveProgress(pageInfo);
+            //VideoPageInfo pageInfo = new VideoPageInfo();
+            //pageInfo.Identifier = _identifier;
+            //pageInfo.EmbedYoutubeURL = _youtubeURL == "Youtube URL" ? null : YoutubeEmbedVideoURL;
+            //pageInfo.YoutubeURL = _youtubeURL;
+            //pageInfo.Duration = _duration;
+            //pageInfo.DownloadURL = _downloadURL;
+            //pageInfo.MenuItems = new string[MenuItems.Count * 3];
+            //for (int i = 0; i < MenuItems.Count; i++)
+            //{
+            //    pageInfo.MenuItems[i * 3] = MenuItems[i].Filename;
+            //    pageInfo.MenuItems[i * 3 + 1] = TimeUtil.TimeToString(MenuItems[i].StartTime);
+            //    pageInfo.MenuItems[i * 3 + 2] = TimeUtil.TimeToString(MenuItems[i].EndTime);
+            //}
+            _saveProgress(_identifier, this);
         }
         private Dictionary<string, List<ClipItem>> _filenameDictionary = new Dictionary<string, List<ClipItem>>();
         public void OnNavigatedTo(object parameter)
         {
             //tood to think
-            _menuItems = new ObservableCollection<ClipItem>();
-            IsAvaliableVideo = false;
-            _youtubeURL = "Youtube URL";
+            //_menuItems = new ObservableCollection<ClipItem>();
+            //IsAvaliableVideo = false;
+            //_youtubeURL = "Youtube URL";
             if (parameter != null)
             {
                 VideoPageInfo pageInfo = parameter as VideoPageInfo;
@@ -203,32 +203,34 @@ namespace YoutubeCutter.ViewModels
                 _updatePageInfo = VideoPageInfo.UpdatePageInfoFunction;
                 _removePage = VideoPageInfo.RemovePage;
                 _moveToDownload = VideoPageInfo.MoveToDownload;
-                YoutubeEmbedVideoURL = pageInfo.EmbedYoutubeURL;
-                if (pageInfo.YoutubeURL != null)
-                {
-                    _youtubeURL = pageInfo.YoutubeURL;
-                    if (pageInfo.MenuItems != null && pageInfo.MenuItems.Length > 0)
-                    {
-                        IsVideoReady = true;
-                        _duration = pageInfo.Duration;
-                        _downloadURL = pageInfo.DownloadURL;
-                        for (int i = 0; i < pageInfo.MenuItems.Length / 3; i++)
-                        {
-                            AddClip(pageInfo.MenuItems[i * 3], TimeUtil.ParseTimeFromString(pageInfo.MenuItems[i * 3 + 1]), TimeUtil.ParseTimeFromString(pageInfo.MenuItems[i * 3 + 2]));
-                            ClipErrorCount += MenuItems[i].IsValidClip ? 0 : 1;
-                        }
-                        SelectedItem = MenuItems[0];
-                        OnPropertyChanged("IsVideoReady");
-                    }
-                }
-                IsAvaliableVideo = pageInfo.EmbedYoutubeURL != null;
-                _downloadPath = pageInfo.DownloadPath;
-                OnPropertyChanged("YoutubeEmbedVideoURL");
-                OnPropertyChanged("YoutubeURL");
-                OnPropertyChanged("IsAvaliableVideo");
-                OnPropertyChanged("IsDownloadEnabled");
-                OnPropertyChanged("DownloadButtonToolTip");
             }
+            //{
+            
+            //    if (pageInfo.YoutubeURL != null)
+            //    {
+            //        _youtubeURL = pageInfo.YoutubeURL;
+            //        if (pageInfo.MenuItems != null && pageInfo.MenuItems.Length > 0)
+            //        {
+            //            IsVideoReady = true;
+            //            _duration = pageInfo.Duration;
+            //            _downloadURL = pageInfo.DownloadURL;
+            //            for (int i = 0; i < pageInfo.MenuItems.Length / 3; i++)
+            //            {
+            //                AddClip(pageInfo.MenuItems[i * 3], TimeUtil.ParseTimeFromString(pageInfo.MenuItems[i * 3 + 1]), TimeUtil.ParseTimeFromString(pageInfo.MenuItems[i * 3 + 2]));
+            //                ClipErrorCount += MenuItems[i].IsValidClip ? 0 : 1;
+            //            }
+            //            SelectedItem = MenuItems[0];
+            //            OnPropertyChanged("IsVideoReady");
+            //        }
+            //    }
+            //    IsAvaliableVideo = pageInfo.EmbedYoutubeURL != null;
+            //    _downloadPath = pageInfo.DownloadPath;
+            //    OnPropertyChanged("YoutubeEmbedVideoURL");
+            //    OnPropertyChanged("YoutubeURL");
+            //    OnPropertyChanged("IsAvaliableVideo");
+            //    OnPropertyChanged("IsDownloadEnabled");
+            //    OnPropertyChanged("DownloadButtonToolTip");
+            //}
         }
         public async void GetVideoInformation()
         {
@@ -251,17 +253,12 @@ namespace YoutubeCutter.ViewModels
                     _downloadURL = result[0];
                     TimeUtil.ParseIrregularTimeFromString(result[result.Length - 1], _duration);
                     //todo handle parsing error, https://www.youtube.com/watch?v=x8VYWazR5mE
-                    VideoPageInfo pageInfo = new VideoPageInfo();
-                    pageInfo.Duration = _duration;
-                    pageInfo.DownloadURL = _downloadURL;
-                    pageInfo.MenuItems = new string[] { "Clip " + _identifierCount, "00:00:00", TimeUtil.TimeToString(_duration) };
                     App.Current.Dispatcher.Invoke(() =>
                     {
                         IsVideoReady = true;
                         OnPropertyChanged("IsVideoReady");
                         AddClip();
                         SelectedItem = MenuItems[0];
-                        _updatePageInfo(_identifier, pageInfo);
                     });
                     _videoInformation.VideoID = _youtubeID;
                     string data = _webClient.GetHTML(_videoInformation.AuthorURL);

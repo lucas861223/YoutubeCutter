@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+using System;
 using System.Windows.Controls;
 
 namespace YoutubeCutter.Contracts.Services
@@ -12,6 +13,8 @@ namespace YoutubeCutter.Contracts.Services
         void Initialize(Frame shellFrame);
 
         bool NavigateTo(string pageKey, object parameter = null, bool clearNavigation = false);
+
+        bool NavigateTo(string pageKey, ObservableObject viewModel, object parameter = null, bool clearNavigation = false);
 
         void GoBack();
 
