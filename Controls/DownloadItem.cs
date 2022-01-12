@@ -9,9 +9,11 @@ namespace YoutubeCutter.Controls
 {
     public class DownloadItem
     {
-        public Time Duration { get { return StartTime - EndTime; } }
+        public bool ShowTopRectangle { get; set; } = false;
+        public bool ShowBottomRectangle { get; set; } = false;
+        public Time Duration { get { return EndTime - StartTime; } }
         public string Filename { get; set; }
-        public string DownloadURL { get; set; }
+        public string YoutubeURL { get; set; }
         public string VideoTitle { get; set; }
         public string ChannelName { get; set; }
         public string Directory { get; set; }
@@ -19,5 +21,6 @@ namespace YoutubeCutter.Controls
         public Time EndTime { get; set; }
         public string VideoThumbnail { get; set; }
         public string ChannelThumbnail { get; set; }
+        public bool IsDownloaded { get; set; }
     }
 }

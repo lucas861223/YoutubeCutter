@@ -38,7 +38,6 @@ namespace YoutubeCutter.ViewModels
         private VideoPageInfo.RemovePageFunction _removePage;
         private VideoPageInfo.MoveToDownloadFunction _moveToDownload;
         private ObservableCollection<ClipItem> _menuItems = new ObservableCollection<ClipItem>();
-        private string _downloadURL;
         private Time _duration = new Time();
         private string _startTime = "00:00:00";
         public string StartTime { get { return _startTime; } set { value = value.Trim(); if (TimeUtil.IsFormattedTime(value)) { _startTime = value; OnPropertyChanged("StartTime"); } } }
@@ -186,7 +185,7 @@ namespace YoutubeCutter.ViewModels
                 _moveToDownload = VideoPageInfo.MoveToDownload;
             }
             //{
-            
+
             //    if (pageInfo.YoutubeURL != null)
             //    {
             //        _youtubeURL = pageInfo.YoutubeURL;
@@ -221,7 +220,7 @@ namespace YoutubeCutter.ViewModels
                 if (_videoInformation.AuthorURL != null)
                 {
                     var p = Process.Start(
-                        new ProcessStartInfo(App.Current.Properties["YoutubedlPath"] as string, _youtubeURL + " -g --get-duration")
+                        new ProcessStartInfo(App.Current.Properties["YoutubedlPath"] as string, _youtubeURL + " --get-duration")
                         {
                             CreateNoWindow = true,
                             UseShellExecute = false,
@@ -230,12 +229,12 @@ namespace YoutubeCutter.ViewModels
                         }
                     );
                     p.WaitForExit();
-                    string[] result = p.StandardOutput.ReadToEnd().TrimEnd().Split("\n");
-                    _downloadURL = result[0];
-                    TimeUtil.ParseIrregularTimeFromString(result[result.Length - 1], _duration);
+                    string result = p.StandardOutput.ReadToEnd().TrimEnd();
+                    TimeUtil.ParseIrregularTimeFromString(result, _duration);
                     //todo handle parsing error, https://www.youtube.com/watch?v=x8VYWazR5mE
                     App.Current.Dispatcher.Invoke(() =>
                     {
+                        _downloadPath = DownloadManager.GetDownloadPath(_videoInformation.VideoTitle, _videoInformation.ChannelName);
                         IsVideoReady = true;
                         OnPropertyChanged("IsVideoReady");
                         AddClip();
@@ -250,19 +249,25 @@ namespace YoutubeCutter.ViewModels
                         _videoInformation.ChannelID = match.Groups["channelID"].ToString();
                     }
                     _videoInformation.VideoThumbnailURL = "https://i.ytimg.com/vi/" + _youtubeID + "/mqdefault.jpg";
-                    _videoInformation.VideoThumbnailLocation = DownloadManager.DownloadThumbnail(_videoInformation.VideoThumbnailURL, _videoInformation.VideoID);
-                    _videoInformation.ChannelThumbnailLocation = DownloadManager.DownloadThumbnail(_videoInformation.ChannelThumbnailURL, _videoInformation.ChannelID);
-                    _downloadPath = (string)App.Current.Properties["DownloadPath"];
+                    _videoInformation.VideoThumbnailLocation = DownloadManager.DownloadThumbnail(_videoInformation.VideoThumbnailURL, _videoInformation.VideoID, "thumbnail.jpg");
+                    _videoInformation.ChannelThumbnailLocation = DownloadManager.DownloadThumbnail(_videoInformation.ChannelThumbnailURL, _videoInformation.ChannelID, "thumbnail.jpg");
                 }
                 App.Current.Dispatcher.Invoke(() =>
                 {
-                    _downloadPath = DownloadManager.GetDownloadPath(_videoInformation.VideoTitle, _videoInformation.ChannelName);
                     _notifyChanges(_identifier, _videoInformation);
                 });
+                if (_videoInformation.AuthorURL != null)
+                {
+                    _ = DownloadManager.DownloadThumbnail("https://i.ytimg.com/vi/" + _youtubeID + "/hqdefault.jpg", _videoInformation.VideoID, "hqthumbnail.jpg");
+                }
             });
         }
         public void AddClip()
         {
+            while (File.Exists(_downloadPath + "Clip " + _identifierCount + ".mp4"))
+            {
+                _identifierCount++;
+            }
             AddClip("Clip " + _identifierCount, new Time { Hour = 0, Second = 0, Minute = 0 }, _duration);
         }
         public void RemoveClip(RoutedEventArgs eventArgs)
@@ -331,7 +336,7 @@ namespace YoutubeCutter.ViewModels
             int tmp = clip.IsValidClip ? 0 : 1;
             clip.Filename = filename;
             UpdateClipsWithFilename(clip.Filename);
-            clip.DoesFileExist(File.Exists(_downloadPath + filename));
+            clip.DoesFileExist(File.Exists(_downloadPath + filename + ".mp4"));
             ClipErrorCount -= tmp - (clip.IsValidClip ? 0 : 1);
             OnPropertyChanged("IsDownloadEnabled");
             OnPropertyChanged("DownloadButtonToolTip");

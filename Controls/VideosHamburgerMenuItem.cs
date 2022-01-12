@@ -18,7 +18,6 @@ namespace YoutubeCutter.Controls
     {
         public string[] MenuItems { get; set; }
         public Time Duration { get; set; }
-        public string DownloadURL { get; set; }
         public string YoutubeURL { get; set; }
         public string EmbedYoutubeURL { get; set; }
         public int Identifier { get; set; }

@@ -199,6 +199,7 @@ namespace YoutubeCutter.ViewModels
                 if (videoInformation.VideoTitle != null)
                 {
                     item.VideoTitle = videoInformation.VideoTitle;
+                    item.YoutubeURL = "https://www.youtube.com/watch?v=" + videoInformation.VideoID;
                     item.ChannelName = videoInformation.ChannelName;
                     item.VideoThumbnail = videoInformation.VideoThumbnailLocation;
                     item.ChannelThumbnail = videoInformation.ChannelThumbnailLocation;
@@ -224,49 +225,19 @@ namespace YoutubeCutter.ViewModels
         {
             DownloadItem[] downloadItems = new DownloadItem[clips.Count];
             VideosHamburgerMenuItem videoMenuItem = FindItemWithIdentifier(identifier);
-            string downloadPath = (string)App.Current.Properties["DownloadPath"];
-            if ((bool)App.Current.Properties["CategorizeByDate"])
-            {
-                downloadPath += DateTime.Today.ToString("yyyy-MM-dd") + "\\";
-            }
-            if ((bool)App.Current.Properties["CategorizeByChannel"])
-            {
-                string fixedChannelName = videoMenuItem.ChannelName;
-                foreach (char character in ClipItem.IllegalCharacters)
-                {
-                    fixedChannelName = fixedChannelName.Replace(character + "", "");
-                }
-                if (String.IsNullOrEmpty(fixedChannelName.Trim()))
-                {
-                    fixedChannelName = "UntitledChannel";
-                }
-                downloadPath += fixedChannelName + "\\";
-            }
-            if ((bool)App.Current.Properties["CategorizeByVideo"])
-            {
-                string fixedVideoName = videoMenuItem.VideoTitle;
-                foreach (char character in ClipItem.IllegalCharacters)
-                {
-                    fixedVideoName = fixedVideoName.Replace(character + "", "");
-                }
-                if (String.IsNullOrEmpty(fixedVideoName.Trim()))
-                {
-                    fixedVideoName = "UntitledVideo";
-                }
-                downloadPath += fixedVideoName + "\\";
-            }
+            string downloadPath = DownloadManager.GetDownloadPath(videoMenuItem.VideoTitle, videoMenuItem.ChannelName);
             for (int i = 0; i < clips.Count; i++)
             {
                 downloadItems[i] = new DownloadItem();
                 downloadItems[i].Filename = clips.ElementAt(i).Filename;
                 downloadItems[i].VideoTitle = videoMenuItem.VideoTitle;
                 downloadItems[i].ChannelName = videoMenuItem.ChannelName;
-                downloadItems[i].DownloadURL = videoMenuItem.DownloadURL;
+                downloadItems[i].YoutubeURL = videoMenuItem.YoutubeURL;
                 downloadItems[i].StartTime = clips.ElementAt(i).StartTime;
                 downloadItems[i].EndTime = clips.ElementAt(i).EndTime;
                 downloadItems[i].Directory = downloadPath;
                 downloadItems[i].ChannelThumbnail = videoMenuItem.ChannelThumbnail;
-                downloadItems[i].VideoThumbnail = videoMenuItem.VideoThumbnail;
+                downloadItems[i].VideoThumbnail = videoMenuItem.VideoThumbnail.Replace("thumbnail", "hqthumbnail");
             }
             MenuItems.Remove(videoMenuItem);
             ViewModelResolver.RemoveViewModel(Convert.ToString(identifier));

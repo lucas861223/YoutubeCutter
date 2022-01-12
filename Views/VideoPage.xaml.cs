@@ -84,14 +84,15 @@ namespace YoutubeCutter.Views
                 if ((sender as TextBox).Name == "StartTimeMaskedTextBox")
                 {
                     (FindName("EndTimeMaskedTextBox") as TextBox).Focus();
-                } else
+                }
+                else
                 {
                     (FindName("Grid") as Grid).Focus();
                     Keyboard.ClearFocus();
                 }
-            } 
-             e.Handled = true;
-            
+            }
+            e.Handled = true;
+
         }
         private void TimeBoxOnPreviewKeyDownHandler(object sender, KeyEventArgs e)
         {
@@ -145,6 +146,5 @@ namespace YoutubeCutter.Views
                 return ((char)((int)'0' + (int)(key - Key.NumPad0))).ToString();
             }
         }
-
     }
 }

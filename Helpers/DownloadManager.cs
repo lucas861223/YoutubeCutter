@@ -13,14 +13,14 @@ namespace YoutubeCutter.Helpers
     {
         private static WebClient _webClient = WebClient.Instance;
         private static string _cacheLocation = AppDomain.CurrentDomain.BaseDirectory + "Cache";
-        public static string DownloadThumbnail(string url, string youtubeID)
+        public static string DownloadThumbnail(string url, string youtubeID, string filename)
         {
-            if (!Directory.Exists(_cacheLocation + "\\" + youtubeID))
+            if (!File.Exists(_cacheLocation + "\\" + youtubeID + "\\" + filename))
             {
                 Directory.CreateDirectory(_cacheLocation + "\\" + youtubeID);
-                _webClient.DownloadImage(url, _cacheLocation + "\\" + youtubeID + "\\thumbnail.jpg");
+                _webClient.DownloadImage(url, _cacheLocation + "\\" + youtubeID + "\\" + filename);
             }
-            return _cacheLocation + "\\" + youtubeID + "\\thumbnail.jpg";
+            return _cacheLocation + "\\" + youtubeID + "\\" + filename;
         }
         public static void MakeChacheFolder()
         {
@@ -30,20 +30,38 @@ namespace YoutubeCutter.Helpers
         }
         public static string GetDownloadPath(string videoTitle, string channelName)
         {
-            string path = (string)App.Current.Properties["DownloadPath"];
+            string downloadPath = (string)App.Current.Properties["DownloadPath"];
             if ((bool)App.Current.Properties["CategorizeByDate"])
             {
-                path += DateTime.Today.ToString("yyyy-MM-dd") + "\\";
+                downloadPath += DateTime.Today.ToString("yyyy-MM-dd") + "\\";
             }
             if ((bool)App.Current.Properties["CategorizeByChannel"])
             {
-                path += channelName + "\\";
+                string fixedChannelName = channelName;
+                foreach (char character in Controls.ClipItem.IllegalCharacters)
+                {
+                    fixedChannelName = fixedChannelName.Replace(character + "", "");
+                }
+                if (String.IsNullOrEmpty(fixedChannelName.Trim()))
+                {
+                    fixedChannelName = "UntitledChannel";
+                }
+                downloadPath += fixedChannelName + "\\";
             }
             if ((bool)App.Current.Properties["CategorizeByVideo"])
             {
-                path += videoTitle + "\\";
+                string fixedVideoName = videoTitle;
+                foreach (char character in Controls.ClipItem.IllegalCharacters)
+                {
+                    fixedVideoName = fixedVideoName.Replace(character + "", "");
+                }
+                if (String.IsNullOrEmpty(fixedVideoName.Trim()))
+                {
+                    fixedVideoName = "UntitledVideo";
+                }
+                downloadPath += fixedVideoName + "\\";
             }
-            return path;
+            return downloadPath;
         }
         public static void ClearCacheFolder()
         {
@@ -55,8 +73,6 @@ namespace YoutubeCutter.Helpers
             {
                 
             }
-
         }
-
     }
 }

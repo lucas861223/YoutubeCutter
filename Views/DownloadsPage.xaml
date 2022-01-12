@@ -5,6 +5,7 @@
     xmlns:Controls="clr-namespace:YoutubeCutter.Controls"
     xmlns:converters="clr-namespace:YoutubeCutter.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:properties="clr-namespace:YoutubeCutter.Properties"
     d:DesignHeight="450"
@@ -22,6 +23,12 @@
         </Style>
         <converters:TimeToStringConverter x:Key="TimeToStringConverter" />
         <converters:StringToImageSourceConverter x:Key="StringToImageSourceConverter" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <!--<Style x:Key="ListBoxDragDrop" TargetType="{x:Type ListViewItem}">
+            <Setter Property="AllowDrop" Value="true" />
+            <EventSetter Event="PreviewMouseMove" Handler="s_PreviewMouseMoveEvent" />
+            <EventSetter Event="Drop" Handler="listbox1_Drop" />
+        </Style>-->
     </Page.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -53,7 +60,6 @@
                         SelectedItem="{Binding SelectedQueue, Mode=TwoWay}">
                         <ListView.ItemTemplate>
                             <DataTemplate DataType="{x:Type Controls:DownloadItem}">
-
                                 <Border BorderBrush="LightBlue" BorderThickness="0,0,0,1">
                                     <StackPanel>
                                         <TextBlock
@@ -84,18 +90,28 @@
                         <ListView.ItemTemplate>
                             <DataTemplate DataType="{x:Type Controls:DownloadItem}">
                                 <StackPanel>
-                                    <TextBlock
-                                        MaxWidth="{Binding Path=ActualWidth, ElementName=TabControl}"
-                                        FontWeight="Bold"
-                                        Text="{Binding Filename}" />
-                                    <TextBlock
-                                        MaxWidth="{Binding Path=ActualWidth, ElementName=TabControl}"
-                                        FontWeight="Bold"
-                                        Text="{Binding VideoTitle}" />
-                                    <TextBlock
-                                        MaxWidth="{Binding Path=ActualWidth, ElementName=TabControl}"
-                                        FontWeight="Bold"
-                                        Text="{Binding ChannelName}" />
+                                    <Rectangle
+                                        Height="{Binding Height, ElementName=ActualItem}"
+                                        Fill="Gray"
+                                        Visibility="{Binding ShowTopRectangle, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                    <StackPanel Name="ActualItem">
+                                        <TextBlock
+                                            MaxWidth="{Binding Path=ActualWidth, ElementName=TabControl}"
+                                            FontWeight="Bold"
+                                            Text="{Binding Filename}" />
+                                        <TextBlock
+                                            MaxWidth="{Binding Path=ActualWidth, ElementName=TabControl}"
+                                            FontWeight="Bold"
+                                            Text="{Binding VideoTitle}" />
+                                        <TextBlock
+                                            MaxWidth="{Binding Path=ActualWidth, ElementName=TabControl}"
+                                            FontWeight="Bold"
+                                            Text="{Binding ChannelName}" />
+                                    </StackPanel>
+                                    <Rectangle
+                                        Height="{Binding Height, ElementName=ActualItem}"
+                                        Fill="Gray"
+                                        Visibility="{Binding ShowBottomRectangle, Converter={StaticResource BoolToVisibilityConverter}}" />
                                 </StackPanel>
                             </DataTemplate>
                         </ListView.ItemTemplate>
@@ -107,6 +123,16 @@
             Grid.Column="1"
             Content="{Binding DisplayItem, Mode=OneWay}"
             IsTabStop="False">
+            <ContentControl.Style>
+                <Style TargetType="ContentControl">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding DisplayItem}" Value="{x:Null}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
             <ContentControl.ContentTemplate>
                 <DataTemplate DataType="{x:Type Controls:DownloadItem}">
                     <ScrollViewer>
@@ -118,6 +144,7 @@
                                 Text="{Binding Filename}"
                                 TextWrapping="Wrap" />
                             <Image
+                                MaxWidth="600"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 Source="{Binding VideoThumbnail, Converter={StaticResource StringToImageSourceConverter}, ConverterParameter=Video}"
