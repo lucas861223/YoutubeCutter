@@ -328,9 +328,9 @@ namespace YoutubeCutter.ViewModels
                 _filenameDictionary.Add(filename, new List<ClipItem>());
             }
             _filenameDictionary[filename].Add(clip);
+            int tmp = clip.IsValidClip ? 0 : 1;
             clip.Filename = filename;
             UpdateClipsWithFilename(clip.Filename);
-            int tmp = clip.IsValidClip ? 0 : 1;
             clip.DoesFileExist(File.Exists(_downloadPath + filename));
             ClipErrorCount -= tmp - (clip.IsValidClip ? 0 : 1);
             OnPropertyChanged("IsDownloadEnabled");

@@ -29,11 +29,12 @@ namespace YoutubeCutter.ViewModels
         private ICommand _setThemeCommand;
         private ICommand _privacyStatementCommand;
         private bool _categorizeByChannel;
-        public bool CategorizeByChannel { get { return _categorizeByChannel; } set { _categorizeByChannel = value; OnPropertyChanged("CurrentFormat"); App.Current.Properties["CategorizeByChannel"] = _categorizeByChannel; } }
+        public bool ShowNamingWarning { get { return CategorizeByChannel || CategorizeByVideo; } }
+        public bool CategorizeByChannel { get { return _categorizeByChannel; } set { _categorizeByChannel = value; OnPropertyChanged("CurrentFormat"); OnPropertyChanged("ShowNamingWarning"); App.Current.Properties["CategorizeByChannel"] = _categorizeByChannel; } }
         private bool _categorizeByVideo;
-        public bool CategorizeByVideo { get { return _categorizeByVideo; } set { _categorizeByVideo = value; OnPropertyChanged("CurrentFormat"); App.Current.Properties["CategorizeByVideo"] = _categorizeByVideo; } }
+        public bool CategorizeByVideo { get { return _categorizeByVideo; } set { _categorizeByVideo = value; OnPropertyChanged("CurrentFormat"); OnPropertyChanged("ShowNamingWarning"); App.Current.Properties["CategorizeByVideo"] = _categorizeByVideo; } }
         private bool _categorizeByDate;
-        public bool CategorizeByDate { get { return _categorizeByDate; } set { _categorizeByDate = value; OnPropertyChanged("CurrentFormat"); App.Current.Properties["CategorizeByDate"] = _categorizeByDate; } }
+        public bool CategorizeByDate { get { return _categorizeByDate; } set { _categorizeByDate = value; OnPropertyChanged("CurrentFormat"); OnPropertyChanged("ShowNamingWarning"); App.Current.Properties["CategorizeByDate"] = _categorizeByDate; } }
         public string CurrentFormat
         {
             get

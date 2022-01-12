@@ -20,34 +20,32 @@ namespace YoutubeCutter.ViewModels
         private DownloadItem _selectedQueue;
         private DownloadItem _selectedDone;
         private DownloadItem _displayItem;
+        private static bool _hasThreadWorking = false;
         public ObservableCollection<DownloadItem> Queue { get; } = new ObservableCollection<DownloadItem>();
         public ObservableCollection<DownloadItem> DoneList { get; } = new ObservableCollection<DownloadItem>();
-        private static bool _hasThreadWorking = false;
         public ConcurrentQueue<DownloadItem> DownloadQueue { get; set; }
 
         public DownloadItem SelectedQueue
         {
             get { return _selectedQueue; }
-            set { SetProperty(ref _selectedQueue, value); SetProperty(ref _displayItem, value); }
+            set { SetProperty(ref _selectedQueue, value); SetProperty(ref _displayItem, value); OnPropertyChanged("DisplayItem"); }
         }
-
         public DownloadItem SelectedDone
         {
             get { return _selectedDone; }
-            set { SetProperty(ref _selectedDone, value); SetProperty(ref _displayItem, value); }
+            set { SetProperty(ref _selectedDone, value); SetProperty(ref _displayItem, value); OnPropertyChanged("DisplayItem"); }
         }
         public DownloadItem DisplayItem
         {
             get { return _displayItem; }
         }
-        public ObservableCollection<SampleOrder> SampleItems { get; private set; } = new ObservableCollection<SampleOrder>();
 
         public DownloadsViewModel()
         {
 
         }
 
-        public async void OnNavigatedTo(object parameter)
+        public void OnNavigatedTo(object parameter)
         {
             if (parameter != null)
             {

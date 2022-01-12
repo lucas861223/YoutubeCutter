@@ -77,8 +77,6 @@ namespace YoutubeCutter.Services
 
         public bool NavigateTo(string pageKey, ObservableObject viewModel, object parameter = null, bool clearNavigation = false)
         {
-            var pageType = _pageService.GetPageType(pageKey);
-
             _frame.Tag = clearNavigation;
             var page = _pageService.GetPage(pageKey);
             page.DataContext = viewModel;

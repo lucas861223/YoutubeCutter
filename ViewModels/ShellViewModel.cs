@@ -87,6 +87,7 @@ namespace YoutubeCutter.ViewModels
             VideoPageInfo.NotifyFunction = NotifyChanges;
             VideoPageInfo.RemovePage = RemoveVideoPage;
             VideoPageInfo.MoveToDownload = MoveToDownload;
+            ViewModelResolver.AddViewModel(typeof(DownloadsViewModel).FullName, new DownloadsViewModel());
         }
 
         private void OnLoaded()
@@ -151,6 +152,10 @@ namespace YoutubeCutter.ViewModels
                     ViewModelResolver.AddViewModel(Convert.ToString(pageInfo.Identifier), viewModel);
                     _navigationService.NavigateTo(typeof(VideoViewModel).FullName, viewModel, pageInfo);
                 }
+            }
+            else if (ViewModelResolver.GetViewModel(targetViewModel.FullName) != null)
+            {
+                _navigationService.NavigateTo(targetViewModel.FullName, ViewModelResolver.GetViewModel(targetViewModel.FullName));
             }
             else
             {
@@ -226,11 +231,29 @@ namespace YoutubeCutter.ViewModels
             }
             if ((bool)App.Current.Properties["CategorizeByChannel"])
             {
-                downloadPath += videoMenuItem.ChannelName + "\\";
+                string fixedChannelName = videoMenuItem.ChannelName;
+                foreach (char character in ClipItem.IllegalCharacters)
+                {
+                    fixedChannelName = fixedChannelName.Replace(character + "", "");
+                }
+                if (String.IsNullOrEmpty(fixedChannelName.Trim()))
+                {
+                    fixedChannelName = "UntitledChannel";
+                }
+                downloadPath += fixedChannelName + "\\";
             }
             if ((bool)App.Current.Properties["CategorizeByVideo"])
             {
-                downloadPath += videoMenuItem.VideoTitle + "\\";
+                string fixedVideoName = videoMenuItem.VideoTitle;
+                foreach (char character in ClipItem.IllegalCharacters)
+                {
+                    fixedVideoName = fixedVideoName.Replace(character + "", "");
+                }
+                if (String.IsNullOrEmpty(fixedVideoName.Trim()))
+                {
+                    fixedVideoName = "UntitledVideo";
+                }
+                downloadPath += fixedVideoName + "\\";
             }
             for (int i = 0; i < clips.Count; i++)
             {
@@ -242,11 +265,13 @@ namespace YoutubeCutter.ViewModels
                 downloadItems[i].StartTime = clips.ElementAt(i).StartTime;
                 downloadItems[i].EndTime = clips.ElementAt(i).EndTime;
                 downloadItems[i].Directory = downloadPath;
+                downloadItems[i].ChannelThumbnail = videoMenuItem.ChannelThumbnail;
+                downloadItems[i].VideoThumbnail = videoMenuItem.VideoThumbnail;
             }
             MenuItems.Remove(videoMenuItem);
             ViewModelResolver.RemoveViewModel(Convert.ToString(identifier));
             SelectedMenuItem = MenuItems[1];
-            _navigationService.NavigateTo(typeof(DownloadsViewModel).FullName, downloadItems);
+            _navigationService.NavigateTo(typeof(DownloadsViewModel).FullName, ViewModelResolver.GetViewModel(typeof(DownloadsViewModel).FullName), downloadItems);
         }
         private void RemoveVideoPage(int identifier)
         {

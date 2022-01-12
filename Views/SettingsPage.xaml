@@ -158,7 +158,20 @@
                         <CheckBox IsChecked="{Binding CategorizeByVideo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         <TextBlock>Categorize by Video</TextBlock>
                     </StackPanel>
-                    <TextBlock Text="{Binding CurrentFormat, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock
+                        Margin="{StaticResource XXSmallTopMargin}"
+                        Style="{StaticResource ListSubTitleStyle}"
+                        Text="{Binding CurrentFormat, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Visibility="{Binding ShowNamingWarning, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <TextBlock.Text>
+                            Note: Since windows doesn't allow filenames to contain \ / : * ? \&quot; &lt; &gt; or |, these characters will be emitted.
+                        </TextBlock.Text>
+                    </TextBlock>
+                    <TextBlock Visibility="{Binding ShowNamingWarning, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <TextBlock.Text>
+                            If a title or channel are made only of these characters, they'll be placed in a folder called Untitled.
+                        </TextBlock.Text>
+                    </TextBlock>
                 </StackPanel>
                 <TextBlock
                     Margin="{StaticResource SmallTopMargin}"

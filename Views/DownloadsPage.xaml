@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Controls="clr-namespace:YoutubeCutter.Controls"
+    xmlns:converters="clr-namespace:YoutubeCutter.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:properties="clr-namespace:YoutubeCutter.Properties"
@@ -19,6 +20,8 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        <converters:TimeToStringConverter x:Key="TimeToStringConverter" />
+        <converters:StringToImageSourceConverter x:Key="StringToImageSourceConverter" />
     </Page.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -102,11 +105,79 @@
         </Grid>
         <ContentControl
             Grid.Column="1"
-            Content="{Binding DisplayItem}"
+            Content="{Binding DisplayItem, Mode=OneWay}"
             IsTabStop="False">
             <ContentControl.ContentTemplate>
                 <DataTemplate DataType="{x:Type Controls:DownloadItem}">
-                    <Label Content="{Binding VideoTitle}" />
+                    <ScrollViewer>
+                        <StackPanel>
+                            <TextBlock
+                                Margin="{StaticResource SmallTopBottomMargin}"
+                                HorizontalAlignment="Center"
+                                Style="{StaticResource PageTitleStyle}"
+                                Text="{Binding Filename}"
+                                TextWrapping="Wrap" />
+                            <Image
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Source="{Binding VideoThumbnail, Converter={StaticResource StringToImageSourceConverter}, ConverterParameter=Video}"
+                                Stretch="UniformToFill" />
+                            <TextBlock
+                                Margin="0,0,0,0"
+                                Style="{StaticResource PageTitleStyle}"
+                                Text="{Binding VideoTitle}"
+                                TextWrapping="Wrap" />
+                            <StackPanel Orientation="Horizontal">
+                                <Ellipse
+                                    Grid.Column="0"
+                                    Width="48"
+                                    Height="48"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top">
+                                    <Ellipse.Fill>
+                                        <ImageBrush ImageSource="{Binding ChannelThumbnail, Converter={StaticResource StringToImageSourceConverter}, ConverterParameter=Channel}" Stretch="UniformToFill" />
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource ListSubTitleStyle}"
+                                    Text="{Binding ChannelName}"
+                                    TextWrapping="Wrap" />
+                            </StackPanel>
+
+                            <TextBlock
+                                Margin="{StaticResource SmallTopMargin}"
+                                HorizontalAlignment="Center"
+                                Style="{StaticResource ListSubTitleStyle}"
+                                TextWrapping="Wrap">
+                                <Run Text="Time: " />
+                                <Run Text="{Binding StartTime, Converter={StaticResource TimeToStringConverter}}" />
+                                <Run Text=" ~ " />
+                                <Run Text="{Binding EndTime, Converter={StaticResource TimeToStringConverter}}" />
+                            </TextBlock>
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                Style="{StaticResource ListSubTitleStyle}"
+                                TextWrapping="Wrap">
+                                <Run Text="Duration: " />
+                                <Run Text="{Binding EndTime, Converter={StaticResource TimeToStringConverter}}" />
+                            </TextBlock>
+
+                            <DockPanel Margin="{StaticResource SmallTopMargin}">
+                                <TextBlock
+                                    Style="{StaticResource SubtitleTextStyle}"
+                                    Text="Directory:"
+                                    TextWrapping="Wrap" />
+                                <Button HorizontalAlignment="Right">
+                                    Open
+                                </Button>
+                            </DockPanel>
+                            <TextBlock
+                                Style="{StaticResource ListSubTitleStyle}"
+                                Text="{Binding Directory}"
+                                TextWrapping="Wrap" />
+                        </StackPanel>
+                    </ScrollViewer>
                 </DataTemplate>
             </ContentControl.ContentTemplate>
         </ContentControl>

@@ -17,5 +17,7 @@ namespace YoutubeCutter.Controls
         public string Directory { get; set; }
         public Time StartTime { get; set; }
         public Time EndTime { get; set; }
+        public string VideoThumbnail { get; set; }
+        public string ChannelThumbnail { get; set; }
     }
 }

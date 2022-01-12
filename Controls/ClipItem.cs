@@ -14,24 +14,47 @@ namespace YoutubeCutter.Controls
     {
         public string Identifier { get; set; }
         private string _filename;
-        public string Filename { get { return _filename; } set { _filename = value; OnPropertyChanged("Filename"); } }
+        public string Filename
+        {
+            get
+            {
+                return _filename;
+            }
+            set
+            {
+                _filename = value;
+                OnPropertyChanged("Filename");
+                _filenameHasBadCharacters = false;
+                foreach (char character in IllegalCharacters)
+                {
+                    if (_filename.Contains(character))
+                    {
+                        _filenameHasBadCharacters = true;
+                        break;
+                    }
+                }
+                OnPropertyChanged("IsValidClip");
+            }
+        }
         public Time StartTime { get; set; }
         public Time EndTime { get; set; }
-        public bool IsValidClip { get { return _isLengthPositive && _isEndWithinVideo && _isEndAfterStart && _isFilenameUnique && !_fileAlreadyExists; } }
+        public bool IsValidClip { get { return _isLengthPositive && _isEndWithinVideo && _isEndAfterStart && _isFilenameUnique && !_fileAlreadyExists && !_filenameHasBadCharacters; } }
+        public static char[] IllegalCharacters = { '\\', '/', ':', '?', '*', '"', '>', '<', '|' };
 
         private bool _isLengthPositive = true;
         private bool _isEndWithinVideo = true;
         private bool _isEndAfterStart = true;
         private bool _isFilenameUnique = true;
         private bool _fileAlreadyExists = false;
+        private bool _filenameHasBadCharacters = false;
         private string _informationMessage;
         public string InformationMessage
         {
             get
             {
-                if (!_isFilenameUnique)
+                if (_filenameHasBadCharacters)
                 {
-                    return "Filename is already taken";
+                    return "Filename cannot contain \n" + String.Join(" ", IllegalCharacters);
                 }
                 else if (_fileAlreadyExists)
                 {
@@ -48,6 +71,10 @@ namespace YoutubeCutter.Controls
                 else if (!_isEndAfterStart)
                 {
                     return "End time is earlier than Start time";
+                }
+                else if (!_isFilenameUnique)
+                {
+                    return "Filename is already taken";
                 }
                 else
                 {
