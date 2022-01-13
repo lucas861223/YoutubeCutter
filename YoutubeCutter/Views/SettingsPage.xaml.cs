@@ -8,6 +8,8 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Forms;
 
+using YoutubeCutter.Core.Models;
+
 namespace YoutubeCutter.Views
 {
     public partial class SettingsPage : Page

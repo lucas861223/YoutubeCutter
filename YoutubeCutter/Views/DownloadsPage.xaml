@@ -74,6 +74,11 @@
                                             MaxWidth="{Binding Path=ActualWidth, ElementName=TabControl}"
                                             FontWeight="Bold"
                                             Text="{Binding ChannelName}" />
+                                        <ProgressBar
+                                            Maximum="100"
+                                            Minimum="0"
+                                            Visibility="{Binding HasStartedDownloading, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}"
+                                            Value="{Binding Path=Progress, Mode=OneWay}" />
                                     </StackPanel>
                                 </Border>
 
@@ -144,11 +149,6 @@
                                 Text="{Binding Filename}"
                                 TextWrapping="Wrap" />
                             <TextBlock
-                                Margin="0,0,0,0"
-                                Style="{StaticResource PageTitleStyle}"
-                                Text="{Binding VideoTitle}"
-                                TextWrapping="Wrap" />
-                            <TextBlock
                                 Margin="{StaticResource SmallTopMargin}"
                                 HorizontalAlignment="Center"
                                 Style="{StaticResource ListSubTitleStyle}"
@@ -183,6 +183,11 @@
                             <TextBlock
                                 Style="{StaticResource ListSubTitleStyle}"
                                 Text="{Binding Directory}"
+                                TextWrapping="Wrap" />
+                            <TextBlock
+                                Margin="{StaticResource MediumTopMargin}"
+                                Style="{StaticResource PageTitleStyle}"
+                                Text="{Binding VideoTitle}"
                                 TextWrapping="Wrap" />
                             <Image
                                 HorizontalAlignment="Left"

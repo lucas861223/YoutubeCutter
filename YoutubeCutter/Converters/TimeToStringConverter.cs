@@ -4,6 +4,8 @@ using System.Windows.Data;
 using System;
 using YoutubeCutter.Models;
 using YoutubeCutter.Helpers;
+using YoutubeCutter.Core.Models;
+using YoutubeCutter.Core.Helpers;
 
 namespace YoutubeCutter.Converters
 {

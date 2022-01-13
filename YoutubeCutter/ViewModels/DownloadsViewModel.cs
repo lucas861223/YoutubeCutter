@@ -17,6 +17,7 @@ using System.Windows.Input;
 using System.Windows;
 using System.Diagnostics;
 using System.IO;
+using YoutubeCutter.Core.Helpers;
 
 namespace YoutubeCutter.ViewModels
 {
@@ -48,7 +49,7 @@ namespace YoutubeCutter.ViewModels
         }
         public DownloadsViewModel()
         {
-
+            Queue.Add(new DownloadItem { HasStartedDownloading=true, VideoTitle="test", EndTime=new Time(), StartTime=new Time(), Progress=50 });
         }
 
         private ICommand _openFolderCommand;
@@ -75,54 +76,65 @@ namespace YoutubeCutter.ViewModels
         {
             await Task.Run(() =>
             {
-                //todo pause/cancel download
+                //todo pause download
                 //todo preserve state between app session?
                 DownloadItem item;
                 while (!DownloadQueue.IsEmpty)
                 {
                     if (DownloadQueue.TryDequeue(out item))
                     {
-                        _ = Directory.CreateDirectory(item.Directory);
-                        var p = Process.Start(
-                            new ProcessStartInfo((string)App.Current.Properties["YoutubedlPath"], item.YoutubeURL + " -g -f best")
-                            {
-                                CreateNoWindow = true,
-                                UseShellExecute = false,
-                                RedirectStandardError = true,
-                                RedirectStandardOutput = true,
-                            }
-                        );
-                        p.WaitForExit();
-                        string downloadURL = p.StandardOutput.ReadToEnd().TrimEnd();
-                        p = Process.Start(
-                            new ProcessStartInfo((string)App.Current.Properties["FfmpegPath"],
-                                                   "-ss " + TimeUtil.TimeToString(item.StartTime) + " -i \"" + downloadURL + "\" -t " + TimeUtil.TimeToString(item.Duration) + " \"" +
-                                                   item.Directory.Replace("\\\\", "\\") + item.Filename + ".mp4" + "\" -y")
-                            {
-                                CreateNoWindow = true,
-                                UseShellExecute = false,
-                                RedirectStandardError = true,
-                                RedirectStandardOutput = true,
-                            }
-                        );
-                        StreamReader progress = p.StandardError;
+                        App.Current.Dispatcher.Invoke(() =>
+                        {
+                            item.HasStartedDownloading = true;
+                        });
+                        Process p;
+                        if (item.DownloadProcess == null)
+                        {
+                            _ = Directory.CreateDirectory(item.Directory);
+                            p = Process.Start(
+                                new ProcessStartInfo((string)App.Current.Properties["YoutubedlPath"], item.YoutubeURL + " -g -f best")
+                                {
+                                    CreateNoWindow = true,
+                                    UseShellExecute = false,
+                                    RedirectStandardError = true,
+                                    RedirectStandardOutput = true,
+                                }
+                            );
+                            p.WaitForExit();
+                            string downloadURL = p.StandardOutput.ReadToEnd().TrimEnd();
+                            p = DownloadManager.DownloadVideoWithFfmpeg(TimeUtil.TimeToString(item.StartTime),
+                                                                                            downloadURL,
+                                                                                            TimeUtil.TimeToString(item.Duration),
+                                                                                            item.Directory.Replace("\\\\", "\\") + item.Filename + ".mp4");
+                            item.DownloadProcess = p;
+                        }
+                        else
+                        {
+                            p = item.DownloadProcess;
+                        }
+                        StreamReader progressReader = item.DownloadProcess.StandardError;
                         //todo handle errors
                         string line;
-                        while ((line = progress.ReadLine()) != null)
+                        while ((line = progressReader.ReadLine()) != null)
                         {
+                            Debug.WriteLine(line);
                             //todo update progress bar
                             if (_showProgress)
                             {
-
+                                //format frame= 1866 fps= 11 q=40.0 Lsize=   43776kB time=00:01:18.33 bitrate=4577.9kbits/s speed=0.45x
                             }
-                            
                         }
-                        item.IsDownloaded = true;
-                        App.Current.Dispatcher.Invoke(() =>
+                        progressReader.Dispose();
+                        DownloadManager.DownloadProcesses.Remove(p);
+                        if (App.Current != null)
                         {
-                            Queue.Remove(item);
-                            DoneList.Add(item);
-                        });
+                            App.Current.Dispatcher.Invoke(() =>
+                            {
+                                item.IsDownloaded = true;
+                                Queue.Remove(item);
+                                DoneList.Insert(0, item);
+                            });
+                        }
                     }
                 }
                 _hasThreadWorking = false;

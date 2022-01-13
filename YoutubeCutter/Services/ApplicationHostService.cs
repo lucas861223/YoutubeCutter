@@ -59,6 +59,7 @@ namespace YoutubeCutter.Services
                 _persistAndRestoreService.RestoreData();
                 _appSettingService.InitializeSettingsWithDefault();
                 // TODO initialize setting
+                Helpers.DownloadManager.MakeChacheFolder();
                 _themeSelectorService.InitializeTheme();
                 await Task.CompletedTask;
             }

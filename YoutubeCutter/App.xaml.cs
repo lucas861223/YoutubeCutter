@@ -48,7 +48,6 @@ namespace YoutubeCutter
                     })
                     .ConfigureServices(ConfigureServices)
                     .Build();
-            DownloadManager.MakeChacheFolder();
             await _host.StartAsync();
         }
 
@@ -69,7 +68,6 @@ namespace YoutubeCutter
             services.AddSingleton<ISystemService, SystemService>();
             services.AddSingleton<IPersistAndRestoreService, PersistAndRestoreService>();
             services.AddSingleton<IThemeSelectorService, ThemeSelectorService>();
-            services.AddSingleton<ISampleDataService, SampleDataService>();
             services.AddSingleton<IPageService, PageService>();
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<IAppSettingService, AppSettingService>();
@@ -100,6 +98,7 @@ namespace YoutubeCutter
             _host.Dispose();
             _host = null;
             DownloadManager.ClearCacheFolder();
+            DownloadManager.StopAllDownloads();
         }
 
         private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)

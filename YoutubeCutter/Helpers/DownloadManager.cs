@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using YoutubeCutter.Models;
 
 namespace YoutubeCutter.Helpers
 {
     class DownloadManager
     {
+        public static List<Process> DownloadProcesses = new List<Process>();
         private static WebClient _webClient = WebClient.Instance;
         private static string _cacheLocation = AppDomain.CurrentDomain.BaseDirectory + "Cache";
         public static string DownloadThumbnail(string url, string youtubeID, string filename)
@@ -21,6 +18,13 @@ namespace YoutubeCutter.Helpers
                 _webClient.DownloadImage(url, _cacheLocation + "\\" + youtubeID + "\\" + filename);
             }
             return _cacheLocation + "\\" + youtubeID + "\\" + filename;
+        }
+        public static void StopAllDownloads()
+        {
+            foreach (Process process in DownloadProcesses)
+            {
+                process.Kill();
+            }
         }
         public static void MakeChacheFolder()
         {
@@ -71,8 +75,22 @@ namespace YoutubeCutter.Helpers
             }
             catch (DirectoryNotFoundException)
             {
-                
+
             }
+        }
+        public static Process DownloadVideoWithFfmpeg(string startTime, string downloadURL, string duration, string outputFile)
+        {
+            Process p = Process.Start(
+                new ProcessStartInfo((string)App.Current.Properties["FfmpegPath"], "-ss " + startTime + " -i \"" + downloadURL + "\" -t " + duration + " \"" + outputFile + "\" -y")
+                {
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true,
+                }
+            );
+            DownloadProcesses.Add(p);
+            return p;
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-using YoutubeCutter.Models;
+using YoutubeCutter.Core.Models;
 
 namespace YoutubeCutter.Converters
 {

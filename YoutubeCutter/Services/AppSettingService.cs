@@ -3,6 +3,7 @@
 using YoutubeCutter.Contracts.Services;
 using YoutubeCutter.Contracts.ViewModels;
 using YoutubeCutter.Models;
+using YoutubeCutter.Core.Models;
 
 namespace YoutubeCutter.Services
 {
