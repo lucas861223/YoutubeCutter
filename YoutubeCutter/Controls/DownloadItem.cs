@@ -6,10 +6,13 @@ namespace YoutubeCutter.Controls
 {
     public class DownloadItem : ObservableObject
     {
+        private string _bitrate = "N/A";
+        public string Bitrate { get { return _bitrate; } set { SetProperty(ref _bitrate, value); } }
         public bool IsDownloading { get { return HasStartedDownloading && !_isDownloaded; } }
         private bool _hasStartedDownloading = false;
         public bool HasStartedDownloading { get { return _hasStartedDownloading; } set { _hasStartedDownloading = value; OnPropertyChanged("IsDownloading"); } }
-        public int Progress { get; set; }
+        private int _progress = 0;
+        public int Progress { get { return _progress; } set { SetProperty(ref _progress, value); } }
         public Process DownloadProcess { get; set; }
         public bool ShowTopRectangle { get; set; } = false;
         public bool ShowBottomRectangle { get; set; } = false;

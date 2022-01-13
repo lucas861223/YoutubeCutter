@@ -78,10 +78,11 @@ namespace YoutubeCutter.Helpers
 
             }
         }
-        public static Process DownloadVideoWithFfmpeg(string startTime, string downloadURL, string duration, string outputFile)
+        public static Process DownloadVideoWithFfmpeg(string startTime, string videoURL, string audioURL, string duration, string outputFile)
         {
             Process p = Process.Start(
-                new ProcessStartInfo((string)App.Current.Properties["FfmpegPath"], "-ss " + startTime + " -i \"" + downloadURL + "\" -t " + duration + " \"" + outputFile + "\" -y")
+                new ProcessStartInfo((string)App.Current.Properties["FfmpegPath"], "-ss " + startTime + " -i \"" + videoURL + "\" -i \"" + audioURL + "\" -t "
+                                                                                   + duration + " -c copy \"" + outputFile + "\" -y")
                 {
                     CreateNoWindow = true,
                     UseShellExecute = false,

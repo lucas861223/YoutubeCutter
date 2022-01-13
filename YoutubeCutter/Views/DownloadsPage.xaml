@@ -51,7 +51,8 @@
                 Name="TabControl"
                 Grid.Row="1"
                 Margin="10,10,0,5"
-                FontSize="12">
+                FontSize="12"
+                SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <TabItem Header="Queue">
                     <ListView
                         BorderBrush="LightBlue"
@@ -60,25 +61,38 @@
                         SelectedItem="{Binding SelectedQueue, Mode=TwoWay}">
                         <ListView.ItemTemplate>
                             <DataTemplate DataType="{x:Type Controls:DownloadItem}">
-                                <Border BorderBrush="LightBlue" BorderThickness="0,0,0,1">
+                                <Border
+                                    x:Name="ItemBorder"
+                                    BorderBrush="LightBlue"
+                                    BorderThickness="0,0,0,1">
                                     <StackPanel>
                                         <TextBlock
-                                            MaxWidth="{Binding Path=ActualWidth, ElementName=TabControl}"
+                                            MaxWidth="{Binding Path=ActualWidth, ElementName=ItemBorder}"
                                             FontWeight="Bold"
                                             Text="{Binding Filename}" />
                                         <TextBlock
-                                            MaxWidth="{Binding Path=ActualWidth, ElementName=TabControl}"
+                                            MaxWidth="{Binding Path=ActualWidth, ElementName=ItemBorder}"
                                             FontWeight="Bold"
                                             Text="{Binding VideoTitle}" />
                                         <TextBlock
-                                            MaxWidth="{Binding Path=ActualWidth, ElementName=TabControl}"
+                                            MaxWidth="{Binding Path=ActualWidth, ElementName=ItemBorder}"
                                             FontWeight="Bold"
                                             Text="{Binding ChannelName}" />
-                                        <ProgressBar
-                                            Maximum="100"
-                                            Minimum="0"
-                                            Visibility="{Binding HasStartedDownloading, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}"
-                                            Value="{Binding Path=Progress, Mode=OneWay}" />
+                                        <Grid Visibility="{Binding IsDownloading, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition />
+                                            </Grid.ColumnDefinitions>
+                                            <ProgressBar
+                                                MaxWidth="{Binding Path=ActualWidth, ElementName=ItemBorder}"
+                                                Maximum="100"
+                                                Minimum="0"
+                                                Value="{Binding Path=Progress, Mode=OneWay}" />
+                                            <Label Content="{Binding Bitrate}" />
+                                        </Grid>
+                                        <TextBlock
+                                            FontWeight="Bold"
+                                            Text="Queuing..."
+                                            Visibility="{Binding IsDownloading, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse, Mode=OneWay}" />
                                     </StackPanel>
                                 </Border>
 

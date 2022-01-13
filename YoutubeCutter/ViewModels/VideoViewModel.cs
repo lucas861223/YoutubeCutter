@@ -260,7 +260,7 @@ namespace YoutubeCutter.ViewModels
                 });
                 if (_videoInformation.AuthorURL != null)
                 {
-                    _ = DownloadManager.DownloadThumbnail("https://i.ytimg.com/vi/" + _youtubeID + "/hqdefault.jpg", _videoInformation.VideoID, "hqthumbnail.jpg");
+                    _ = DownloadManager.DownloadThumbnail("https://i.ytimg.com/vi/" + _youtubeID + "/maxresdefault.jpg", _videoInformation.VideoID, "hqthumbnail.jpg");
                 }
             });
         }
