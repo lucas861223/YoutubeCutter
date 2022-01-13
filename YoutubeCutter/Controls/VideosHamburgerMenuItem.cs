@@ -11,6 +11,7 @@ using YoutubeCutter.Helpers;
 
 using YoutubeCutter.Models;
 using YoutubeCutter.ViewModels;
+using YoutubeCutter.Core.Models;
 
 namespace YoutubeCutter.Controls
 {

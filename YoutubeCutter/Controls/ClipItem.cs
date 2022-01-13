@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using YoutubeCutter.Models;
 using YoutubeCutter.Helpers;
 using System.Windows.Input;
+using YoutubeCutter.Core.Models;
+using YoutubeCutter.Core.Helpers;
 
 namespace YoutubeCutter.Controls
 {

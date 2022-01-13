@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Text.Json;
 using System.Net;
+using YoutubeCutter.Core.Models;
 using System.IO;
 
 using YoutubeCutter.Models;

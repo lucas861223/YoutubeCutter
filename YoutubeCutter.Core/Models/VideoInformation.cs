@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.ObjectModel;
-using YoutubeCutter.Controls;
-
-namespace YoutubeCutter.Models
+﻿namespace YoutubeCutter.Core.Models
 {
     public class VideoInformation
     {

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YoutubeCutter.Controls;
+using YoutubeCutter.Core.Models;
 
 namespace YoutubeCutter.Models
 {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace YoutubeCutter.Models
+namespace YoutubeCutter.Core.Models
 {
     public class Time
     {

@@ -1,4 +1,6 @@
-﻿namespace YoutubeCutter.Models
+﻿using YoutubeCutter.Core.Models;
+
+namespace YoutubeCutter.Models
 {
     public class AppConfig
     {

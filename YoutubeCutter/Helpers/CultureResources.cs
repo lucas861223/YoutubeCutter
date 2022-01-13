@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Globalization;
 
 using YoutubeCutter.Models;
+using YoutubeCutter.Core.Models;
 
 namespace YoutubeCutter.Helpers
 {

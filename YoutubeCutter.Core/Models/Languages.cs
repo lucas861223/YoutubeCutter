@@ -1,4 +1,4 @@
-﻿namespace YoutubeCutter.Models
+﻿namespace YoutubeCutter.Core.Models
 {
     public enum Languages
     {

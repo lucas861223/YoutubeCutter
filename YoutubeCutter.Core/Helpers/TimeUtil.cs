@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using YoutubeCutter.Models;
+using YoutubeCutter.Core.Models;
 using System.Text.RegularExpressions;
 
-namespace YoutubeCutter.Helpers
+namespace YoutubeCutter.Core.Helpers
 {
-    class TimeUtil
+    public class TimeUtil
     {
         private static Regex _durationRegex = new Regex(@"(((?<Hours>\d+):)?(?<Minutes>\d+):)?(?<Seconds>\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
