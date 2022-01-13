@@ -26,6 +26,7 @@ namespace YoutubeCutter.ViewModels
         private DownloadItem _selectedDone;
         private DownloadItem _displayItem;
         private static bool _hasThreadWorking = false;
+        private bool _showProgress = false;
         //todo make draggable, or reorder-able
         //todo show progress bar
         public ObservableCollection<DownloadItem> Queue { get; } = new ObservableCollection<DownloadItem>();
@@ -49,10 +50,14 @@ namespace YoutubeCutter.ViewModels
         {
 
         }
+
+        private ICommand _openFolderCommand;
+        public ICommand OpenFolderCommand => _openFolderCommand ?? (_openFolderCommand = new RelayCommand(OpenFolder));
         public void OnNavigatedTo(object parameter)
         {
             if (parameter != null)
             {
+                _showProgress = true;
                 foreach (DownloadItem item in (DownloadItem[])parameter)
                 {
                     Queue.Add(item);
@@ -64,7 +69,7 @@ namespace YoutubeCutter.ViewModels
                     DownloadItemFromQueue();
                 }
             }
-            
+
         }
         private async void DownloadItemFromQueue()
         {
@@ -79,7 +84,7 @@ namespace YoutubeCutter.ViewModels
                     {
                         _ = Directory.CreateDirectory(item.Directory);
                         var p = Process.Start(
-                            new ProcessStartInfo((string)App.Current.Properties["YoutubedlPath"], item.YoutubeURL  + " -g -f best")
+                            new ProcessStartInfo((string)App.Current.Properties["YoutubedlPath"], item.YoutubeURL + " -g -f best")
                             {
                                 CreateNoWindow = true,
                                 UseShellExecute = false,
@@ -106,7 +111,11 @@ namespace YoutubeCutter.ViewModels
                         while ((line = progress.ReadLine()) != null)
                         {
                             //todo update progress bar
-                            Debug.WriteLine(line);
+                            if (_showProgress)
+                            {
+
+                            }
+                            
                         }
                         item.IsDownloaded = true;
                         App.Current.Dispatcher.Invoke(() =>
@@ -121,7 +130,20 @@ namespace YoutubeCutter.ViewModels
         }
         public void OnNavigatedFrom()
         {
+            _showProgress = false;
         }
 
+        public void OpenFolder()
+        {
+            if (Directory.Exists(DisplayItem.Directory))
+            {
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    Arguments = DisplayItem.Directory.Replace("\\\\", "\\"),
+                    FileName = "explorer.exe"
+                };
+                Process.Start(startInfo);
+            }
+        }
     }
 }

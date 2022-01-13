@@ -143,35 +143,11 @@
                                 Style="{StaticResource PageTitleStyle}"
                                 Text="{Binding Filename}"
                                 TextWrapping="Wrap" />
-                            <Image
-                                MaxWidth="600"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                Source="{Binding VideoThumbnail, Converter={StaticResource StringToImageSourceConverter}, ConverterParameter=Video}"
-                                Stretch="UniformToFill" />
                             <TextBlock
                                 Margin="0,0,0,0"
                                 Style="{StaticResource PageTitleStyle}"
                                 Text="{Binding VideoTitle}"
                                 TextWrapping="Wrap" />
-                            <StackPanel Orientation="Horizontal">
-                                <Ellipse
-                                    Grid.Column="0"
-                                    Width="48"
-                                    Height="48"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Top">
-                                    <Ellipse.Fill>
-                                        <ImageBrush ImageSource="{Binding ChannelThumbnail, Converter={StaticResource StringToImageSourceConverter}, ConverterParameter=Channel}" Stretch="UniformToFill" />
-                                    </Ellipse.Fill>
-                                </Ellipse>
-                                <TextBlock
-                                    VerticalAlignment="Center"
-                                    Style="{StaticResource ListSubTitleStyle}"
-                                    Text="{Binding ChannelName}"
-                                    TextWrapping="Wrap" />
-                            </StackPanel>
-
                             <TextBlock
                                 Margin="{StaticResource SmallTopMargin}"
                                 HorizontalAlignment="Center"
@@ -195,14 +171,44 @@
                                     Style="{StaticResource SubtitleTextStyle}"
                                     Text="Directory:"
                                     TextWrapping="Wrap" />
-                                <Button HorizontalAlignment="Right">
+                                <Button Margin="{StaticResource MediumLeftMargin}" HorizontalAlignment="Left">
                                     Open
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <i:InvokeCommandAction Command="{Binding DataContext.OpenFolderCommand, RelativeSource={RelativeSource AncestorType=Page}}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
                                 </Button>
                             </DockPanel>
                             <TextBlock
                                 Style="{StaticResource ListSubTitleStyle}"
                                 Text="{Binding Directory}"
                                 TextWrapping="Wrap" />
+                            <Image
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Source="{Binding VideoThumbnail, Converter={StaticResource StringToImageSourceConverter}, ConverterParameter=Video}"
+                                Stretch="UniformToFill" />
+
+                            <StackPanel Orientation="Horizontal">
+                                <Ellipse
+                                    Grid.Column="0"
+                                    Width="48"
+                                    Height="48"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top">
+                                    <Ellipse.Fill>
+                                        <ImageBrush ImageSource="{Binding ChannelThumbnail, Converter={StaticResource StringToImageSourceConverter}, ConverterParameter=Channel}" Stretch="UniformToFill" />
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource ListSubTitleStyle}"
+                                    Text="{Binding ChannelName}"
+                                    TextWrapping="Wrap" />
+                            </StackPanel>
+
+
                         </StackPanel>
                     </ScrollViewer>
                 </DataTemplate>

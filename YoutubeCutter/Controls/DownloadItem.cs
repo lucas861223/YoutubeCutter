@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +8,7 @@ using YoutubeCutter.Models;
 
 namespace YoutubeCutter.Controls
 {
-    public class DownloadItem
+    public class DownloadItem : ObservableObject
     {
         public bool ShowTopRectangle { get; set; } = false;
         public bool ShowBottomRectangle { get; set; } = false;
@@ -21,6 +22,7 @@ namespace YoutubeCutter.Controls
         public Time EndTime { get; set; }
         public string VideoThumbnail { get; set; }
         public string ChannelThumbnail { get; set; }
-        public bool IsDownloaded { get; set; }
+        private bool _isDownloaded = false;
+        public bool IsDownloaded { get { return _isDownloaded; } set { SetProperty(ref _isDownloaded, value); } }
     }
 }
