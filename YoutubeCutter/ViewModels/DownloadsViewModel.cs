@@ -57,11 +57,10 @@ namespace YoutubeCutter.ViewModels
 
 
 
-        private DownloadItem _movingItemDataContext;
+        private int _movingIndex;
         private ListViewItem _movingItem;
         private double _halfOfActualHeight;
         private bool _isMoving = false;
-        private bool _hasButtonHeldDown = false;
         private ListViewItem _currentItem;
         public DownloadsViewModel()
         {
@@ -69,22 +68,27 @@ namespace YoutubeCutter.ViewModels
             Queue.Add(new DownloadItem() { Filename = "xxxxx1xx" });
             Queue.Add(new DownloadItem() { Filename = "xxxxx2xx" });
             Queue.Add(new DownloadItem() { Filename = "xxxxx3xx" });
+            Queue.Add(new DownloadItem() { Filename = "xxxxx4xx" });
+            Queue.Add(new DownloadItem() { Filename = "xxxxx5xx" });
+            Queue.Add(new DownloadItem() { Filename = "xxxxx6xx" });
+            Queue.Add(new DownloadItem() { Filename = "xxxxx7xx" });
+            Queue.Add(new DownloadItem() { Filename = "xxxxx8xx" });
+            Queue.Add(new DownloadItem() { Filename = "xxxxx9xx" });
+            Queue.Add(new DownloadItem() { Filename = "xxxxx3xx" });
+            Queue.Add(new DownloadItem() { Filename = "xxxxx3xx" });
+            Queue.Add(new DownloadItem() { Filename = "xxxxx3xx" });
         }
 
         private ICommand _itemMouseDownCommand;
         private ICommand _mouseUpCommand;
-        private ICommand _mouseLeaveCommand;
         private ICommand _openFolderCommand;
         private ICommand _itemMouseLeaveCommand;
-        private ICommand _itemMouseMoveCommand;
         private ICommand _itemMouseEnterCommand;
         public ICommand OpenFolderCommand => _openFolderCommand ?? (_openFolderCommand = new RelayCommand(OpenFolder));
         public ICommand ItemMouseDownCommand => _itemMouseDownCommand ?? (_itemMouseDownCommand = new RelayCommand<ListViewItem>(ItemMouseDown));
-        public ICommand MouseUpCommand => _mouseUpCommand ?? (_mouseUpCommand = new RelayCommand(MouseUp));
+        public ICommand MouseUpCommand => _mouseUpCommand ?? (_mouseUpCommand = new RelayCommand<DragEventArgs>(MouseUp));
         public ICommand ItemMouseLeaveCommand => _itemMouseLeaveCommand ?? (_itemMouseLeaveCommand = new RelayCommand<ListViewItem>(ItemMouseLeave));
-        public ICommand ItemMouseMoveCommand => _itemMouseMoveCommand ?? (_itemMouseMoveCommand = new RelayCommand<MouseEventArgs>(ItemMouseMove));
         public ICommand ItemMouseEnterCommand => _itemMouseEnterCommand ?? (_itemMouseEnterCommand = new RelayCommand<ListViewItem>(ItemMouseEnter));
-        public ICommand MouseLeaveCommand => _mouseLeaveCommand ?? (_mouseLeaveCommand = new RelayCommand(MouseLeave));
         public void OnNavigatedTo(object parameter)
         {
             _showProgress = true;
@@ -229,74 +233,65 @@ namespace YoutubeCutter.ViewModels
         //todo somehow stop item from being selected
         private void ItemMouseDown(ListViewItem e)
         {
-            if (!_isMoving)
-            {
-                _movingItemDataContext = e.DataContext as DownloadItem;
-                _movingItem = e;
-                _hasButtonHeldDown = true;
-            } else
-            {
-                e.IsSelected = false;
-            }
+            _movingIndex = Queue.IndexOf(e.DataContext as DownloadItem);
+            _movingItem = e;
+            SelectedQueue = _movingItem.DataContext as DownloadItem;
+            OnPropertyChanged("SelectedQueue");
+            DragDrop.DoDragDrop(_movingItem, _movingItem.DataContext, DragDropEffects.Move);
+
         }
         private void ItemMouseLeave(ListViewItem e)
         {
-            if (e == _movingItem && _hasButtonHeldDown)
-            {
-                _isMoving = true;
-            }
+            Debug.WriteLine((e.DataContext as DownloadItem).Filename);
         }
-        private void ItemMouseMove(MouseEventArgs e)
+        private void MouseUp(DragEventArgs e)
         {
-            if (_isMoving)
+            if (_currentItem != _movingItem)
             {
-                if (_currentItem != _movingItem)
+                int index = Queue.IndexOf(_currentItem.DataContext as DownloadItem);
+                if (Queue[index].ShowTop)
                 {
-                    double mouse = e.GetPosition(_currentItem).Y;
-                    DownloadItem dc = _currentItem.DataContext as DownloadItem;
-                    if (mouse < _currentItem.ActualHeight - _halfOfActualHeight && !dc.ShowBottom
-                        || mouse < _halfOfActualHeight)
-                    {
-                        dc.ShowTop = true;
-                        dc.ShowBottom = false;
-                    }
-                    else
-                    {
-                        dc.ShowBottom = true;
-                        dc.ShowTop = false;
-                    }
+                    (_currentItem.DataContext as DownloadItem).ShowBottom = false;
+                    (_currentItem.DataContext as DownloadItem).ShowTop = false;
+                    Queue.Move(_movingIndex, index);
                 }
+                else
+                {
+                    (_currentItem.DataContext as DownloadItem).ShowBottom = false;
+                    (_currentItem.DataContext as DownloadItem).ShowTop = false;
+                    Queue.Move(_movingIndex, index);
+                }
+                _currentItem = null;
             }
-        }
-        private void MouseUp()
-        {
-            if (_isMoving)
-            {
-                //todo implement
-            }
-            _isMoving = false;
-            _hasButtonHeldDown = false;
         }
         private void ItemMouseEnter(ListViewItem e)
         {
-            if (_isMoving)
+            Debug.WriteLine("entering " + (e.DataContext as DownloadItem).Filename);
+            if (_currentItem != null)
             {
-                if (_currentItem != null)
-                {
-                    if (Queue[Queue.Count - 1] != _currentItem.DataContext as DownloadItem)
-                    {
-                        (_currentItem.DataContext as DownloadItem).ShowBottom = false;
-                    }
-                    (_currentItem.DataContext as DownloadItem).ShowTop = false;
-                }
-                _currentItem = e;
-                _halfOfActualHeight = e.ActualHeight / 2;
+                (_currentItem.DataContext as DownloadItem).ShowBottom = false;
+                (_currentItem.DataContext as DownloadItem).ShowTop = false;
             }
-        }
-        private void MouseLeave()
-        {
-            _isMoving = false;
-            _hasButtonHeldDown = false;
+            _currentItem = e;
+            _halfOfActualHeight = e.ActualHeight / 2;
+            DownloadItem dc = _currentItem.DataContext as DownloadItem;
+            if (e != _movingItem)
+            {
+                if (Mouse.GetPosition(_movingItem).Y > Mouse.GetPosition(e).Y)
+                {
+                    if (!dc.ShowBottom)
+                    {
+                        dc.ShowBottom = true;
+                    }
+                }
+                else
+                {
+                    if (!dc.ShowTop)
+                    {
+                        dc.ShowTop = true;
+                    }
+                }
+            }
         }
     }
 }

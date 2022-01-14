@@ -52,21 +52,19 @@
                 Margin="10,10,0,5"
                 FontSize="12"
                 SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseLeftButtonUp">
-                        <i:InvokeCommandAction Command="{Binding Path=DataContext.MouseUpCommand, RelativeSource={RelativeSource AncestorType=Page}}" />
-                    </i:EventTrigger>
-                    <i:EventTrigger EventName="MouseLeave">
-                        <i:InvokeCommandAction Command="{Binding Path=DataContext.MouseLeaveCommand, RelativeSource={RelativeSource AncestorType=Page}}" />
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
                 <TabItem Header="Queue">
                     <ListView
                         AllowDrop="True"
                         BorderBrush="LightBlue"
                         BorderThickness="2"
+                        DragLeave="ListDragLeaves"
                         ItemsSource="{Binding Queue}"
                         SelectedItem="{Binding SelectedQueue, Mode=TwoWay}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Drop">
+                                <i:InvokeCommandAction Command="{Binding Path=DataContext.MouseUpCommand, RelativeSource={RelativeSource AncestorType=Page}}" PassEventArgsToCommand="True" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                         <ListView.ItemTemplate>
                             <DataTemplate DataType="{x:Type Controls:DownloadItem}">
                                 <Border
@@ -74,16 +72,13 @@
                                     BorderBrush="LightBlue"
                                     BorderThickness="0,0,0,1">
                                     <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="MouseLeave">
+                                        <i:EventTrigger EventName="DragLeave">
                                             <i:InvokeCommandAction Command="{Binding Path=DataContext.ItemMouseLeaveCommand, RelativeSource={RelativeSource AncestorType=Page}}" CommandParameter="{Binding Path=., RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}" />
                                         </i:EventTrigger>
                                         <i:EventTrigger EventName="MouseLeftButtonDown">
                                             <i:InvokeCommandAction Command="{Binding Path=DataContext.ItemMouseDownCommand, RelativeSource={RelativeSource AncestorType=Page}}" CommandParameter="{Binding Path=., RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}" />
                                         </i:EventTrigger>
-                                        <i:EventTrigger EventName="MouseMove">
-                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.ItemMouseMoveCommand, RelativeSource={RelativeSource AncestorType=Page}}" PassEventArgsToCommand="True" />
-                                        </i:EventTrigger>
-                                        <i:EventTrigger EventName="MouseEnter">
+                                        <i:EventTrigger EventName="DragEnter">
                                             <i:InvokeCommandAction Command="{Binding Path=DataContext.ItemMouseEnterCommand, RelativeSource={RelativeSource AncestorType=Page}}" CommandParameter="{Binding Path=., RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}" />
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>

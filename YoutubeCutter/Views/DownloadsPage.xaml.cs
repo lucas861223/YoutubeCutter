@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -11,9 +12,10 @@ namespace YoutubeCutter.Views
             InitializeComponent();
         }
 
-        private void ListBoxItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void ListDragLeaves(object sender, DragEventArgs e)
         {
-            Debug.WriteLine(sender);
+            //this triggers when it leaves the textbox, not reliable
+            //todo figure out how to auto scroll
         }
 
     }
