@@ -28,5 +28,11 @@ namespace YoutubeCutter.Controls
         public string ChannelThumbnail { get; set; }
         private bool _isDownloaded = false;
         public bool IsDownloaded { get { return _isDownloaded; } set { SetProperty(ref _isDownloaded, value); } }
+
+        private bool _showBottom = false;
+        private bool _showTop = false;
+
+        public bool ShowTop { get { return _showTop; } set { SetProperty(ref _showTop, value); } }
+        public bool ShowBottom { get { return _showBottom; } set { SetProperty(ref _showBottom, value); } }
     }
 }

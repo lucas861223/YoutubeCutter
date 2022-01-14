@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using System.Diagnostics;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace YoutubeCutter.Views
 {
@@ -7,6 +9,11 @@ namespace YoutubeCutter.Views
         public DownloadsPage()
         {
             InitializeComponent();
+        }
+
+        private void ListBoxItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Debug.WriteLine(sender);
         }
 
     }

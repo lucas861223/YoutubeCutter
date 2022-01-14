@@ -174,10 +174,6 @@ namespace YoutubeCutter.ViewModels
         private Dictionary<string, List<ClipItem>> _filenameDictionary = new Dictionary<string, List<ClipItem>>();
         public void OnNavigatedTo(object parameter)
         {
-            //tood to think
-            //_menuItems = new ObservableCollection<ClipItem>();
-            //IsAvaliableVideo = false;
-            //_youtubeURL = "Youtube URL";
             if (parameter != null)
             {
                 VideoPageInfo pageInfo = parameter as VideoPageInfo;
@@ -186,33 +182,6 @@ namespace YoutubeCutter.ViewModels
                 _removePage = VideoPageInfo.RemovePage;
                 _moveToDownload = VideoPageInfo.MoveToDownload;
             }
-            //{
-
-            //    if (pageInfo.YoutubeURL != null)
-            //    {
-            //        _youtubeURL = pageInfo.YoutubeURL;
-            //        if (pageInfo.MenuItems != null && pageInfo.MenuItems.Length > 0)
-            //        {
-            //            IsVideoReady = true;
-            //            _duration = pageInfo.Duration;
-            //            _downloadURL = pageInfo.DownloadURL;
-            //            for (int i = 0; i < pageInfo.MenuItems.Length / 3; i++)
-            //            {
-            //                AddClip(pageInfo.MenuItems[i * 3], TimeUtil.ParseTimeFromString(pageInfo.MenuItems[i * 3 + 1]), TimeUtil.ParseTimeFromString(pageInfo.MenuItems[i * 3 + 2]));
-            //                ClipErrorCount += MenuItems[i].IsValidClip ? 0 : 1;
-            //            }
-            //            SelectedItem = MenuItems[0];
-            //            OnPropertyChanged("IsVideoReady");
-            //        }
-            //    }
-            //    IsAvaliableVideo = pageInfo.EmbedYoutubeURL != null;
-            //    _downloadPath = pageInfo.DownloadPath;
-            //    OnPropertyChanged("YoutubeEmbedVideoURL");
-            //    OnPropertyChanged("YoutubeURL");
-            //    OnPropertyChanged("IsAvaliableVideo");
-            //    OnPropertyChanged("IsDownloadEnabled");
-            //    OnPropertyChanged("DownloadButtonToolTip");
-            //}
         }
         public async void GetVideoInformation()
         {
