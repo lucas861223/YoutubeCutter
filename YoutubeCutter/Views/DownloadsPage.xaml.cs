@@ -14,8 +14,7 @@ namespace YoutubeCutter.Views
 
         private void ListDragLeaves(object sender, DragEventArgs e)
         {
-            //this triggers when it leaves the textbox, not reliable
-            //todo figure out how to auto scroll
+            Debug.WriteLine(sender);
         }
 
     }

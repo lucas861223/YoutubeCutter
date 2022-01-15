@@ -94,6 +94,7 @@ namespace YoutubeCutter
 
         private async void OnExit(object sender, ExitEventArgs e)
         {
+            //todo close cef browser subprocess
             await _host.StopAsync();
             _host.Dispose();
             _host = null;

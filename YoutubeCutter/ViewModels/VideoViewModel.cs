@@ -275,6 +275,8 @@ namespace YoutubeCutter.ViewModels
             _filenameDictionary[filename].Add(MenuItems[MenuItems.Count - 1]);
             UpdateClipsWithFilename(filename);
             OnPropertyChanged("CanRemoveClips");
+            SelectedItem = MenuItems[MenuItems.Count - 1];
+            OnPropertyChanged("SelectedItem");
         }
         public void ChangeSelectedItem(RoutedEventArgs eventArgs)
         {

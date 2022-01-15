@@ -62,7 +62,7 @@
                         SelectedItem="{Binding SelectedQueue, Mode=TwoWay}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Drop">
-                                <i:InvokeCommandAction Command="{Binding Path=DataContext.MouseUpCommand, RelativeSource={RelativeSource AncestorType=Page}}" PassEventArgsToCommand="True" />
+                                <i:InvokeCommandAction Command="{Binding Path=DataContext.DropCommand, RelativeSource={RelativeSource AncestorType=Page}}" PassEventArgsToCommand="True" />
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                         <ListView.ItemTemplate>
@@ -73,13 +73,13 @@
                                     BorderThickness="0,0,0,1">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="DragLeave">
-                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.ItemMouseLeaveCommand, RelativeSource={RelativeSource AncestorType=Page}}" CommandParameter="{Binding Path=., RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}" />
+                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.DragLeaveCommand, RelativeSource={RelativeSource AncestorType=Page}}" CommandParameter="{Binding Path=., RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}" />
                                         </i:EventTrigger>
                                         <i:EventTrigger EventName="MouseLeftButtonDown">
                                             <i:InvokeCommandAction Command="{Binding Path=DataContext.ItemMouseDownCommand, RelativeSource={RelativeSource AncestorType=Page}}" CommandParameter="{Binding Path=., RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}" />
                                         </i:EventTrigger>
                                         <i:EventTrigger EventName="DragEnter">
-                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.ItemMouseEnterCommand, RelativeSource={RelativeSource AncestorType=Page}}" CommandParameter="{Binding Path=., RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}" />
+                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.DragEnterCommand, RelativeSource={RelativeSource AncestorType=Page}}" CommandParameter="{Binding Path=., RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}" />
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                     <StackPanel>

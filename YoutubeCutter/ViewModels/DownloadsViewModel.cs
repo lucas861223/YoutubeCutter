@@ -19,6 +19,8 @@ using System.Diagnostics;
 using System.IO;
 using YoutubeCutter.Core.Helpers;
 using System.Windows.Controls;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace YoutubeCutter.ViewModels
 {
@@ -30,7 +32,6 @@ namespace YoutubeCutter.ViewModels
         private static bool _hasThreadWorking = false;
         private bool _showProgress = false;
         private int _selectedTabIndex;
-        //todo make draggable, or reorder-able
         public int SelectedTabIndex
         {
             get { return _selectedTabIndex; }
@@ -38,7 +39,6 @@ namespace YoutubeCutter.ViewModels
         }
         public ObservableCollection<DownloadItem> Queue { get; } = new ObservableCollection<DownloadItem>();
         public ObservableCollection<DownloadItem> DoneList { get; } = new ObservableCollection<DownloadItem>();
-        public ConcurrentQueue<DownloadItem> DownloadQueue { get; set; } = new ConcurrentQueue<DownloadItem>();
         public DownloadItem SelectedQueue
         {
             get { return _selectedQueue; }
@@ -59,36 +59,22 @@ namespace YoutubeCutter.ViewModels
 
         private int _movingIndex;
         private ListViewItem _movingItem;
-        private double _halfOfActualHeight;
         private bool _isMoving = false;
         private ListViewItem _currentItem;
         public DownloadsViewModel()
         {
-            Queue.Add(new DownloadItem() { Filename = "xxxxxxx" });
-            Queue.Add(new DownloadItem() { Filename = "xxxxx1xx" });
-            Queue.Add(new DownloadItem() { Filename = "xxxxx2xx" });
-            Queue.Add(new DownloadItem() { Filename = "xxxxx3xx" });
-            Queue.Add(new DownloadItem() { Filename = "xxxxx4xx" });
-            Queue.Add(new DownloadItem() { Filename = "xxxxx5xx" });
-            Queue.Add(new DownloadItem() { Filename = "xxxxx6xx" });
-            Queue.Add(new DownloadItem() { Filename = "xxxxx7xx" });
-            Queue.Add(new DownloadItem() { Filename = "xxxxx8xx" });
-            Queue.Add(new DownloadItem() { Filename = "xxxxx9xx" });
-            Queue.Add(new DownloadItem() { Filename = "xxxxx3xx" });
-            Queue.Add(new DownloadItem() { Filename = "xxxxx3xx" });
-            Queue.Add(new DownloadItem() { Filename = "xxxxx3xx" });
         }
 
         private ICommand _itemMouseDownCommand;
-        private ICommand _mouseUpCommand;
+        private ICommand _dropCommand;
         private ICommand _openFolderCommand;
-        private ICommand _itemMouseLeaveCommand;
-        private ICommand _itemMouseEnterCommand;
+        private ICommand _dragLeaveCommand;
+        private ICommand _dragEnterCommand;
         public ICommand OpenFolderCommand => _openFolderCommand ?? (_openFolderCommand = new RelayCommand(OpenFolder));
         public ICommand ItemMouseDownCommand => _itemMouseDownCommand ?? (_itemMouseDownCommand = new RelayCommand<ListViewItem>(ItemMouseDown));
-        public ICommand MouseUpCommand => _mouseUpCommand ?? (_mouseUpCommand = new RelayCommand<DragEventArgs>(MouseUp));
-        public ICommand ItemMouseLeaveCommand => _itemMouseLeaveCommand ?? (_itemMouseLeaveCommand = new RelayCommand<ListViewItem>(ItemMouseLeave));
-        public ICommand ItemMouseEnterCommand => _itemMouseEnterCommand ?? (_itemMouseEnterCommand = new RelayCommand<ListViewItem>(ItemMouseEnter));
+        public ICommand DropCommand => _dropCommand ?? (_dropCommand = new RelayCommand<DragEventArgs>(Drop));
+        public ICommand DragLeaveCommand => _dragLeaveCommand ?? (_dragLeaveCommand = new RelayCommand<ListViewItem>(DropLeave));
+        public ICommand DragEnterCommand => _dragEnterCommand ?? (_dragEnterCommand = new RelayCommand<ListViewItem>(DragEnter));
         public void OnNavigatedTo(object parameter)
         {
             _showProgress = true;
@@ -97,7 +83,6 @@ namespace YoutubeCutter.ViewModels
                 foreach (DownloadItem item in (DownloadItem[])parameter)
                 {
                     Queue.Add(item);
-                    DownloadQueue.Enqueue(item);
                 }
                 if (!_hasThreadWorking)
                 {
@@ -114,102 +99,103 @@ namespace YoutubeCutter.ViewModels
                 //todo pause download
                 //todo preserve state between app session?
                 DownloadItem item;
-                while (!DownloadQueue.IsEmpty)
+                while (Queue.Count > 0)
                 {
-                    if (DownloadQueue.TryDequeue(out item))
+                    item = Queue[0];
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        item.HasStartedDownloading = true;
+                    });
+                    Process p;
+                    if (item.DownloadProcess == null)
+                    {
+                        _ = Directory.CreateDirectory(item.Directory);
+                        p = Process.Start(
+                            new ProcessStartInfo((string)App.Current.Properties["YoutubedlPath"], item.YoutubeURL + " -g -f bestvideo")
+                            {
+                                CreateNoWindow = true,
+                                UseShellExecute = false,
+                                RedirectStandardError = true,
+                                RedirectStandardOutput = true,
+                            }
+                        );
+                        p.WaitForExit();
+                        string bestVideoURL = p.StandardOutput.ReadToEnd().TrimEnd();
+                        p = Process.Start(
+                            new ProcessStartInfo((string)App.Current.Properties["YoutubedlPath"], item.YoutubeURL + " -g -f bestaudio")
+                            {
+                                CreateNoWindow = true,
+                                UseShellExecute = false,
+                                RedirectStandardError = true,
+                                RedirectStandardOutput = true,
+                            }
+                        );
+                        p.WaitForExit();
+                        string bestAudioURL = p.StandardOutput.ReadToEnd().TrimEnd();
+                        p = DownloadManager.DownloadVideoWithFfmpeg(TimeUtil.TimeToString(item.StartTime),
+                                                                                        bestVideoURL,
+                                                                                        bestAudioURL,
+                                                                                        TimeUtil.TimeToString(item.Duration),
+                                                                                        item.Directory.Replace("\\\\", "\\") + item.Filename + ".mp4");
+                        item.DownloadProcess = p;
+                    }
+                    else
+                    {
+                        p = item.DownloadProcess;
+                    }
+                    StreamReader progressReader = item.DownloadProcess.StandardError;
+                    //todo handle errors
+                    int duration = TimeUtil.ConvertToSeconds(item.Duration);
+                    string line;
+                    string time;
+                    string bitrate;
+                    int seconds;
+                    int percentage;
+                    int startIndex;
+                    //todo figure out why is ffmpeg slower in process than cmd
+                    //Maybe the frame data is usable for pausing
+                    //but that means the program must process each line
+                    //so it knows the latest data
+                    while ((line = progressReader.ReadLine()) != null)
+                    {
+                        if (_showProgress)
+                        {
+                            startIndex = line.IndexOf("time=");
+                            if (startIndex > 0)
+                            {
+                                time = line.Substring(startIndex + 5, 8);
+                                seconds = 3600 * Convert.ToInt32(time.Substring(0, 2)) + 60 * Convert.ToInt32(time.Substring(3, 2)) + Convert.ToInt32(time.Substring(6, 2));
+                                percentage = seconds * 100 / duration;
+                                startIndex = line.IndexOf("bitrate=") + 8;
+                                bitrate = line.Substring(startIndex, line.IndexOf("speed=") - startIndex);
+                                //format frame= 1866 fps= 11 q=40.0 Lsize=   43776kB time=00:01:18.33 bitrate=4577.9kbits/s speed=0.45x
+                                App.Current.Dispatcher.Invoke(() =>
+                                {
+                                    item.Progress = percentage;
+                                    item.Bitrate = bitrate;
+                                });
+                                progressReader.DiscardBufferedData();
+                            }
+                        }
+                    }
+                    progressReader.Dispose();
+                    DownloadManager.DownloadProcesses.Remove(p);
+                    if (App.Current != null)
                     {
                         App.Current.Dispatcher.Invoke(() =>
                         {
-                            item.HasStartedDownloading = true;
-                        });
-                        Process p;
-                        if (item.DownloadProcess == null)
-                        {
-                            _ = Directory.CreateDirectory(item.Directory);
-                            p = Process.Start(
-                                new ProcessStartInfo((string)App.Current.Properties["YoutubedlPath"], item.YoutubeURL + " -g -f bestvideo")
-                                {
-                                    CreateNoWindow = true,
-                                    UseShellExecute = false,
-                                    RedirectStandardError = true,
-                                    RedirectStandardOutput = true,
-                                }
-                            );
-                            p.WaitForExit();
-                            string bestVideoURL = p.StandardOutput.ReadToEnd().TrimEnd();
-                            p = Process.Start(
-                                new ProcessStartInfo((string)App.Current.Properties["YoutubedlPath"], item.YoutubeURL + " -g -f bestaudio")
-                                {
-                                    CreateNoWindow = true,
-                                    UseShellExecute = false,
-                                    RedirectStandardError = true,
-                                    RedirectStandardOutput = true,
-                                }
-                            );
-                            p.WaitForExit();
-                            string bestAudioURL = p.StandardOutput.ReadToEnd().TrimEnd();
-                            p = DownloadManager.DownloadVideoWithFfmpeg(TimeUtil.TimeToString(item.StartTime),
-                                                                                            bestVideoURL,
-                                                                                            bestAudioURL,
-                                                                                            TimeUtil.TimeToString(item.Duration),
-                                                                                            item.Directory.Replace("\\\\", "\\") + item.Filename + ".mp4");
-                            item.DownloadProcess = p;
-                        }
-                        else
-                        {
-                            p = item.DownloadProcess;
-                        }
-                        StreamReader progressReader = item.DownloadProcess.StandardError;
-                        //todo handle errors
-                        int duration = TimeUtil.ConvertToSeconds(item.Duration);
-                        string line;
-                        string time;
-                        string bitrate;
-                        int seconds;
-                        int percentage;
-                        int startIndex;
-                        //todo figure out why is ffmpeg slower in process than cmd
-                        while ((line = progressReader.ReadLine()) != null)
-                        {
-                            Debug.WriteLine(line);
-                            if (_showProgress)
+                            item.IsDownloaded = true;
+                            DoneList.Insert(0, item);
+                            if (item == DisplayItem)
                             {
-                                startIndex = line.IndexOf("time=");
-                                if (startIndex > 0)
-                                {
-                                    time = line.Substring(startIndex + 5, 8);
-                                    seconds = 3600 * Convert.ToInt32(time.Substring(0, 2)) + 60 * Convert.ToInt32(time.Substring(3, 2)) + Convert.ToInt32(time.Substring(6, 2));
-                                    percentage = seconds * 100 / duration;
-                                    startIndex = line.IndexOf("bitrate=") + 8;
-                                    bitrate = line.Substring(startIndex, line.IndexOf("speed=") - startIndex);
-                                    //format frame= 1866 fps= 11 q=40.0 Lsize=   43776kB time=00:01:18.33 bitrate=4577.9kbits/s speed=0.45x
-                                    App.Current.Dispatcher.Invoke(() =>
-                                    {
-                                        item.Progress = percentage;
-                                        item.Bitrate = bitrate;
-                                    });
-                                    progressReader.DiscardBufferedData();
-                                }
+                                SelectedDone = item;
+                                SelectedTabIndex = 1;
+                                OnPropertyChanged("SelectedTabIndex");
                             }
-                        }
-                        progressReader.Dispose();
-                        DownloadManager.DownloadProcesses.Remove(p);
-                        if (App.Current != null)
-                        {
-                            App.Current.Dispatcher.Invoke(() =>
-                            {
-                                item.IsDownloaded = true;
-                                if (item == DisplayItem)
-                                {
-                                    SelectedDone = item;
-                                    SelectedTabIndex = 1;
-                                    OnPropertyChanged("SelectedTabIndex");
-                                }
-                                Queue.Remove(item);
-                                DoneList.Insert(0, item);
-                            });
-                        }
+                            Queue.Remove(item);
+                        });
                     }
+
                 }
                 _hasThreadWorking = false;
             });
@@ -230,67 +216,66 @@ namespace YoutubeCutter.ViewModels
                 Process.Start(startInfo);
             }
         }
-        //todo somehow stop item from being selected
         private void ItemMouseDown(ListViewItem e)
         {
-            _movingIndex = Queue.IndexOf(e.DataContext as DownloadItem);
-            _movingItem = e;
-            SelectedQueue = _movingItem.DataContext as DownloadItem;
+            SelectedQueue = e.DataContext as DownloadItem;
             OnPropertyChanged("SelectedQueue");
-            DragDrop.DoDragDrop(_movingItem, _movingItem.DataContext, DragDropEffects.Move);
-
-        }
-        private void ItemMouseLeave(ListViewItem e)
-        {
-            Debug.WriteLine((e.DataContext as DownloadItem).Filename);
-        }
-        private void MouseUp(DragEventArgs e)
-        {
-            if (_currentItem != _movingItem)
+            DownloadItem dc = e.DataContext as DownloadItem;
+            if (!dc.HasStartedDownloading)
             {
-                int index = Queue.IndexOf(_currentItem.DataContext as DownloadItem);
-                if (Queue[index].ShowTop)
-                {
-                    (_currentItem.DataContext as DownloadItem).ShowBottom = false;
-                    (_currentItem.DataContext as DownloadItem).ShowTop = false;
-                    Queue.Move(_movingIndex, index);
-                }
-                else
-                {
-                    (_currentItem.DataContext as DownloadItem).ShowBottom = false;
-                    (_currentItem.DataContext as DownloadItem).ShowTop = false;
-                    Queue.Move(_movingIndex, index);
-                }
-                _currentItem = null;
+                _movingIndex = Queue.IndexOf(e.DataContext as DownloadItem);
+                _movingItem = e;
+                DragDrop.DoDragDrop(_movingItem, _movingItem.DataContext, DragDropEffects.Move);
             }
         }
-        private void ItemMouseEnter(ListViewItem e)
+        private void DropLeave(ListViewItem e)
         {
-            Debug.WriteLine("entering " + (e.DataContext as DownloadItem).Filename);
+        }
+        private void Drop(DragEventArgs e)
+        {
+            if (_currentItem != _movingItem && _currentItem != null)
+            {
+                //todo propogate changes to downloadqueue as well
+                int index = Queue.IndexOf(_currentItem.DataContext as DownloadItem);
+                (_currentItem.DataContext as DownloadItem).ShowBottom = false;
+                (_currentItem.DataContext as DownloadItem).ShowTop = false;
+                Queue.Move(_movingIndex, index);
+                _currentItem = null;
+                SelectedQueue = Queue[index];
+            }
+        }
+        private void DragEnter(ListViewItem e)
+        {
             if (_currentItem != null)
             {
                 (_currentItem.DataContext as DownloadItem).ShowBottom = false;
                 (_currentItem.DataContext as DownloadItem).ShowTop = false;
             }
-            _currentItem = e;
-            _halfOfActualHeight = e.ActualHeight / 2;
-            DownloadItem dc = _currentItem.DataContext as DownloadItem;
-            if (e != _movingItem)
+            DownloadItem dc = e.DataContext as DownloadItem;
+            if (!dc.HasStartedDownloading)
             {
-                if (Mouse.GetPosition(_movingItem).Y > Mouse.GetPosition(e).Y)
+                _currentItem = e;
+                if (e != _movingItem)
                 {
-                    if (!dc.ShowBottom)
+                    if (Mouse.GetPosition(_movingItem).Y > Mouse.GetPosition(e).Y)
                     {
-                        dc.ShowBottom = true;
+                        if (!dc.ShowBottom)
+                        {
+                            dc.ShowBottom = true;
+                        }
+                    }
+                    else
+                    {
+                        if (!dc.ShowTop && !dc.HasStartedDownloading)
+                        {
+                            dc.ShowTop = true;
+                        }
                     }
                 }
-                else
-                {
-                    if (!dc.ShowTop)
-                    {
-                        dc.ShowTop = true;
-                    }
-                }
+            }
+            else
+            {
+                _currentItem = null;
             }
         }
     }
