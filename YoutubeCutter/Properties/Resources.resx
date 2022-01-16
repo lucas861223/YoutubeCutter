@@ -184,8 +184,30 @@
   <data name="Instruction" xml:space="preserve">
     <value>instructions</value>
   </data>
+  <data name="MainPageBugsFirstHalf" xml:space="preserve">
+    <value>If you encounter bugs, or have suggestions of improvements, you can open an issue at the </value>
+    <comment>This is for the part of the sentence before "github repository" because grammar issues</comment>
+  </data>
+  <data name="MainPageBugsSecondHalf" xml:space="preserve">
+    <value>.</value>
+  </data>
+  <data name="MainPageGitHubRepository" xml:space="preserve">
+    <value>github repository</value>
+  </data>
+  <data name="MainPagePurpose" xml:space="preserve">
+    <value>youtube-dl supports downloading youtube videos, however it does not support downloading clips. There are some post-process arguements that allows it, however youtube-dl.exe still downloads the whole video first, then cut out the clips. Which means if you only need 10 seconds of content from a video that is 8 hours long, youtube-dl.exe will download the whole video still. This program essentially grabs the information needed to download the video, then feed it into ffmpeg.exe, which is able to download only part of the video.</value>
+  </data>
+  <data name="MainPagePurposeTitle" xml:space="preserve">
+    <value>The purpose of this program:</value>
+  </data>
   <data name="MainPageTitle" xml:space="preserve">
     <value>Main Page</value>
+  </data>
+  <data name="MainPageUsage" xml:space="preserve">
+    <value>Go to setting, set your youtube-dl.exe and ffmpeg.exe, then the program is ready to use.</value>
+  </data>
+  <data name="MainPageUsageTitle" xml:space="preserve">
+    <value>Usage:</value>
   </data>
   <data name="Period" xml:space="preserve">
     <value>.</value>

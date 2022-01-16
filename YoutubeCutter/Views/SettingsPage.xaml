@@ -66,10 +66,10 @@
                     Style="{StaticResource BodyTextStyle}"
                     Visibility="{Binding Path=IsInvalidYoutubeDL, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
                     <Run Text="{Binding Path=YoutubeDLPathWarning, Mode=OneWay, Source={StaticResource LanguageResources}}" />
-                    <Hyperlink NavigateUri="https://stackoverflow.com/questions/30551372/binding-run-inside-textblock-results-in-exception-in-wpf">
+                    <Hyperlink Click="HyperlinkClicked" Tag="https://youtube-dl.org/">
                         <TextBlock Text="{Binding Path=Instruction, Source={StaticResource LanguageResources}}" />
                     </Hyperlink>
-                    <Run Text="{Binding Path=SettingsVerifying, Mode=OneWay, Source={StaticResource LanguageResources}}" />
+                    <Run Text="{Binding Path=Period, Mode=OneWay, Source={StaticResource LanguageResources}}" />
                 </TextBlock>
                 <TextBlock
                     Margin="{StaticResource SmallTopMargin}"
@@ -109,7 +109,7 @@
                     Style="{StaticResource BodyTextStyle}"
                     Visibility="{Binding Path=IsInvalidFfmpeg, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
                     <Run Text="{Binding Path=FFmpegPathWarning, Mode=OneWay, Source={StaticResource LanguageResources}}" />
-                    <Hyperlink NavigateUri="https://stackoverflow.com/questions/30551372/binding-run-inside-textblock-results-in-exception-in-wpf">
+                    <Hyperlink Click="HyperlinkClicked" Tag="https://www.ffmpeg.org/">
                         <TextBlock Text="{Binding Path=Instruction, Source={StaticResource LanguageResources}}" />
                     </Hyperlink>
                     <Run Text="{Binding Path=Period, Mode=OneWay, Source={StaticResource LanguageResources}}" />

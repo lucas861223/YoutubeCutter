@@ -18,14 +18,27 @@
             Margin="{StaticResource MediumLeftMargin}"
             Style="{StaticResource PageTitleStyle}"
             Text="{x:Static properties:Resources.MainPageTitle}" />
-        <Grid
-            Grid.Row="1"
-            Margin="{StaticResource MediumLeftRightMargin}"
-            Background="{DynamicResource MahApps.Brushes.Gray10}">
-            <!--
-                The Mahapps Gray10 color represents where you should place your content.
-                Place your content here.
-            -->
-        </Grid>
+        <StackPanel Grid.Row="1" Margin="{StaticResource MediumLeftRightMargin}">
+            <TextBlock Style="{StaticResource SubtitleTextStyle}" Text="{Binding Path=MainPagePurposeTitle, Source={StaticResource LanguageResources}}" />
+            <TextBlock
+                Style="{StaticResource BodyTextStyle}"
+                Text="{Binding Path=MainPagePurpose, Source={StaticResource LanguageResources}}"
+                TextWrapping="Wrap" />
+            <TextBlock
+                Margin="{StaticResource MediumTopMargin}"
+                Style="{StaticResource SubtitleTextStyle}"
+                Text="{Binding Path=MainPageUsageTitle, Source={StaticResource LanguageResources}}" />
+            <TextBlock
+                Style="{StaticResource BodyTextStyle}"
+                Text="{Binding Path=MainPageUsage, Source={StaticResource LanguageResources}}"
+                TextWrapping="Wrap" />
+            <TextBlock Margin="{StaticResource MediumTopMargin}" Style="{StaticResource BodyTextStyle}">
+                <Run Text="{Binding Path=MainPageBugsFirstHalf, Mode=OneWay, Source={StaticResource LanguageResources}}" />
+                <Hyperlink Click="URLClicked" Tag="https://github.com/lucas861223/YoutubeCutter">
+                    <TextBlock Text="{Binding Path=MainPageGitHubRepository, Mode=OneWay, Source={StaticResource LanguageResources}}" />
+                </Hyperlink>
+                <Run Text="{Binding Path=MainPageBugsSecondHalf, Mode=OneWay, Source={StaticResource LanguageResources}}" />
+            </TextBlock>
+        </StackPanel>
     </Grid>
 </Page>

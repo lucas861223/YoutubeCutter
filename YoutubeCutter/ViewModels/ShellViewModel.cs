@@ -53,9 +53,9 @@ namespace YoutubeCutter.ViewModels
         public ObservableCollection<HamburgerMenuItem> MenuItems { get; } = new ObservableCollection<HamburgerMenuItem>()
         {
             // TODO WTS: Change the icons and titles for all HamburgerMenuItems here.
-            new HamburgerMenuGlyphItem() { Label = $"{Resources.ShellMainPage}", Glyph = "\uE8A5", TargetPageType = typeof(MainViewModel) },
-            new HamburgerMenuGlyphItem() { Label = $"{Resources.ShellDownloadsPage}", Glyph = "\uE8A5", TargetPageType = typeof(DownloadsViewModel) },
-            new HamburgerMenuGlyphItem() { Label = $"{Resources.ShellAddNewDownload}", Glyph = "\uE8A5"},
+            new HamburgerMenuGlyphItem() { Label = $"{Resources.ShellMainPage}", Glyph = "\uE80F", TargetPageType = typeof(MainViewModel) },
+            new HamburgerMenuGlyphItem() { Label = $"{Resources.ShellDownloadsPage}", Glyph = "\uE896", TargetPageType = typeof(DownloadsViewModel) },
+            new HamburgerMenuGlyphItem() { Label = $"{Resources.ShellAddNewDownload}", Glyph = "\uECC8"},
         };
         public ObservableCollection<HamburgerMenuItem> OptionMenuItems { get; } = new ObservableCollection<HamburgerMenuItem>()
         {

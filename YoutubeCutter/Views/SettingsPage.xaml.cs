@@ -39,5 +39,14 @@ namespace YoutubeCutter.Views
                 App.Current.Properties["DownloadPath"] = ((SettingsViewModel)DataContext).DownloadPath;
             }
         }
+        public void HyperlinkClicked(object sender, RoutedEventArgs e)
+        {
+            var sInfo = new System.Diagnostics.ProcessStartInfo((string)(sender as System.Windows.Documents.Hyperlink).Tag)
+            {
+                UseShellExecute = true,
+            };
+            System.Diagnostics.Process.Start(sInfo);
+            e.Handled = true;
+        }
     }
 }

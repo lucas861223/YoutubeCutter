@@ -262,11 +262,74 @@ namespace YoutubeCutter.Properties {
         }
         
         /// <summary>
+        ///   查詢類似 If you encounter bugs, or have suggestions of improvements, you can open an issue at the  的當地語系化字串。
+        /// </summary>
+        public static string MainPageBugsFirstHalf {
+            get {
+                return ResourceManager.GetString("MainPageBugsFirstHalf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 . 的當地語系化字串。
+        /// </summary>
+        public static string MainPageBugsSecondHalf {
+            get {
+                return ResourceManager.GetString("MainPageBugsSecondHalf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 github repository 的當地語系化字串。
+        /// </summary>
+        public static string MainPageGitHubRepository {
+            get {
+                return ResourceManager.GetString("MainPageGitHubRepository", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 youtube-dl supports downloading youtube videos, however it does not support downloading clips. There are some post-process arguements that allows it, however youtube-dl.exe still downloads the whole video first, then cut out the clips. Which means if you only need 10 seconds of content from a video that is 8 hours long, youtube-dl.exe will download the whole video still. This program essentially grabs the information needed to download the video, then feed it into ffmpeg.exe, which is able to download only  [字串的其餘部分已遭截斷]&quot;; 的當地語系化字串。
+        /// </summary>
+        public static string MainPagePurpose {
+            get {
+                return ResourceManager.GetString("MainPagePurpose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 The purpose of this program: 的當地語系化字串。
+        /// </summary>
+        public static string MainPagePurposeTitle {
+            get {
+                return ResourceManager.GetString("MainPagePurposeTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Main Page 的當地語系化字串。
         /// </summary>
         public static string MainPageTitle {
             get {
                 return ResourceManager.GetString("MainPageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Go to setting, set your youtube-dl.exe and ffmpeg.exe, then the program is ready to use. 的當地語系化字串。
+        /// </summary>
+        public static string MainPageUsage {
+            get {
+                return ResourceManager.GetString("MainPageUsage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Usage: 的當地語系化字串。
+        /// </summary>
+        public static string MainPageUsageTitle {
+            get {
+                return ResourceManager.GetString("MainPageUsageTitle", resourceCulture);
             }
         }
         

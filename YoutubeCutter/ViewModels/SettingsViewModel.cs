@@ -150,6 +150,18 @@ namespace YoutubeCutter.ViewModels
             _themeSelectorService = themeSelectorService;
             _systemService = systemService;
             _applicationInfoService = applicationInfoService;
+            VersionDescription = $"{Properties.Resources.AppDisplayName} - {_applicationInfoService.GetVersion()}";
+            Theme = _themeSelectorService.GetCurrentTheme();
+            Language = (Languages)App.Current.Properties["Language"];
+            YoutubeDLPath = (string)App.Current.Properties["YoutubedlPath"];
+            FFmpegPath = (string)App.Current.Properties["FfmpegPath"];
+            FontSize = (int)App.Current.Properties["FontSize"];
+            CategorizeByChannel = (bool)App.Current.Properties["CategorizeByChannel"];
+            CategorizeByDate = (bool)App.Current.Properties["CategorizeByDate"];
+            CategorizeByVideo = (bool)App.Current.Properties["CategorizeByVideo"];
+            DownloadPath = (string)App.Current.Properties["DownloadPath"];
+            IsInvalidFfmpeg = !(bool)App.Current.Properties["IsValidFfmpeg"];
+            IsInvalidYoutubeDL = !(bool)App.Current.Properties["IsValidYoutubeDL"];
         }
 
         private async void GetYoutubeDL()
@@ -235,27 +247,6 @@ namespace YoutubeCutter.ViewModels
         }
         public void OnNavigatedTo(object parameter)
         {
-            VersionDescription = $"{Properties.Resources.AppDisplayName} - {_applicationInfoService.GetVersion()}";
-            Theme = _themeSelectorService.GetCurrentTheme();
-            Language = (Languages)App.Current.Properties["Language"];
-            YoutubeDLPath = (string)App.Current.Properties["YoutubedlPath"];
-            FFmpegPath = (string)App.Current.Properties["FfmpegPath"];
-            FontSize = (int)App.Current.Properties["FontSize"];
-            CategorizeByChannel = (bool)App.Current.Properties["CategorizeByChannel"];
-            CategorizeByDate = (bool)App.Current.Properties["CategorizeByDate"];
-            CategorizeByVideo = (bool)App.Current.Properties["CategorizeByVideo"];
-            DownloadPath = (string)App.Current.Properties["DownloadPath"];
-            IsInvalidFfmpeg = !(bool)App.Current.Properties["IsValidFfmpeg"];
-            IsInvalidYoutubeDL = !(bool)App.Current.Properties["IsValidYoutubeDL"];
-            OnPropertyChanged("Language");
-            OnPropertyChanged("YoutubeDLPath");
-            OnPropertyChanged("FFmpegPath");
-            OnPropertyChanged("CategorizeByChannel");
-            OnPropertyChanged("CategorizeByDate");
-            OnPropertyChanged("CategorizeByVideo");
-            OnPropertyChanged("DownloadPath");
-            OnPropertyChanged("IsInvalidYoutubeDL");
-            OnPropertyChanged("IsInvalidFfmpeg");
         }
         public void OnNavigatedFrom()
         {

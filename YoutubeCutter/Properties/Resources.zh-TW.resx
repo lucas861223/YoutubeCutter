@@ -171,8 +171,29 @@
   <data name="Instruction" xml:space="preserve">
     <value>教學</value>
   </data>
+  <data name="MainPageBugsFirstHalf" xml:space="preserve">
+    <value>如果你遭遇到bug或是有想要的功能，可以去</value>
+  </data>
+  <data name="MainPageBugsSecondHalf" xml:space="preserve">
+    <value>開新的issue。</value>
+  </data>
+  <data name="MainPageGitHubRepository" xml:space="preserve">
+    <value>本程式的github repo</value>
+  </data>
+  <data name="MainPagePurpose" xml:space="preserve">
+    <value>雖然youtube-dl.exe可以下載youtube影片，本身也可以用postprocess等參數指定要下載的片段，但youtube-dl.exe的作法會是先下載整部影片然後再進行剪輯，意思是如果你只需要一部8個小時影片中的10秒，youtube-dl.exe仍會下載整整8個小時的影片。本程式就是從youtube-dl.exe讀取下載所需的資料，再用ffmpeg.exe下載指定的片段。</value>
+  </data>
+  <data name="MainPagePurposeTitle" xml:space="preserve">
+    <value>本程式的目的</value>
+  </data>
   <data name="MainPageTitle" xml:space="preserve">
     <value>主頁</value>
+  </data>
+  <data name="MainPageUsage" xml:space="preserve">
+    <value>去設定頁設置好youtube-dl.exe和ffmpeg.exe，然後就可以開始使用了</value>
+  </data>
+  <data name="MainPageUsageTitle" xml:space="preserve">
+    <value>用法:</value>
   </data>
   <data name="Period" xml:space="preserve">
     <value>。</value>
