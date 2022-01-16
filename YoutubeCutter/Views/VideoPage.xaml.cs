@@ -146,5 +146,13 @@ namespace YoutubeCutter.Views
                 return ((char)((int)'0' + (int)(key - Key.NumPad0))).ToString();
             }
         }
+        private void UnloadPage(object sender, RoutedEventArgs e)
+        {
+            CefSharp.Wpf.ChromiumWebBrowser player = FindName("YoutubePlayer") as CefSharp.Wpf.ChromiumWebBrowser;
+            if (player != null)
+            {
+                player.Dispose();
+            }
+        }
     }
 }

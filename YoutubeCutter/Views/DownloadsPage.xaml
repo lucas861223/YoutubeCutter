@@ -7,7 +7,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:properties="clr-namespace:YoutubeCutter.Properties"
     d:DesignHeight="450"
     d:DesignWidth="800"
     Style="{DynamicResource MahApps.Styles.Page}"
@@ -45,14 +44,14 @@
             <TextBlock
                 Margin="{StaticResource MediumLeftMargin}"
                 Style="{StaticResource PageTitleStyle}"
-                Text="{x:Static properties:Resources.DownloadsPageTitle}" />
+                Text="{Binding Path=DownloadsPageTitle, Mode=OneWay, Source={StaticResource LanguageResources}}" />
             <TabControl
                 Name="TabControl"
                 Grid.Row="1"
                 Margin="10,10,0,5"
                 FontSize="12"
                 SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                <TabItem Header="Queue">
+                <TabItem Header="{Binding Path=DownloadPageQueue, Mode=OneWay, Source={StaticResource LanguageResources}}">
                     <ListView
                         AllowDrop="True"
                         BorderBrush="LightBlue"
@@ -72,9 +71,6 @@
                                     BorderBrush="LightBlue"
                                     BorderThickness="0,0,0,1">
                                     <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="DragLeave">
-                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.DragLeaveCommand, RelativeSource={RelativeSource AncestorType=Page}}" CommandParameter="{Binding Path=., RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}" />
-                                        </i:EventTrigger>
                                         <i:EventTrigger EventName="MouseLeftButtonDown">
                                             <i:InvokeCommandAction Command="{Binding Path=DataContext.ItemMouseDownCommand, RelativeSource={RelativeSource AncestorType=Page}}" CommandParameter="{Binding Path=., RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}" />
                                         </i:EventTrigger>
@@ -88,7 +84,6 @@
                                             Height="{Binding Path=ActualHeight, ElementName=ItemContent}"
                                             Fill="Gray"
                                             Visibility="{Binding ShowTop, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
-
                                         <StackPanel x:Name="ItemContent">
                                             <TextBlock
                                                 MaxWidth="{Binding Path=ActualWidth, ElementName=ItemBorder}"
@@ -115,7 +110,7 @@
                                             </Grid>
                                             <TextBlock
                                                 FontWeight="Bold"
-                                                Text="Queuing..."
+                                                Text="{Binding Path=DownloadPageQueuing, Mode=OneWay, Source={StaticResource LanguageResources}}"
                                                 Visibility="{Binding IsDownloading, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse, Mode=OneWay}" />
                                         </StackPanel>
                                         <Rectangle
@@ -130,7 +125,7 @@
                         </ListView.ItemTemplate>
                     </ListView>
                 </TabItem>
-                <TabItem Header="Done">
+                <TabItem Header="{Binding Path=DownloadPageDone, Mode=OneWay, Source={StaticResource LanguageResources}}">
                     <ListView
                         BorderBrush="LightBlue"
                         BorderThickness="2"
@@ -197,7 +192,7 @@
                                 HorizontalAlignment="Center"
                                 Style="{StaticResource ListSubTitleStyle}"
                                 TextWrapping="Wrap">
-                                <Run Text="Time: " />
+                                <Run Text="{Binding Path=DownloadPageTime, Mode=OneWay, Source={StaticResource LanguageResources}}" />
                                 <Run Text="{Binding StartTime, Converter={StaticResource TimeToStringConverter}}" />
                                 <Run Text=" ~ " />
                                 <Run Text="{Binding EndTime, Converter={StaticResource TimeToStringConverter}}" />
@@ -206,17 +201,17 @@
                                 HorizontalAlignment="Center"
                                 Style="{StaticResource ListSubTitleStyle}"
                                 TextWrapping="Wrap">
-                                <Run Text="Duration: " />
+                                <Run Text="{Binding Path=DownloadPageDuration, Mode=OneWay, Source={StaticResource LanguageResources}}" />
                                 <Run Text="{Binding EndTime, Converter={StaticResource TimeToStringConverter}}" />
                             </TextBlock>
 
                             <DockPanel Margin="{StaticResource SmallTopMargin}">
                                 <TextBlock
                                     Style="{StaticResource SubtitleTextStyle}"
-                                    Text="Directory:"
+                                    Text="{Binding Path=DownloadPageDirectory, Mode=OneWay, Source={StaticResource LanguageResources}}"
                                     TextWrapping="Wrap" />
                                 <Button Margin="{StaticResource MediumLeftMargin}" HorizontalAlignment="Left">
-                                    Open
+                                    <Run Text="{Binding Path=DownloadPageOpen, Mode=OneWay, Source={StaticResource LanguageResources}}" />
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
                                             <i:InvokeCommandAction Command="{Binding DataContext.OpenFolderCommand, RelativeSource={RelativeSource AncestorType=Page}}" />

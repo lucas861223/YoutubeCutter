@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using YoutubeCutter.Core.Models;
 using System.Text.RegularExpressions;
 
@@ -12,7 +8,7 @@ namespace YoutubeCutter.Core.Helpers
     {
         private static Regex _durationRegex = new Regex(@"(((?<Hours>\d+):)?(?<Minutes>\d+):)?(?<Seconds>\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        public static void ParseIrregularTimeFromString(string text, Time time)
+        public static bool ParseIrregularTimeFromString(string text, Time time)
         {
             Match match = _durationRegex.Match(text);
             if (match.Success)
@@ -21,6 +17,7 @@ namespace YoutubeCutter.Core.Helpers
                 time.Minute = match.Groups["Minutes"].ToString() != "" ? int.Parse(match.Groups["Minutes"].ToString()) : 0;
                 time.Hour = match.Groups["Hours"].ToString() != "" ? int.Parse(match.Groups["Hours"].ToString()) : 0;
             }
+            return match.Success;
         }
         public static Time ParseTimeFromString(string text)
         {
@@ -70,12 +67,10 @@ namespace YoutubeCutter.Core.Helpers
         {
             return new Time() { Hour = end.Hour - start.Hour, Minute = end.Minute - start.Minute, Second = end.Second - start.Second };
         }
-
         public static string TimeToString(Time time)
         {
             return String.Format("{0,0:D2}:{1,0:D2}:{2,0:D2}", time.Hour, time.Minute, time.Second);
         }
-
         public static int ConvertToSeconds(Time time)
         {
             return time.Hour * 3600 + time.Minute * 60 + time.Second;

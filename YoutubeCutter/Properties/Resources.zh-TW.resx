@@ -120,11 +120,50 @@
   <data name="AppDisplayName" xml:space="preserve">
     <value>YoutubeCutter</value>
   </data>
-  <data name="DownloadsListDescription" xml:space="preserve">
-    <value>Sample Orders</value>
+  <data name="ClipItemDuration" xml:space="preserve">
+    <value>長度:</value>
+  </data>
+  <data name="ClipItemEndLongerThanVideo" xml:space="preserve">
+    <value>剪輯終點不在原影片內</value>
+  </data>
+  <data name="ClipItemEndTimeEarlier" xml:space="preserve">
+    <value>剪輯終點在起點之前</value>
+  </data>
+  <data name="ClipItemFileAlreadyExists" xml:space="preserve">
+    <value>硬碟上已經有這個檔案</value>
+  </data>
+  <data name="ClipItemFileNameTaken" xml:space="preserve">
+    <value>檔案名重複</value>
+  </data>
+  <data name="ClipItemIllegalCharacter" xml:space="preserve">
+    <value>檔案名不可含有</value>
+  </data>
+  <data name="ClipItemZeroLength" xml:space="preserve">
+    <value>剪輯時長為0秒</value>
+  </data>
+  <data name="DownloadPageDirectory" xml:space="preserve">
+    <value>資料夾:</value>
+  </data>
+  <data name="DownloadPageDone" xml:space="preserve">
+    <value>已完成</value>
+  </data>
+  <data name="DownloadPageDuration" xml:space="preserve">
+    <value>時長:</value>
+  </data>
+  <data name="DownloadPageOpen" xml:space="preserve">
+    <value>開啟</value>
+  </data>
+  <data name="DownloadPageQueue" xml:space="preserve">
+    <value>下載</value>
+  </data>
+  <data name="DownloadPageQueuing" xml:space="preserve">
+    <value>等待中...</value>
+  </data>
+  <data name="DownloadPageTime" xml:space="preserve">
+    <value>剪輯:</value>
   </data>
   <data name="DownloadsPageTitle" xml:space="preserve">
-    <value>Downloads</value>
+    <value>下載</value>
   </data>
   <data name="FFmpegPathWarning" xml:space="preserve">
     <value>*這個程式需要ffmpeg.exe才能運行，</value>
@@ -133,55 +172,118 @@
     <value>教學</value>
   </data>
   <data name="MainPageTitle" xml:space="preserve">
-    <value>Main Page</value>
+    <value>主頁</value>
   </data>
   <data name="Period" xml:space="preserve">
     <value>。</value>
   </data>
-  <data name="SettingPageFontSize" xml:space="preserve">
-    <value>Font Size</value>
+  <data name="SettingsBrowse" xml:space="preserve">
+    <value>瀏覽</value>
   </data>
-  <data name="SettingsPageAboutText" xml:space="preserve">
-    <value>Settings page placeholder text.  Your app description goes here.</value>
+  <data name="SettingsCategorizeByChannel" xml:space="preserve">
+    <value>用頻道分類</value>
+  </data>
+  <data name="SettingsCategorizeByDate" xml:space="preserve">
+    <value>用日期分類</value>
+  </data>
+  <data name="SettingsCategorizeByVideo" xml:space="preserve">
+    <value>用影片分類</value>
+  </data>
+  <data name="SettingsChannelName" xml:space="preserve">
+    <value>頻道名\</value>
+  </data>
+  <data name="SettingsClipName" xml:space="preserve">
+    <value>剪輯.mp4</value>
+  </data>
+  <data name="SettingsDownloadBaseFormat" xml:space="preserve">
+    <value>當前格式: 下載資料夾\</value>
+  </data>
+  <data name="SettingsDownloadLocation" xml:space="preserve">
+    <value>下載資料夾</value>
+  </data>
+  <data name="SettingsEmptyFileNameWarning" xml:space="preserve">
+    <value>如果影片名或頻道名全以非法字元組成，資料夾名稱會用"Untitled"代替</value>
+  </data>
+  <data name="SettingsIllegalCharacterWarning" xml:space="preserve">
+    <value>注意: Windows不允許檔案或資料夾名稱包含\ / : * ? "&gt; &lt; 或 |，下載時將會刪去這些字元 </value>
   </data>
   <data name="SettingsPageChooseThemeText" xml:space="preserve">
-    <value>Choose Theme</value>
+    <value>選擇外觀主題</value>
+  </data>
+  <data name="SettingsPageFfmpegPath" xml:space="preserve">
+    <value>ffmpeg.exe的位置</value>
+  </data>
+  <data name="SettingsPageFontSize" xml:space="preserve">
+    <value>字體大小</value>
   </data>
   <data name="SettingsPageLanguage" xml:space="preserve">
     <value>語言</value>
   </data>
   <data name="SettingsPagePersonalizationTitle" xml:space="preserve">
-    <value>Personalization</value>
+    <value>個人化</value>
   </data>
   <data name="SettingsPageRadioButtonDarkTheme" xml:space="preserve">
-    <value>Dark</value>
+    <value>灰暗</value>
   </data>
   <data name="SettingsPageRadioButtonLightTheme" xml:space="preserve">
-    <value>Light</value>
+    <value>明亮</value>
   </data>
   <data name="SettingsPageRadioButtonWindowsDefaultTheme" xml:space="preserve">
-    <value>Default</value>
+    <value>預設</value>
   </data>
   <data name="SettingsPageTitle" xml:space="preserve">
-    <value>Settings</value>
+    <value>設定</value>
   </data>
   <data name="SettingsPageYoutube" xml:space="preserve">
     <value>Youtube Login (Skips ads on YouTube Premium)</value>
   </data>
+  <data name="SettingsPageYoutubeDLPath" xml:space="preserve">
+    <value>youtube-dl.exe的位置</value>
+  </data>
+  <data name="SettingsVerifying" xml:space="preserve">
+    <value>驗證中，請稍後...</value>
+  </data>
+  <data name="SettingsVideoTitle" xml:space="preserve">
+    <value>影片\</value>
+  </data>
+  <data name="ShellAddNewDownload" xml:space="preserve">
+    <value>開啟新的下載</value>
+  </data>
   <data name="ShellDownloadsPage" xml:space="preserve">
-    <value>Downloads</value>
+    <value>下載管理員</value>
   </data>
   <data name="ShellGoBackButton" xml:space="preserve">
-    <value>Go back</value>
+    <value>回上一頁</value>
   </data>
   <data name="ShellHamburgerButtonName" xml:space="preserve">
     <value>Open or close navigation</value>
   </data>
   <data name="ShellMainPage" xml:space="preserve">
-    <value>Main</value>
+    <value>主頁</value>
   </data>
   <data name="ShellSettingsPage" xml:space="preserve">
-    <value>Settings</value>
+    <value>設定</value>
+  </data>
+  <data name="VideoPageAddMoreClip" xml:space="preserve">
+    <value>新增剪輯</value>
+  </data>
+  <data name="VideoPageCancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="VideoPageDownload" xml:space="preserve">
+    <value>下載</value>
+  </data>
+  <data name="VideoPageEndTime" xml:space="preserve">
+    <value>終點:</value>
+  </data>
+  <data name="VideoPageFileName" xml:space="preserve">
+    <value>檔案名</value>
+  </data>
+  <data name="VideoPagePreparingVideo" xml:space="preserve">
+    <value>讀取資料中...</value>
+  </data>
+  <data name="VideoPageStartTime" xml:space="preserve">
+    <value>起點...</value>
   </data>
   <data name="YoutubeDLPathWarning" xml:space="preserve">
     <value>*這個程式需要youtube-dl.exe才能運行，</value>

@@ -7,9 +7,11 @@ namespace YoutubeCutter.Helpers
 {
     class DownloadManager
     {
-        public static List<Process> DownloadProcesses = new List<Process>();
-        private static WebClient _webClient = WebClient.Instance;
         private static string _cacheLocation = AppDomain.CurrentDomain.BaseDirectory + "Cache";
+        private static WebClient _webClient = WebClient.Instance;
+
+        public static List<Process> DownloadProcesses = new List<Process>();
+
         public static string DownloadThumbnail(string url, string youtubeID, string filename)
         {
             if (!File.Exists(_cacheLocation + "\\" + youtubeID + "\\" + filename))

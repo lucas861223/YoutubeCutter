@@ -1,37 +1,37 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Linq;
+using System.Diagnostics;
+using System.IO;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 
-using System.Threading.Tasks;
-using YoutubeCutter.Models;
-using YoutubeCutter.Helpers;
-using YoutubeCutter.Contracts.ViewModels;
-using YoutubeCutter.Core.Contracts.Services;
-using YoutubeCutter.Core.Models;
-using YoutubeCutter.Controls;
-using System.Collections.Concurrent;
-using System.Windows.Input;
-using System.Windows;
-using System.Diagnostics;
-using System.IO;
 using YoutubeCutter.Core.Helpers;
-using System.Windows.Controls;
-using System.Collections;
-using System.Collections.Generic;
+using YoutubeCutter.Contracts.ViewModels;
+using YoutubeCutter.Controls;
+using YoutubeCutter.Helpers;
 
 namespace YoutubeCutter.ViewModels
 {
     public class DownloadsViewModel : ObservableObject, INavigationAware
     {
+        private static bool _hasThreadWorking = false;
+
+        private int _selectedTabIndex;
+        private int _movingIndex;
+        private bool _isMoving = false;
+        private bool _showProgress = false;
+
         private DownloadItem _selectedQueue;
         private DownloadItem _selectedDone;
         private DownloadItem _displayItem;
-        private static bool _hasThreadWorking = false;
-        private bool _showProgress = false;
-        private int _selectedTabIndex;
+        private ListViewItem _movingItem;
+        private ListViewItem _currentItem;
+
         public int SelectedTabIndex
         {
             get { return _selectedTabIndex; }
@@ -55,26 +55,19 @@ namespace YoutubeCutter.ViewModels
             set { SetProperty(ref _displayItem, value); }
         }
 
-
-
-        private int _movingIndex;
-        private ListViewItem _movingItem;
-        private bool _isMoving = false;
-        private ListViewItem _currentItem;
-        public DownloadsViewModel()
-        {
-        }
-
         private ICommand _itemMouseDownCommand;
         private ICommand _dropCommand;
         private ICommand _openFolderCommand;
-        private ICommand _dragLeaveCommand;
         private ICommand _dragEnterCommand;
         public ICommand OpenFolderCommand => _openFolderCommand ?? (_openFolderCommand = new RelayCommand(OpenFolder));
         public ICommand ItemMouseDownCommand => _itemMouseDownCommand ?? (_itemMouseDownCommand = new RelayCommand<ListViewItem>(ItemMouseDown));
         public ICommand DropCommand => _dropCommand ?? (_dropCommand = new RelayCommand<DragEventArgs>(Drop));
-        public ICommand DragLeaveCommand => _dragLeaveCommand ?? (_dragLeaveCommand = new RelayCommand<ListViewItem>(DropLeave));
         public ICommand DragEnterCommand => _dragEnterCommand ?? (_dragEnterCommand = new RelayCommand<ListViewItem>(DragEnter));
+
+        public DownloadsViewModel()
+        {
+        }
+
         public void OnNavigatedTo(object parameter)
         {
             _showProgress = true;
@@ -102,10 +95,13 @@ namespace YoutubeCutter.ViewModels
                 while (Queue.Count > 0)
                 {
                     item = Queue[0];
-                    App.Current.Dispatcher.Invoke(() =>
+                    if (App.Current != null)
                     {
-                        item.HasStartedDownloading = true;
-                    });
+                        App.Current.Dispatcher.Invoke(() =>
+                        {
+                            item.HasStartedDownloading = true;
+                        });
+                    }
                     Process p;
                     if (item.DownloadProcess == null)
                     {
@@ -228,14 +224,10 @@ namespace YoutubeCutter.ViewModels
                 DragDrop.DoDragDrop(_movingItem, _movingItem.DataContext, DragDropEffects.Move);
             }
         }
-        private void DropLeave(ListViewItem e)
-        {
-        }
         private void Drop(DragEventArgs e)
         {
             if (_currentItem != _movingItem && _currentItem != null)
             {
-                //todo propogate changes to downloadqueue as well
                 int index = Queue.IndexOf(_currentItem.DataContext as DownloadItem);
                 (_currentItem.DataContext as DownloadItem).ShowBottom = false;
                 (_currentItem.DataContext as DownloadItem).ShowTop = false;

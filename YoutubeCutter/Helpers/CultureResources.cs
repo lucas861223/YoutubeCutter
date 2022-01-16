@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Globalization;
+﻿using System.Globalization;
 
-using YoutubeCutter.Models;
 using YoutubeCutter.Core.Models;
 
 namespace YoutubeCutter.Helpers
@@ -25,7 +19,6 @@ namespace YoutubeCutter.Helpers
             //   which may or may not be desired.
             Properties.Resources.Culture = ConvertLanguagesToCulture(language);
         }
-
         private static CultureInfo ConvertLanguagesToCulture(Languages language)
         {
             switch (language)

@@ -8,13 +8,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:input="clr-namespace:System.Windows.Input;assembly=PresentationCore"
-    xmlns:local="clr-namespace:YoutubeCutter.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:s="clr-namespace:System;assembly=mscorlib"
     Title="VideoPage"
     d:DesignHeight="450"
     d:DesignWidth="800"
     Style="{DynamicResource MahApps.Styles.Page}"
+    Unloaded="UnloadPage"
     mc:Ignorable="d">
     <Page.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
@@ -76,7 +75,7 @@
                     <TextBlock
                         Margin="10,0,0,0"
                         VerticalAlignment="Center"
-                        Text="Start:" />
+                        Text="{Binding Path=VideoPageStartTime, Source={StaticResource LanguageResources}}" />
                     <TextBox
                         x:Name="StartTimeMaskedTextBox"
                         Margin="5,0,20,0"
@@ -91,7 +90,7 @@
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </TextBox>
-                    <TextBlock VerticalAlignment="Center" Text="End:" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Path=VideoPageEndTime, Source={StaticResource LanguageResources}}" />
                     <TextBox
                         x:Name="EndTimeMaskedTextBox"
                         Margin="5,0,10,0"
@@ -119,7 +118,7 @@
                     Grid.Row="1"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Text="Preparing Video..."
+                    Text="{Binding Path=VideoPagePreparingVideo, Source={StaticResource LanguageResources}}"
                     Visibility="{Binding IsVideoReady, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse}" />
             </Grid>
             <Grid Grid.Column="1">
@@ -151,7 +150,7 @@
                                             Name="FileNameTextBlock"
                                             Grid.Row="0"
                                             VerticalAlignment="Center"
-                                            Text="Filename" />
+                                            Text="{Binding Path=VideoPageFileName, Source={StaticResource LanguageResources}}" />
                                         <Button
                                             Grid.Row="0"
                                             Height="{Binding Path=ActualHeight, ElementName=FileNameTextBlock}"
@@ -194,7 +193,7 @@
                     </ListBox>
                 </Border>
                 <Button Grid.Row="1" Visibility="{Binding Path=IsVideoReady, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
-                    Add More Clip
+                    <Run Text="{Binding Path=VideoPageAddMoreClip, Mode=OneWay, Source={StaticResource LanguageResources}}" />
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
                             <i:InvokeCommandAction Command="{Binding AddClipCommand}" />
@@ -216,10 +215,10 @@
                                 <i:InvokeCommandAction Command="{Binding Path=DownloadCommand}" />
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
-                        Download
+                        <Run Text="{Binding Path=VideoPageDownload, Mode=OneWay, Source={StaticResource LanguageResources}}" />
                     </Button>
                     <Button Grid.Column="1">
-                        Cancel
+                        <Run Text="{Binding Path=VideoPageCancel, Mode=OneWay, Source={StaticResource LanguageResources}}" />
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Click">
                                 <i:InvokeCommandAction Command="{Binding Path=RemovePageCommand}" />

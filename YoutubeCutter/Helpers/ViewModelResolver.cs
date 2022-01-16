@@ -1,10 +1,6 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
+using System.Collections.Generic;
 namespace YoutubeCutter.Helpers
 {
     class ViewModelResolver
@@ -19,12 +15,10 @@ namespace YoutubeCutter.Helpers
             }
             return null;
         }
-
         public static void AddViewModel(string key, ObservableObject viewModel)
         {
             ViewModelDictionary.Add(key, viewModel);
         }
-
         public static void RemoveViewModel(string key)
         {
             ViewModelDictionary.Remove(key);

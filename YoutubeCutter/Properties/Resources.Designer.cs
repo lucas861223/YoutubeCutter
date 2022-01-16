@@ -80,12 +80,138 @@ namespace YoutubeCutter.Properties {
         }
         
         /// <summary>
+        ///   查詢類似 Duration: 的當地語系化字串。
+        /// </summary>
+        public static string ClipItemDuration {
+            get {
+                return ResourceManager.GetString("ClipItemDuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 End time longer than video length 的當地語系化字串。
+        /// </summary>
+        public static string ClipItemEndLongerThanVideo {
+            get {
+                return ResourceManager.GetString("ClipItemEndLongerThanVideo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 End time is earlier than Start time 的當地語系化字串。
+        /// </summary>
+        public static string ClipItemEndTimeEarlier {
+            get {
+                return ResourceManager.GetString("ClipItemEndTimeEarlier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 This file already exists 的當地語系化字串。
+        /// </summary>
+        public static string ClipItemFileAlreadyExists {
+            get {
+                return ResourceManager.GetString("ClipItemFileAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Filename is already taken 的當地語系化字串。
+        /// </summary>
+        public static string ClipItemFileNameTaken {
+            get {
+                return ResourceManager.GetString("ClipItemFileNameTaken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Filename cannot contain 的當地語系化字串。
+        /// </summary>
+        public static string ClipItemIllegalCharacter {
+            get {
+                return ResourceManager.GetString("ClipItemIllegalCharacter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Clip Length is 0 second 的當地語系化字串。
+        /// </summary>
+        public static string ClipItemZeroLength {
+            get {
+                return ResourceManager.GetString("ClipItemZeroLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類型 System.Drawing.Bitmap 的當地語系化資源。
         /// </summary>
         public static System.Drawing.Bitmap CloseButtonIcon {
             get {
                 object obj = ResourceManager.GetObject("CloseButtonIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Directory: 的當地語系化字串。
+        /// </summary>
+        public static string DownloadPageDirectory {
+            get {
+                return ResourceManager.GetString("DownloadPageDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Done 的當地語系化字串。
+        /// </summary>
+        public static string DownloadPageDone {
+            get {
+                return ResourceManager.GetString("DownloadPageDone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Duration: 的當地語系化字串。
+        /// </summary>
+        public static string DownloadPageDuration {
+            get {
+                return ResourceManager.GetString("DownloadPageDuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Open 的當地語系化字串。
+        /// </summary>
+        public static string DownloadPageOpen {
+            get {
+                return ResourceManager.GetString("DownloadPageOpen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Queue 的當地語系化字串。
+        /// </summary>
+        public static string DownloadPageQueue {
+            get {
+                return ResourceManager.GetString("DownloadPageQueue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Queuing... 的當地語系化字串。
+        /// </summary>
+        public static string DownloadPageQueuing {
+            get {
+                return ResourceManager.GetString("DownloadPageQueuing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Time: 的當地語系化字串。
+        /// </summary>
+        public static string DownloadPageTime {
+            get {
+                return ResourceManager.GetString("DownloadPageTime", resourceCulture);
             }
         }
         
@@ -154,11 +280,92 @@ namespace YoutubeCutter.Properties {
         }
         
         /// <summary>
-        ///   查詢類似 Font Size 的當地語系化字串。
+        ///   查詢類似 Browse 的當地語系化字串。
         /// </summary>
-        public static string SettingPageFontSize {
+        public static string SettingsBrowse {
             get {
-                return ResourceManager.GetString("SettingPageFontSize", resourceCulture);
+                return ResourceManager.GetString("SettingsBrowse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Categorize by channel 的當地語系化字串。
+        /// </summary>
+        public static string SettingsCategorizeByChannel {
+            get {
+                return ResourceManager.GetString("SettingsCategorizeByChannel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Categorize by date 的當地語系化字串。
+        /// </summary>
+        public static string SettingsCategorizeByDate {
+            get {
+                return ResourceManager.GetString("SettingsCategorizeByDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Categorize by video 的當地語系化字串。
+        /// </summary>
+        public static string SettingsCategorizeByVideo {
+            get {
+                return ResourceManager.GetString("SettingsCategorizeByVideo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Channel\ 的當地語系化字串。
+        /// </summary>
+        public static string SettingsChannelName {
+            get {
+                return ResourceManager.GetString("SettingsChannelName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 clip.mp4 的當地語系化字串。
+        /// </summary>
+        public static string SettingsClipName {
+            get {
+                return ResourceManager.GetString("SettingsClipName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Current Format:  DownloadPath\ 的當地語系化字串。
+        /// </summary>
+        public static string SettingsDownloadBaseFormat {
+            get {
+                return ResourceManager.GetString("SettingsDownloadBaseFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Download Location 的當地語系化字串。
+        /// </summary>
+        public static string SettingsDownloadLocation {
+            get {
+                return ResourceManager.GetString("SettingsDownloadLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 If a title or channel are made only of these characters, they&apos;ll be placed in a folder called Untitled. 的當地語系化字串。
+        /// </summary>
+        public static string SettingsEmptyFileNameWarning {
+            get {
+                return ResourceManager.GetString("SettingsEmptyFileNameWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Note: Since windows doesn&apos;t allow filenames to contain \ / : * ? &quot;&gt; &lt; or |, these characters will be emitted. 的當地語系化字串。
+        /// </summary>
+        public static string SettingsIllegalCharacterWarning {
+            get {
+                return ResourceManager.GetString("SettingsIllegalCharacterWarning", resourceCulture);
             }
         }
         
@@ -177,6 +384,24 @@ namespace YoutubeCutter.Properties {
         public static string SettingsPageChooseThemeText {
             get {
                 return ResourceManager.GetString("SettingsPageChooseThemeText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Location of ffmpeg.exe 的當地語系化字串。
+        /// </summary>
+        public static string SettingsPageFfmpegPath {
+            get {
+                return ResourceManager.GetString("SettingsPageFfmpegPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Font Size 的當地語系化字串。
+        /// </summary>
+        public static string SettingsPageFontSize {
+            get {
+                return ResourceManager.GetString("SettingsPageFontSize", resourceCulture);
             }
         }
         
@@ -244,6 +469,33 @@ namespace YoutubeCutter.Properties {
         }
         
         /// <summary>
+        ///   查詢類似 Location of youtube-dl.exe 的當地語系化字串。
+        /// </summary>
+        public static string SettingsPageYoutubeDLPath {
+            get {
+                return ResourceManager.GetString("SettingsPageYoutubeDLPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Verifying, Please wait... 的當地語系化字串。
+        /// </summary>
+        public static string SettingsVerifying {
+            get {
+                return ResourceManager.GetString("SettingsVerifying", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Video\ 的當地語系化字串。
+        /// </summary>
+        public static string SettingsVideoTitle {
+            get {
+                return ResourceManager.GetString("SettingsVideoTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Add a download 的當地語系化字串。
         /// </summary>
         public static string ShellAddNewDownload {
@@ -294,6 +546,69 @@ namespace YoutubeCutter.Properties {
         public static string ShellSettingsPage {
             get {
                 return ResourceManager.GetString("ShellSettingsPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Add More Clip 的當地語系化字串。
+        /// </summary>
+        public static string VideoPageAddMoreClip {
+            get {
+                return ResourceManager.GetString("VideoPageAddMoreClip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Cancel 的當地語系化字串。
+        /// </summary>
+        public static string VideoPageCancel {
+            get {
+                return ResourceManager.GetString("VideoPageCancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Download 的當地語系化字串。
+        /// </summary>
+        public static string VideoPageDownload {
+            get {
+                return ResourceManager.GetString("VideoPageDownload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 End: 的當地語系化字串。
+        /// </summary>
+        public static string VideoPageEndTime {
+            get {
+                return ResourceManager.GetString("VideoPageEndTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Filename 的當地語系化字串。
+        /// </summary>
+        public static string VideoPageFileName {
+            get {
+                return ResourceManager.GetString("VideoPageFileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Preparing video... 的當地語系化字串。
+        /// </summary>
+        public static string VideoPagePreparingVideo {
+            get {
+                return ResourceManager.GetString("VideoPagePreparingVideo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Start: 的當地語系化字串。
+        /// </summary>
+        public static string VideoPageStartTime {
+            get {
+                return ResourceManager.GetString("VideoPageStartTime", resourceCulture);
             }
         }
         

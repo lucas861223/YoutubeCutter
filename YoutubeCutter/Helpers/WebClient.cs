@@ -1,26 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Text.Json;
 using System.Net;
-using YoutubeCutter.Core.Models;
 using System.IO;
 
-using YoutubeCutter.Models;
+using YoutubeCutter.Core.Models;
+
 
 namespace YoutubeCutter.Helpers
 {
     class WebClient
     {
-        private string _noembed = "https://noembed.com/embed?url=https://www.youtube.com/watch?v=";
-        private HttpClient _httpClient;
-        private WebClient()
-        {
-            _httpClient = new HttpClient();
-        }
         private static WebClient _instance = null;
         public static WebClient Instance
         {
@@ -34,6 +26,13 @@ namespace YoutubeCutter.Helpers
             }
         }
 
+        private string _noembed = "https://noembed.com/embed?url=https://www.youtube.com/watch?v=";
+        private HttpClient _httpClient;
+        private WebClient()
+        {
+            _httpClient = new HttpClient();
+        }
+
         public void GetVideoInfo(VideoInformation information, string videoID)
         {
             Dictionary<string, object> videoInformation = RequestAndGetJson(_noembed + videoID);
@@ -45,13 +44,11 @@ namespace YoutubeCutter.Helpers
             }
             //bad video
         }
-
         private Dictionary<string, object> RequestAndGetJson(string url)
         {
             Task<string> response = _httpClient.GetStringAsync(url);
             return JsonSerializer.Deserialize<Dictionary<string, object>>(response.Result);
         }
-        
         public string GetHTML(string url)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
@@ -71,7 +68,6 @@ namespace YoutubeCutter.Helpers
             }
             return "404";
         }
-
         public void DownloadImage(string url, string filename)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);

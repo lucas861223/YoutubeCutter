@@ -1,21 +1,17 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows.Input;
-using System.ComponentModel;
 
-using Microsoft.Extensions.Options;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 
+using YoutubeCutter.Core.Models;
 using YoutubeCutter.Contracts.Services;
 using YoutubeCutter.Contracts.ViewModels;
 using YoutubeCutter.Models;
 using YoutubeCutter.Helpers;
 
-using System.IO;
-using System.Text.Json;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using YoutubeCutter.Core.Models;
 
 namespace YoutubeCutter.ViewModels
 {
@@ -25,40 +21,102 @@ namespace YoutubeCutter.ViewModels
         private readonly IThemeSelectorService _themeSelectorService;
         private readonly ISystemService _systemService;
         private readonly IApplicationInfoService _applicationInfoService;
-        private AppTheme _theme;
-        private string _versionDescription;
-        private ICommand _setThemeCommand;
-        private ICommand _privacyStatementCommand;
+
         private bool _categorizeByChannel;
-        public bool ShowNamingWarning { get { return CategorizeByChannel || CategorizeByVideo; } }
-        public bool CategorizeByChannel { get { return _categorizeByChannel; } set { _categorizeByChannel = value; OnPropertyChanged("CurrentFormat"); OnPropertyChanged("ShowNamingWarning"); App.Current.Properties["CategorizeByChannel"] = _categorizeByChannel; } }
         private bool _categorizeByVideo;
-        public bool CategorizeByVideo { get { return _categorizeByVideo; } set { _categorizeByVideo = value; OnPropertyChanged("CurrentFormat"); OnPropertyChanged("ShowNamingWarning"); App.Current.Properties["CategorizeByVideo"] = _categorizeByVideo; } }
         private bool _categorizeByDate;
-        public bool CategorizeByDate { get { return _categorizeByDate; } set { _categorizeByDate = value; OnPropertyChanged("CurrentFormat"); OnPropertyChanged("ShowNamingWarning"); App.Current.Properties["CategorizeByDate"] = _categorizeByDate; } }
+        private string _versionDescription;
+        private string _youtubeDLPath;
+        private string _ffmpegPath;
+
+        private AppTheme _theme;
+        private Languages _language;
+
+        public int FontSize { get; set; }
+        public bool IsInvalidYoutubeDL { get; set; }
+        public bool IsInvalidFfmpeg { get; set; }
+        public bool IsVerifyingYoutubeDL { get; set; } = false;
+        public bool IsVerifyingFfmpeg { get; set; } = false;
+        public bool ShowNamingWarning { get { return CategorizeByChannel || CategorizeByVideo; } }
+        public bool CategorizeByChannel
+        {
+            get
+            {
+                return _categorizeByChannel;
+            }
+            set
+            {
+                _categorizeByChannel = value;
+                OnPropertyChanged("CurrentFormat");
+                OnPropertyChanged("ShowNamingWarning");
+                App.Current.Properties["CategorizeByChannel"] = _categorizeByChannel;
+            }
+        }
+        public bool CategorizeByVideo
+        {
+            get
+            {
+                return _categorizeByVideo;
+            }
+            set
+            {
+                _categorizeByVideo = value;
+                OnPropertyChanged("CurrentFormat");
+                OnPropertyChanged("ShowNamingWarning");
+                App.Current.Properties["CategorizeByVideo"] = _categorizeByVideo;
+            }
+        }
+        public bool CategorizeByDate
+        {
+            get
+            {
+                return _categorizeByDate;
+            }
+            set
+            {
+                _categorizeByDate = value;
+                OnPropertyChanged("CurrentFormat");
+                OnPropertyChanged("ShowNamingWarning");
+                App.Current.Properties["CategorizeByDate"] = _categorizeByDate;
+            }
+        }
+        public string Test { get; set; }
+        public string DownloadPath { get; set; }
+        public string YoutubeDLPath
+        {
+            get { return _youtubeDLPath; }
+            set { _youtubeDLPath = value; OnPropertyChanged("YoutubeDLPath"); App.Current.Properties["YoutubedlPath"] = _youtubeDLPath; }
+        }
         public string CurrentFormat
         {
             get
             {
-                string format = "Current Format: " + "DownloadPath\\";
+                string format = $"{Properties.Resources.SettingsDownloadBaseFormat}";
                 if (CategorizeByDate)
                 {
                     format += DateTime.Today.ToString("yyyy-MM-dd") + "\\";
                 }
                 if (CategorizeByChannel)
                 {
-                    format += "Channel\\";
+                    format += $"{Properties.Resources.SettingsChannelName}";
                 }
                 if (CategorizeByVideo)
                 {
-                    format += "Video\\";
+                    format += $"{Properties.Resources.SettingsVideoTitle}";
                 }
-                return format + "clip.mp4";
+                return format + $"{Properties.Resources.SettingsClipName}";
             }
         }
-        public bool IsInvalidYoutubeDL { get; set; }
-        public bool IsInvalidFfmpeg { get; set; }
-        private Languages _language;
+        public string FFmpegPath
+        {
+            get { return _ffmpegPath; }
+            set { _ffmpegPath = value; OnPropertyChanged("FFmpegPath"); App.Current.Properties["FfmpegPath"] = FFmpegPath; }
+        }
+        public string VersionDescription
+        {
+            get { return _versionDescription; }
+            set { SetProperty(ref _versionDescription, value); }
+        }
         public Languages Language
         {
             get { return _language; }
@@ -68,30 +126,32 @@ namespace YoutubeCutter.ViewModels
                     _language = value;
                     CultureResources.ChangeCulture(_language);
                     App.Current.Properties["Language"] = _language;
+                    OnPropertyChanged("CurrentFormat");
                 }
             }
         }
-        public string Test { get; set; }
-        private string _youtubeDLPath;
-        public string YoutubeDLPath
+        public AppTheme Theme
         {
-            get { return _youtubeDLPath; }
-            set { _youtubeDLPath = value; OnPropertyChanged("YoutubeDLPath"); App.Current.Properties["YoutubedlPath"] = _youtubeDLPath; }
+            get { return _theme; }
+            set { SetProperty(ref _theme, value); }
         }
-        public string DownloadPath { get; set; }
-        private string _ffmpegPath;
-        public string FFmpegPath
-        {
-            get { return _ffmpegPath; }
-            set { _ffmpegPath = value; OnPropertyChanged("FFmpegPath"); App.Current.Properties["FfmpegPath"] = FFmpegPath; }
-        }
-        public bool IsVerifyingYoutubeDL { get; set; } = false;
-        public bool IsVerifyingFfmpeg { get; set; } = false;
-        public int FontSize { get; set; }
+
+        private ICommand _setThemeCommand;
+        private ICommand _privacyStatementCommand;
         private ICommand _getYoutubeDLCommand;
-        public ICommand GetYoutubeDLCommand => _getYoutubeDLCommand ?? (_getYoutubeDLCommand = new RelayCommand(GetYoutubeDL));
         private ICommand _getFfmpegommand;
+        public ICommand GetYoutubeDLCommand => _getYoutubeDLCommand ?? (_getYoutubeDLCommand = new RelayCommand(GetYoutubeDL));
         public ICommand GetFfMpegCommand => _getFfmpegommand ?? (_getFfmpegommand = new RelayCommand(GetFffmpeg));
+        public ICommand SetThemeCommand => _setThemeCommand ?? (_setThemeCommand = new RelayCommand<string>(OnSetTheme));
+        public ICommand PrivacyStatementCommand => _privacyStatementCommand ?? (_privacyStatementCommand = new RelayCommand(OnPrivacyStatement));
+
+        public SettingsViewModel(IThemeSelectorService themeSelectorService, ISystemService systemService, IApplicationInfoService applicationInfoService)
+        {
+            _themeSelectorService = themeSelectorService;
+            _systemService = systemService;
+            _applicationInfoService = applicationInfoService;
+        }
+
         private async void GetYoutubeDL()
         {
             Microsoft.Win32.OpenFileDialog dlg = this.OpenFileDialog("youtube-dl");
@@ -173,29 +233,6 @@ namespace YoutubeCutter.ViewModels
             // Show open file dialog box
             return dlg;
         }
-        public AppTheme Theme
-        {
-            get { return _theme; }
-            set { SetProperty(ref _theme, value); }
-        }
-
-        public string VersionDescription
-        {
-            get { return _versionDescription; }
-            set { SetProperty(ref _versionDescription, value); }
-        }
-
-        public ICommand SetThemeCommand => _setThemeCommand ?? (_setThemeCommand = new RelayCommand<string>(OnSetTheme));
-
-        public ICommand PrivacyStatementCommand => _privacyStatementCommand ?? (_privacyStatementCommand = new RelayCommand(OnPrivacyStatement));
-
-        public SettingsViewModel(IThemeSelectorService themeSelectorService, ISystemService systemService, IApplicationInfoService applicationInfoService)
-        {
-            _themeSelectorService = themeSelectorService;
-            _systemService = systemService;
-            _applicationInfoService = applicationInfoService;
-        }
-
         public void OnNavigatedTo(object parameter)
         {
             VersionDescription = $"{Properties.Resources.AppDisplayName} - {_applicationInfoService.GetVersion()}";
@@ -220,20 +257,16 @@ namespace YoutubeCutter.ViewModels
             OnPropertyChanged("IsInvalidYoutubeDL");
             OnPropertyChanged("IsInvalidFfmpeg");
         }
-
         public void OnNavigatedFrom()
         {
             App.Current.Properties["FontSize"] = FontSize;
         }
-
         private void OnSetTheme(string themeName)
         {
             var theme = (AppTheme)Enum.Parse(typeof(AppTheme), themeName);
             _themeSelectorService.SetTheme(theme);
         }
-
         private void OnPrivacyStatement()
             => _systemService.OpenInWebBrowser((string)App.Current.Properties["PrivacyStatement"]);
-
     }
 }

@@ -2,8 +2,6 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
-using System.Collections.Generic;
-using System.Windows.Media.Imaging;
 
 using MahApps.Metro.Controls;
 
@@ -12,7 +10,6 @@ using Microsoft.Toolkit.Mvvm.Input;
 
 using YoutubeCutter.Contracts.Services;
 using YoutubeCutter.Properties;
-
 using YoutubeCutter.Models;
 using YoutubeCutter.Helpers;
 using YoutubeCutter.Controls;
@@ -23,17 +20,14 @@ namespace YoutubeCutter.ViewModels
     public class ShellViewModel : ObservableObject
     {
         private readonly INavigationService _navigationService;
-        private HamburgerMenuItem _selectedMenuItem;
-        private HamburgerMenuItem _selectedOptionsMenuItem;
-        private RelayCommand _goBackCommand;
-        private ICommand _menuItemInvokedCommand;
-        private ICommand _optionsMenuItemInvokedCommand;
-        private ICommand _loadedCommand;
-        private ICommand _unloadedCommand;
+
+        private bool _isPaneOpen;
         private int _alreadyAvaliableIdentifier = 0;
         private int _identifierCount = 1;
-        private WebClient _webClient = WebClient.Instance;
-        private bool _isPaneOpen;
+
+        private HamburgerMenuItem _selectedMenuItem;
+        private HamburgerMenuItem _selectedOptionsMenuItem;
+
         public bool IsPaneOpen
         {
             get
@@ -46,40 +40,38 @@ namespace YoutubeCutter.ViewModels
                 OnPropertyChanged("IsPaneOpen");
             }
         }
-
         public HamburgerMenuItem SelectedMenuItem
         {
             get { return _selectedMenuItem; }
             set { SetProperty(ref _selectedMenuItem, value); }
         }
-
         public HamburgerMenuItem SelectedOptionsMenuItem
         {
             get { return _selectedOptionsMenuItem; }
             set { SetProperty(ref _selectedOptionsMenuItem, value); }
         }
-
-        // TODO WTS: Change the icons and titles for all HamburgerMenuItems here.
         public ObservableCollection<HamburgerMenuItem> MenuItems { get; } = new ObservableCollection<HamburgerMenuItem>()
         {
-            new HamburgerMenuGlyphItem() { Label = Resources.ShellMainPage, Glyph = "\uE8A5", TargetPageType = typeof(MainViewModel) },
-            new HamburgerMenuGlyphItem() { Label = Resources.ShellDownloadsPage, Glyph = "\uE8A5", TargetPageType = typeof(DownloadsViewModel) },
-            new HamburgerMenuGlyphItem() { Label = Resources.ShellAddNewDownload, Glyph = "\uE8A5"},
+            // TODO WTS: Change the icons and titles for all HamburgerMenuItems here.
+            new HamburgerMenuGlyphItem() { Label = $"{Resources.ShellMainPage}", Glyph = "\uE8A5", TargetPageType = typeof(MainViewModel) },
+            new HamburgerMenuGlyphItem() { Label = $"{Resources.ShellDownloadsPage}", Glyph = "\uE8A5", TargetPageType = typeof(DownloadsViewModel) },
+            new HamburgerMenuGlyphItem() { Label = $"{Resources.ShellAddNewDownload}", Glyph = "\uE8A5"},
         };
-
         public ObservableCollection<HamburgerMenuItem> OptionMenuItems { get; } = new ObservableCollection<HamburgerMenuItem>()
         {
             new HamburgerMenuGlyphItem() { Label = Resources.ShellSettingsPage, Glyph = "\uE713", TargetPageType = typeof(SettingsViewModel) }
         };
 
+        private RelayCommand _goBackCommand;
+        private ICommand _menuItemInvokedCommand;
+        private ICommand _optionsMenuItemInvokedCommand;
+        private ICommand _loadedCommand;
+        private ICommand _unloadedCommand;
+
         public RelayCommand GoBackCommand => _goBackCommand ?? (_goBackCommand = new RelayCommand(OnGoBack, CanGoBack));
-
         public ICommand MenuItemInvokedCommand => _menuItemInvokedCommand ?? (_menuItemInvokedCommand = new RelayCommand(OnMenuItemInvoked));
-
         public ICommand OptionsMenuItemInvokedCommand => _optionsMenuItemInvokedCommand ?? (_optionsMenuItemInvokedCommand = new RelayCommand(OnOptionsMenuItemInvoked));
-
         public ICommand LoadedCommand => _loadedCommand ?? (_loadedCommand = new RelayCommand(OnLoaded));
-
         public ICommand UnloadedCommand => _unloadedCommand ?? (_unloadedCommand = new RelayCommand(OnUnloaded));
 
         public ShellViewModel(INavigationService navigationService)
@@ -95,26 +87,20 @@ namespace YoutubeCutter.ViewModels
         {
             _navigationService.Navigated += OnNavigated;
         }
-
         private void OnUnloaded()
         {
             _navigationService.Navigated -= OnNavigated;
         }
-
         private bool CanGoBack()
             => _navigationService.CanGoBack;
-
         private void OnGoBack()
             => _navigationService.GoBack();
-
         private void OnMenuItemInvoked()
         {
             NavigateTo(SelectedMenuItem.TargetPageType);
         }
-
         private void OnOptionsMenuItemInvoked()
             => NavigateTo(SelectedOptionsMenuItem.TargetPageType);
-
         private void NavigateTo(Type targetViewModel)
         {
             if (targetViewModel == typeof(VideoViewModel))
@@ -216,7 +202,6 @@ namespace YoutubeCutter.ViewModels
                     item.ChannelName = null;
                     item.VideoThumbnail = "";
                     item.ChannelThumbnail = "";
-                    item.EmbedYoutubeURL = null;
                     item.YoutubeURL = null;
                     _alreadyAvaliableIdentifier = identifier;
                 }

@@ -2,11 +2,9 @@
     x:Class="YoutubeCutter.Views.SettingsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:VM="clr-namespace:YoutubeCutter.ViewModels"
     xmlns:converters="clr-namespace:YoutubeCutter.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-    xmlns:local="clr-namespace:YoutubeCutter"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="clr-namespace:YoutubeCutter.Models"
     xmlns:properties="clr-namespace:YoutubeCutter.Properties"
@@ -20,7 +18,7 @@
         <converters:LanguagesToIntConverter x:Key="LanguagesToIntConverter" />
     </Page.Resources>
 
-    <ScrollViewer>
+    <ScrollViewer VerticalAlignment="Top">
         <Grid Margin="{StaticResource SmallTopBottomMargin}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="48" />
@@ -30,7 +28,7 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <TextBlock Style="{StaticResource PageTitleStyle}" Text="{x:Static properties:Resources.SettingsPageTitle}" />
+            <TextBlock Style="{StaticResource PageTitleStyle}" Text="{Binding Path=SettingsPageTitle, Source={StaticResource LanguageResources}}" />
             <StackPanel
                 x:Name="ContentArea"
                 Grid.Row="2"
@@ -38,7 +36,7 @@
                 <TextBlock
                     Margin="{StaticResource SmallTopMargin}"
                     Style="{StaticResource SubtitleTextStyle}"
-                    Text="{Binding Path=YoutubeDLPath, UpdateSourceTrigger=PropertyChanged}" />
+                    Text="{Binding Path=SettingsPageYoutubeDLPath, Source={StaticResource LanguageResources}}" />
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="90*" />
@@ -59,7 +57,7 @@
                                 <i:InvokeCommandAction Command="{Binding GetYoutubeDLCommand}" />
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
-                        Browse
+                        <Run Text="{Binding Path=SettingsBrowse, Mode=OneWay, Source={StaticResource LanguageResources}}" />
                     </Button>
                 </Grid>
                 <TextBlock
@@ -71,17 +69,17 @@
                     <Hyperlink NavigateUri="https://stackoverflow.com/questions/30551372/binding-run-inside-textblock-results-in-exception-in-wpf">
                         <TextBlock Text="{Binding Path=Instruction, Source={StaticResource LanguageResources}}" />
                     </Hyperlink>
-                    <Run Text="{Binding Path=Period, Mode=OneWay, Source={StaticResource LanguageResources}}" />
+                    <Run Text="{Binding Path=SettingsVerifying, Mode=OneWay, Source={StaticResource LanguageResources}}" />
                 </TextBlock>
                 <TextBlock
                     Margin="{StaticResource SmallTopMargin}"
                     Style="{StaticResource BodyTextStyle}"
-                    Text="Verifying, Please wait..."
+                    Text="{Binding Path=SettingsVerifying, Mode=OneWay, Source={StaticResource LanguageResources}}"
                     Visibility="{Binding Path=IsVerifyingYoutubeDL, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBlock
                     Margin="{StaticResource SmallTopMargin}"
                     Style="{StaticResource SubtitleTextStyle}"
-                    Text="{Binding Path=FFmpegPath, UpdateSourceTrigger=PropertyChanged}" />
+                    Text="{Binding Path=SettingsPageFfmpegPath, Source={StaticResource LanguageResources}}" />
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="90*" />
@@ -102,7 +100,7 @@
                                 <i:InvokeCommandAction Command="{Binding GetFfMpegCommand}" />
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
-                        Browse
+                        <Run Text="{Binding Path=SettingsBrowse, Mode=OneWay, Source={StaticResource LanguageResources}}" />
                     </Button>
                 </Grid>
                 <TextBlock
@@ -119,13 +117,13 @@
                 <TextBlock
                     Margin="{StaticResource SmallTopMargin}"
                     Style="{StaticResource BodyTextStyle}"
-                    Text="Verifying, Please wait..."
+                    Text="{Binding Path=SettingsVerifying, Mode=OneWay, Source={StaticResource LanguageResources}}"
                     Visibility="{Binding Path=IsVerifyingFfmpeg, Converter={StaticResource BoolToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" />
 
                 <TextBlock
-                    Margin="{StaticResource SmallTopMargin}"
+                    Margin="{StaticResource MediumTopMargin}"
                     Style="{StaticResource SubtitleTextStyle}"
-                    Text="Download Location" />
+                    Text="{Binding Path=SettingsDownloadLocation, Mode=OneWay, Source={StaticResource LanguageResources}}" />
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="90*" />
@@ -142,46 +140,41 @@
                         Grid.Column="1"
                         VerticalAlignment="Bottom"
                         Click="openFileDialogForDownloadPath">
-                        Browse
+                        <Run Text="{Binding Path=SettingsBrowse, Mode=OneWay, Source={StaticResource LanguageResources}}" />
                     </Button>
                 </Grid>
                 <StackPanel Margin="{StaticResource SmallTopBottomMargin}">
                     <StackPanel Orientation="Horizontal">
                         <CheckBox IsChecked="{Binding CategorizeByDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        <TextBlock>Categorize by date</TextBlock>
+                        <TextBlock Text="{Binding Path=SettingsCategorizeByDate, Mode=OneWay, Source={StaticResource LanguageResources}}" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <CheckBox IsChecked="{Binding CategorizeByChannel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        <TextBlock>Categorize by channel</TextBlock>
+                        <TextBlock Text="{Binding Path=SettingsCategorizeByChannel, Mode=OneWay, Source={StaticResource LanguageResources}}" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <CheckBox IsChecked="{Binding CategorizeByVideo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        <TextBlock>Categorize by Video</TextBlock>
+                        <TextBlock Text="{Binding Path=SettingsCategorizeByVideo, Mode=OneWay, Source={StaticResource LanguageResources}}" />
                     </StackPanel>
                     <TextBlock
                         Margin="{StaticResource XXSmallTopMargin}"
                         Style="{StaticResource ListSubTitleStyle}"
                         Text="{Binding CurrentFormat, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
-                    <TextBlock Visibility="{Binding ShowNamingWarning, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <TextBlock.Text>
-                            Note: Since windows doesn't allow filenames to contain \ / : * ? \&quot; &lt; &gt; or |, these characters will be emitted.
-                        </TextBlock.Text>
-                    </TextBlock>
-                    <TextBlock Visibility="{Binding ShowNamingWarning, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <TextBlock.Text>
-                            If a title or channel are made only of these characters, they'll be placed in a folder called Untitled.
-                        </TextBlock.Text>
-                    </TextBlock>
+                    <TextBlock
+                        Margin="{StaticResource SmallTopMargin}"
+                        Text="{Binding Path=SettingsIllegalCharacterWarning, Mode=OneWay, Source={StaticResource LanguageResources}}"
+                        Visibility="{Binding ShowNamingWarning, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <TextBlock Text="{Binding Path=SettingsEmptyFileNameWarning, Mode=OneWay, Source={StaticResource LanguageResources}}" Visibility="{Binding ShowNamingWarning, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 </StackPanel>
                 <TextBlock
                     Margin="{StaticResource SmallTopMargin}"
                     Style="{StaticResource SubtitleTextStyle}"
-                    Text="{x:Static properties:Resources.SettingsPagePersonalizationTitle}" />
+                    Text="{Binding Path=SettingsPagePersonalizationTitle, Mode=OneWay, Source={StaticResource LanguageResources}}" />
                 <StackPanel Margin="{StaticResource SmallTopBottomMargin}">
-                    <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.SettingsPageChooseThemeText}" />
+                    <TextBlock Style="{StaticResource BodyTextStyle}" Text="{Binding Path=SettingsPageChooseThemeText, Mode=OneWay, Source={StaticResource LanguageResources}}" />
                     <StackPanel Margin="{StaticResource XSmallTopMargin}">
                         <RadioButton
-                            Content="{x:Static properties:Resources.SettingsPageRadioButtonLightTheme}"
+                            Content="{Binding Path=SettingsPageRadioButtonLightTheme, Mode=OneWay, Source={StaticResource LanguageResources}}"
                             FontSize="{StaticResource MediumFontSize}"
                             GroupName="AppTheme"
                             IsChecked="{Binding Theme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Light, Mode=OneWay}">
@@ -193,7 +186,7 @@
                         </RadioButton>
                         <RadioButton
                             Margin="{StaticResource XSmallTopMargin}"
-                            Content="{x:Static properties:Resources.SettingsPageRadioButtonDarkTheme}"
+                            Content="{Binding Path=SettingsPageRadioButtonDarkTheme, Mode=OneWay, Source={StaticResource LanguageResources}}"
                             FontSize="{StaticResource MediumFontSize}"
                             GroupName="AppTheme"
                             IsChecked="{Binding Theme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Dark, Mode=OneWay}">
@@ -205,7 +198,7 @@
                         </RadioButton>
                         <RadioButton
                             Margin="{StaticResource XSmallTopMargin}"
-                            Content="{x:Static properties:Resources.SettingsPageRadioButtonWindowsDefaultTheme}"
+                            Content="{Binding Path=SettingsPageRadioButtonWindowsDefaultTheme, Mode=OneWay, Source={StaticResource LanguageResources}}"
                             FontSize="{StaticResource MediumFontSize}"
                             GroupName="AppTheme"
                             IsChecked="{Binding Theme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Default, Mode=OneWay}">
